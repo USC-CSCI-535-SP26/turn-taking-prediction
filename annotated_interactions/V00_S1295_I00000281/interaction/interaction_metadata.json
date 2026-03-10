@@ -1,0 +1,10 @@
+{
+  "": "266",
+  "prompt_hash": "00000281",
+  "prompt_id_unique": "P0002_v3.0.fam_ANCM_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they witnessed or were involved in a similar situation. Discuss with them the potential consequences of cruel behavior and how you both think it can be prevented in the future.",
+  "participant_b_prompt_text": "Recall a time when you witnessed or were involved in a situation where someone was being bullied or mistreated. Describe what happened and how you think the situation could have been handled differently.",
+  "ipc_a": "ANCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

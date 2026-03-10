@@ -1,0 +1,10 @@
+{
+  "": "92",
+  "prompt_hash": "00000097",
+  "prompt_id_unique": "P0156_v3.9.fam_AMCN_XXXX",
+  "participant_a_prompt_text": "Your partner will discuss a task they tend to put off. Listen to their reasons for procrastinating and offer suggestions for how they might stay on top of it, based on your own experiences with similar tasks.",
+  "participant_b_prompt_text": "Talk to your partner about a task or chore that you consistently put off or do at the last minute. What is it about this task that makes you want to procrastinate, and how do you think you could change your approach to get it done more efficiently?",
+  "ipc_a": "AMCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

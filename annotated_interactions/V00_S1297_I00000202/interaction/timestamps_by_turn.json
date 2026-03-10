@@ -1,0 +1,116 @@
+[
+  {
+    "participant_id": "P1019",
+    "start": 0.13000000000010914,
+    "end": 16.413999999999987,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1123",
+    "start": 16.642000000000053,
+    "end": 41.94999999999982,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 19.233999999999924,
+    "end": 19.67800000000011,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 23.458000000000084,
+    "end": 23.80600000000004,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 32.25799999999981,
+    "end": 32.702000000000226,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 41.346000000000004,
+    "end": 42.878000000000156,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1123",
+    "start": 42.27399999999989,
+    "end": 89.69399999999996,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 51.13799999999992,
+    "end": 51.485999999999876,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 86.17799999999988,
+    "end": 87.07000000000016,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 89.73000000000002,
+    "end": 94.75,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1123",
+    "start": 93.44200000000001,
+    "end": 94.17399999999998,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1123",
+    "start": 95.20200000000023,
+    "end": 108.47800000000007,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 96.41800000000012,
+    "end": 96.95800000000008,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 108.57799999999997,
+    "end": 108.95800000000008,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1123",
+    "start": 110.11400000000003,
+    "end": 112.1579999999999,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 111.07400000000007,
+    "end": 114.654,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1123",
+    "start": 114.6579999999999,
+    "end": 117.3420000000001,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 116.76999999999998,
+    "end": 117.08599999999979,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1019",
+    "start": 117.25,
+    "end": 117.69399999999996,
+    "overlapping": true
+  }
+]

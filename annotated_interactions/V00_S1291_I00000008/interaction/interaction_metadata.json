@@ -1,0 +1,10 @@
+{
+  "": "7",
+  "prompt_hash": "00000008",
+  "prompt_id_unique": "P0079_v3.4.fam_APCP_XXXX",
+  "participant_a_prompt_text": "Think about a time when you attended a social event, such as a party or gathering, and had a particularly great time. Tell your partner about the event and what made it so enjoyable.",
+  "participant_b_prompt_text": "Your partner will tell you about a fun social event they attended. Ask them questions about the event and discuss what you both like to do in social situations.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

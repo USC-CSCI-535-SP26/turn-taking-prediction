@@ -1,0 +1,10 @@
+{
+  "": "310",
+  "prompt_hash": "00000325",
+  "prompt_id_unique": "P0113_v3.7.str_ANCP_XXXX",
+  "participant_a_prompt_text": "Talk to your partner about a hobby or activity that brings you joy and makes you feel approachable and friendly. What is it about this activity that puts you in a good mood?",
+  "participant_b_prompt_text": "Your partner will tell you about something they enjoy doing. Show genuine interest and ask questions to learn more about their passion.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

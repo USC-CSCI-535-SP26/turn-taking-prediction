@@ -1,0 +1,10 @@
+{
+  "": "1",
+  "prompt_hash": "00000001",
+  "prompt_id_unique": "P0066_v3.4.fam_AMCM_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they felt like they didn't speak up or assert themselves. Discuss with them what they could have done differently and how you can support each other in similar situations.",
+  "participant_b_prompt_text": "Recall a conversation or situation where you felt like you didn't speak up or assert yourself as much as you should have. Describe what happened and what you would do differently if faced with a similar situation in the future.",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

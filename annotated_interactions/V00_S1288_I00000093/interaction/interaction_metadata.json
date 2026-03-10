@@ -1,0 +1,10 @@
+{
+  "": "88",
+  "prompt_hash": "00000093",
+  "prompt_id_unique": "P0157_v3.9.fam_ANCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a project you worked on together. Ask them questions about their perspective on the project and discuss how you could improve your collaboration in the future.",
+  "participant_b_prompt_text": "Think of a project or task you worked on with your partner that required collaboration and teamwork. Describe the project, your role in it, and how you worked together to achieve a common goal.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

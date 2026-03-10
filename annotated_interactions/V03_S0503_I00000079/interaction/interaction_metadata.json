@@ -1,0 +1,10 @@
+{
+  "": "74",
+  "prompt_hash": "00000079",
+  "prompt_id_unique": "P0098_v3.6.str_ANCP_XXXX",
+  "participant_a_prompt_text": "Describe a moment when you showed kindness or compassion to someone in need. What led you to act with empathy, and how did the other person respond?",
+  "participant_b_prompt_text": "Your partner will share a story about a time they showed kindness to someone. Listen attentively and explore how their actions may have impacted the other person.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

@@ -1,0 +1,10 @@
+{
+  "": "267",
+  "prompt_hash": "00000282",
+  "prompt_id_unique": "P0004_v3.0.fam_ANCP_XXXX",
+  "participant_a_prompt_text": "Your partner will open up to you about a difficult time they're facing. Listen attentively and offer words of comfort and support.",
+  "participant_b_prompt_text": "Talk to your partner about a challenging experience you're currently going through, and how you're feeling vulnerable. Ask for their support and guidance.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

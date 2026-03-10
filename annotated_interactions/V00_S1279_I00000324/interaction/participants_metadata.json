@@ -1,0 +1,20 @@
+{
+  "P0317": {
+    "extraversion_raw": "4.833333333333333",
+    "agreeableness_raw": "3.0833333333333335",
+    "conscientiousness_raw": "4.0",
+    "neuroticism_raw": "2.0",
+    "openness_raw": "3.4166666666666665",
+    "vendor_id": "00",
+    "participant_id": "0317"
+  },
+  "P1118": {
+    "extraversion_raw": "4.5",
+    "agreeableness_raw": "3.4166666666666665",
+    "conscientiousness_raw": "4.166666666666667",
+    "neuroticism_raw": "2.25",
+    "openness_raw": "4.25",
+    "vendor_id": "00",
+    "participant_id": "1118"
+  }
+}
