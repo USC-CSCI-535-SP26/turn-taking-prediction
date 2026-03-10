@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P2154",
+    "annotated_participant": "P1207",
+    "non_annotated_participant": "P2154",
+    "start_pre_moi": 3.7940000000000964,
+    "end_pre_moi": 125.19800000000009,
+    "pre_overlap": true,
+    "start_moi": 8,
+    "end_moi": 10,
+    "start_post_moi": 3.7940000000000964,
+    "end_post_moi": 125.19800000000009,
+    "post_overlap": true
+  },
+  {
+    "event_speaker": "P1207",
+    "annotated_participant": "P2154",
+    "non_annotated_participant": "P1207",
+    "start_pre_moi": 244.24199999999996,
+    "end_pre_moi": 280.2059999999999,
+    "pre_overlap": true,
+    "start_moi": 261,
+    "end_moi": 276,
+    "start_post_moi": 244.24199999999996,
+    "end_post_moi": 280.2059999999999,
+    "post_overlap": true
+  }
+]

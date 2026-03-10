@@ -1,0 +1,93 @@
+[
+  {
+    "event_speaker": "P0430",
+    "annotated_participant": "P1121",
+    "non_annotated_participant": "P0430",
+    "start_pre_moi": 14.418000000000006,
+    "end_pre_moi": 63.02199999999999,
+    "pre_overlap": true,
+    "start_moi": 50,
+    "end_moi": 51,
+    "start_post_moi": 14.418000000000006,
+    "end_post_moi": 63.02199999999999,
+    "post_overlap": true
+  },
+  {
+    "event_speaker": "P0430",
+    "annotated_participant": "P0430",
+    "non_annotated_participant": "P1121",
+    "start_pre_moi": 123.18599999999998,
+    "end_pre_moi": 123.50200000000001,
+    "pre_overlap": false,
+    "start_moi": 125,
+    "end_moi": 129,
+    "start_post_moi": 131.762,
+    "end_post_moi": 132.30200000000002,
+    "post_overlap": false
+  },
+  {
+    "event_speaker": "P0430",
+    "annotated_participant": "P1121",
+    "non_annotated_participant": "P0430",
+    "start_pre_moi": 63.56999999999999,
+    "end_pre_moi": 206.66999999999996,
+    "pre_overlap": true,
+    "start_moi": 129,
+    "end_moi": 133,
+    "start_post_moi": 63.56999999999999,
+    "end_post_moi": 206.66999999999996,
+    "post_overlap": true
+  },
+  {
+    "event_speaker": "P0430",
+    "annotated_participant": "P1121",
+    "non_annotated_participant": "P0430",
+    "start_pre_moi": 63.56999999999999,
+    "end_pre_moi": 206.66999999999996,
+    "pre_overlap": true,
+    "start_moi": 180,
+    "end_moi": 182,
+    "start_post_moi": 63.56999999999999,
+    "end_post_moi": 206.66999999999996,
+    "post_overlap": true
+  },
+  {
+    "event_speaker": "P1121",
+    "annotated_participant": "P0430",
+    "non_annotated_participant": "P1121",
+    "start_pre_moi": 228.65800000000002,
+    "end_pre_moi": 247.95000000000005,
+    "pre_overlap": true,
+    "start_moi": 245,
+    "end_moi": 259,
+    "start_post_moi": 257.26599999999996,
+    "end_post_moi": 283.726,
+    "post_overlap": true
+  },
+  {
+    "event_speaker": "P1121",
+    "annotated_participant": "P0430",
+    "non_annotated_participant": "P1121",
+    "start_pre_moi": 257.26599999999996,
+    "end_pre_moi": 283.726,
+    "pre_overlap": true,
+    "start_moi": 273,
+    "end_moi": 280,
+    "start_post_moi": 257.26599999999996,
+    "end_post_moi": 283.726,
+    "post_overlap": true
+  },
+  {
+    "event_speaker": "P1121",
+    "annotated_participant": "P1121",
+    "non_annotated_participant": "P0430",
+    "start_pre_moi": 256.21000000000004,
+    "end_pre_moi": 256.59000000000003,
+    "pre_overlap": false,
+    "start_moi": 281,
+    "end_moi": 283,
+    "start_post_moi": 283.95399999999995,
+    "end_post_moi": 284.78200000000004,
+    "post_overlap": false
+  }
+]

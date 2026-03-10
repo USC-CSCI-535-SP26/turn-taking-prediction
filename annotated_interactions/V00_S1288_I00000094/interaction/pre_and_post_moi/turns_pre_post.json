@@ -1,0 +1,80 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P0071",
+    "non_annotated_participant": "P1119",
+    "start_pre_moi": 17.761999999999944,
+    "end_pre_moi": 23.614000000000033,
+    "pre_overlap": false,
+    "start_moi": 24,
+    "end_moi": 24,
+    "start_post_moi": 25.090000000000032,
+    "end_post_moi": 28.350000000000023,
+    "post_overlap": false
+  },
+  {
+    "event_speaker": "P0071",
+    "annotated_participant": "P1119",
+    "non_annotated_participant": "P0071",
+    "start_pre_moi": 52.80200000000002,
+    "end_pre_moi": 56.09400000000005,
+    "pre_overlap": true,
+    "start_moi": 54,
+    "end_moi": 55,
+    "start_post_moi": 52.80200000000002,
+    "end_post_moi": 56.09400000000005,
+    "post_overlap": true
+  },
+  {
+    "event_speaker": "P0071",
+    "annotated_participant": "P1119",
+    "non_annotated_participant": "P0071",
+    "start_pre_moi": 160.28999999999996,
+    "end_pre_moi": 167.774,
+    "pre_overlap": true,
+    "start_moi": 166,
+    "end_moi": 169,
+    "start_post_moi": 168.16200000000003,
+    "end_post_moi": 169.438,
+    "post_overlap": true
+  },
+  {
+    "event_speaker": "P0071",
+    "annotated_participant": "P0071",
+    "non_annotated_participant": "P1119",
+    "start_pre_moi": 191.36199999999997,
+    "end_pre_moi": 193.63,
+    "pre_overlap": true,
+    "start_moi": 193,
+    "end_moi": 195,
+    "start_post_moi": 196.57799999999997,
+    "end_post_moi": 197.21400000000006,
+    "post_overlap": false
+  },
+  {
+    "event_speaker": "P1119",
+    "annotated_participant": "P0071",
+    "non_annotated_participant": "P1119",
+    "start_pre_moi": 252.99400000000003,
+    "end_pre_moi": 278.654,
+    "pre_overlap": true,
+    "start_moi": 276,
+    "end_moi": 278,
+    "start_post_moi": 252.99400000000003,
+    "end_post_moi": 278.654,
+    "post_overlap": true
+  },
+  {
+    "event_speaker": "P1119",
+    "annotated_participant": "P1119",
+    "non_annotated_participant": "P0071",
+    "start_pre_moi": 271.298,
+    "end_pre_moi": 271.80600000000004,
+    "pre_overlap": false,
+    "start_moi": 276,
+    "end_moi": 278,
+    "start_post_moi": 278.30600000000004,
+    "end_post_moi": 279.678,
+    "post_overlap": false
+  }
+]
