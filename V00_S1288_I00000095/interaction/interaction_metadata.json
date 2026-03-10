@@ -1,0 +1,10 @@
+{
+  "": "90",
+  "prompt_hash": "00000095",
+  "prompt_id_unique": "P0146_v3.9.fam_AMCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they had to adjust their plans for you. Discuss with them how you felt about the situation and whether it was a big deal or not.",
+  "participant_b_prompt_text": "Think of a time when you had to adjust your plans to help your partner out. Describe the situation and how you felt about making the change.",
+  "ipc_a": "AMCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

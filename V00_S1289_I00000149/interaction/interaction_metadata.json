@@ -1,0 +1,10 @@
+{
+  "": "139",
+  "prompt_hash": "00000149",
+  "prompt_id_unique": "P0068_v3.4.str_ANCP_XXXX",
+  "participant_a_prompt_text": "Discuss a social issue that you feel strongly about and think deserves more attention and compassion. Explain why you think it's important and how you think people can make a positive impact.",
+  "participant_b_prompt_text": "Your partner will share their thoughts on a social issue that they think deserves more sympathy. Listen to their perspective and share your own thoughts on the issue.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

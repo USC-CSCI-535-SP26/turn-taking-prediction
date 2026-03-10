@@ -1,0 +1,10 @@
+{
+  "": "340",
+  "prompt_hash": "00000335",
+  "prompt_id_unique": "P0111_v3.6.fam_APCM_XXXX",
+  "participant_a_prompt_text": "Think of a time when you had to work with someone who you felt was dominating the conversation or decision-making process. Describe the situation to your partner and how you felt about it.",
+  "participant_b_prompt_text": "Your partner will tell you about a time they felt someone was overbearing. Share a time when you may have unintentionally dominated a conversation or decision, and discuss how you can be more aware of this in the future.",
+  "ipc_a": "APCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

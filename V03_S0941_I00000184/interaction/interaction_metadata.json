@@ -1,0 +1,10 @@
+{
+  "": "172",
+  "prompt_hash": "00000184",
+  "prompt_id_unique": "P0038_v3.2.fam_APCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about something they're passionate about. Listen to their explanation and ask follow-up questions to learn more about what they enjoy.",
+  "participant_b_prompt_text": "Discuss a hobby or activity that you're particularly enthusiastic about, and explain why you enjoy it so much. Encourage your partner to join you or try it out.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

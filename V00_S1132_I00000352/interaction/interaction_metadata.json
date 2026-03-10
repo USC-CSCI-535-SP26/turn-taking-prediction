@@ -1,0 +1,10 @@
+{
+  "": "349",
+  "prompt_hash": "00000352",
+  "prompt_id_unique": "P0105_v3.6.fam_AMCN_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they reevaluated a decision or stance. Explore with them the factors that contributed to the change and how it affected their thoughts or actions.",
+  "participant_b_prompt_text": "Discuss a decision or stance you've taken in the past that you've since reconsidered or changed your mind about. What new information or perspectives led you to reevaluate, and how did you come to a new conclusion?",
+  "ipc_a": "AMCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

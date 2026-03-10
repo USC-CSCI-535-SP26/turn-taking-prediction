@@ -1,0 +1,10 @@
+{
+  "": "87",
+  "prompt_hash": "00000092",
+  "prompt_id_unique": "P0154_v3.9.fam_APCM_XXXX",
+  "participant_a_prompt_text": "Your partner will share a story about a time they had to navigate a difficult social situation. Ask them if they think they could have handled it differently and what they learned from the experience.",
+  "participant_b_prompt_text": "Discuss a situation where you had to navigate a tricky or awkward social situation by being tactful or manipulative. Describe what happened and how you handled it.",
+  "ipc_a": "APCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

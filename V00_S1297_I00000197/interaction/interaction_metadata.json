@@ -1,0 +1,10 @@
+{
+  "": "187",
+  "prompt_hash": "00000197",
+  "prompt_id_unique": "P0020_v3.1.fam_ANCP_XXXX",
+  "participant_a_prompt_text": "Think of a time when you went out of your way to help someone in need. Describe the situation to your partner and explain why you chose to help.",
+  "participant_b_prompt_text": "Your partner will tell you about a time they helped someone. Listen to their story and discuss how it made them feel, and whether you've ever been in a similar situation.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "file_id": "V03_S0225_I00000373_P1518",
+    "label": "naturalistic",
+    "split": "test",
+    "batch_idx": "2",
+    "archive_idx": "77",
+    "has_imitator_movement": "0",
+    "has_annotation_1p": "0",
+    "has_annotation_3p": "1"
+  },
+  {
+    "file_id": "V03_S0225_I00000373_P1519",
+    "label": "naturalistic",
+    "split": "test",
+    "batch_idx": "2",
+    "archive_idx": "38",
+    "has_imitator_movement": "0",
+    "has_annotation_1p": "0",
+    "has_annotation_3p": "1"
+  }
+]

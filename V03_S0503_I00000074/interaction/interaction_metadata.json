@@ -1,0 +1,10 @@
+{
+  "": "69",
+  "prompt_hash": "00000074",
+  "prompt_id_unique": "P0105_v3.6.str_AMCN_XXXX",
+  "participant_a_prompt_text": "Your partner will share an experience where they changed their mind or reversed a decision. Ask them to reflect on what they learned from the experience and whether they think it's ever okay to be inconsistent.",
+  "participant_b_prompt_text": "Tell your partner about a time when you changed your mind or reversed a decision. What led you to reevaluate your stance, and do you think the change was for the better?",
+  "ipc_a": "AMCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

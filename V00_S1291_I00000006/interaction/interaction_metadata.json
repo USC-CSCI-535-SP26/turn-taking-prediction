@@ -1,0 +1,10 @@
+{
+  "": "5",
+  "prompt_hash": "00000006",
+  "prompt_id_unique": "P0075_v3.4.fam_APCM_XXXX",
+  "participant_a_prompt_text": "Think about a time when you felt like you needed to take charge of a situation involving your partner. Describe the situation and why you felt the need to control it. Be honest about how you think your partner felt about your actions.",
+  "participant_b_prompt_text": "Your partner will tell you about a time they felt like you were being too controlling. Share your perspective on the situation and discuss how you could have handled it differently.",
+  "ipc_a": "APCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}
