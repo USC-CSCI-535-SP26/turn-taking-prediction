@@ -1,0 +1,22 @@
+[
+  {
+    "event_speaker": "P1629",
+    "annotated_participant": "P1628",
+    "start_pre_moi": -13.0,
+    "end_pre_moi": 2,
+    "start_moi": 2,
+    "end_moi": 5,
+    "start_post_moi": 5,
+    "end_post_moi": 20.0
+  },
+  {
+    "event_speaker": "P1629",
+    "annotated_participant": "P1629",
+    "start_pre_moi": 2.0,
+    "end_pre_moi": 17,
+    "start_moi": 17,
+    "end_moi": 24,
+    "start_post_moi": 24,
+    "end_post_moi": 39.0
+  }
+]

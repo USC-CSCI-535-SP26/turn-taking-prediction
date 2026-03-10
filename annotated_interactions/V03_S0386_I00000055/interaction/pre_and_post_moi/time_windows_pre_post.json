@@ -1,0 +1,42 @@
+[
+  {
+    "event_speaker": "P2024",
+    "annotated_participant": "P2024",
+    "start_pre_moi": 129.0,
+    "end_pre_moi": 144,
+    "start_moi": 144,
+    "end_moi": 149,
+    "start_post_moi": 149,
+    "end_post_moi": 164.0
+  },
+  {
+    "event_speaker": "P2024",
+    "annotated_participant": "P1359",
+    "start_pre_moi": 134.0,
+    "end_pre_moi": 149,
+    "start_moi": 149,
+    "end_moi": 153,
+    "start_post_moi": 153,
+    "end_post_moi": 168.0
+  },
+  {
+    "event_speaker": "P2024",
+    "annotated_participant": "P2024",
+    "start_pre_moi": 181.0,
+    "end_pre_moi": 196,
+    "start_moi": 196,
+    "end_moi": 203,
+    "start_post_moi": 203,
+    "end_post_moi": 218.0
+  },
+  {
+    "event_speaker": "P2024",
+    "annotated_participant": "P1359",
+    "start_pre_moi": 259.0,
+    "end_pre_moi": 274,
+    "start_moi": 274,
+    "end_moi": 279,
+    "start_post_moi": 279,
+    "end_post_moi": 294.0
+  }
+]

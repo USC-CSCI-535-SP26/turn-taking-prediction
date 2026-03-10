@@ -1,0 +1,72 @@
+[
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P1120",
+    "start_pre_moi": 25.0,
+    "end_pre_moi": 40,
+    "start_moi": 40,
+    "end_moi": 44,
+    "start_post_moi": 44,
+    "end_post_moi": 59.0
+  },
+  {
+    "event_speaker": "P0709",
+    "annotated_participant": "P1120",
+    "start_pre_moi": 74.0,
+    "end_pre_moi": 89,
+    "start_moi": 89,
+    "end_moi": 93,
+    "start_post_moi": 93,
+    "end_post_moi": 108.0
+  },
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P0709",
+    "start_pre_moi": 89.0,
+    "end_pre_moi": 104,
+    "start_moi": 104,
+    "end_moi": 110,
+    "start_post_moi": 110,
+    "end_post_moi": 125.0
+  },
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P0709",
+    "start_pre_moi": 99.0,
+    "end_pre_moi": 114,
+    "start_moi": 114,
+    "end_moi": 118,
+    "start_post_moi": 118,
+    "end_post_moi": 133.0
+  },
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P1120",
+    "start_pre_moi": 153.0,
+    "end_pre_moi": 168,
+    "start_moi": 168,
+    "end_moi": 171,
+    "start_post_moi": 171,
+    "end_post_moi": 186.0
+  },
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P1120",
+    "start_pre_moi": 197.0,
+    "end_pre_moi": 212,
+    "start_moi": 212,
+    "end_moi": 217,
+    "start_post_moi": 217,
+    "end_post_moi": 232.0
+  },
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P0709",
+    "start_pre_moi": 221.0,
+    "end_pre_moi": 236,
+    "start_moi": 236,
+    "end_moi": 238,
+    "start_post_moi": 238,
+    "end_post_moi": 253.0
+  }
+]

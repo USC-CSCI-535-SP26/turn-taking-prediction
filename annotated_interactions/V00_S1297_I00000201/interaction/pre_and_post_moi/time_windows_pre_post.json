@@ -1,0 +1,32 @@
+[
+  {
+    "event_speaker": "P1123",
+    "annotated_participant": "P1019",
+    "start_pre_moi": -4.0,
+    "end_pre_moi": 11,
+    "start_moi": 11,
+    "end_moi": 14,
+    "start_post_moi": 14,
+    "end_post_moi": 29.0
+  },
+  {
+    "event_speaker": "P1123",
+    "annotated_participant": "P1019",
+    "start_pre_moi": 85.0,
+    "end_pre_moi": 100,
+    "start_moi": 100,
+    "end_moi": 103,
+    "start_post_moi": 103,
+    "end_post_moi": 118.0
+  },
+  {
+    "event_speaker": "P1123",
+    "annotated_participant": "P1123",
+    "start_pre_moi": 94.0,
+    "end_pre_moi": 109,
+    "start_moi": 109,
+    "end_moi": 111,
+    "start_post_moi": 111,
+    "end_post_moi": 126.0
+  }
+]
