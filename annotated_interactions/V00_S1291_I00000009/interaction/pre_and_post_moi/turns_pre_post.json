@@ -10,7 +10,12 @@
     "end_moi": 54,
     "start_post_moi": 0.2899999999999636,
     "end_post_moi": 64.86200000000008,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was sympathetic ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0430",
@@ -23,6 +28,11 @@
     "end_moi": 77,
     "start_post_moi": 77.69799999999987,
     "end_post_moi": 82.01400000000012,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was grateful ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

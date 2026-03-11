@@ -10,7 +10,12 @@
     "end_moi": 17,
     "start_post_moi": 50.01800000000003,
     "end_post_moi": 50.33400000000006,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was confused",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1109",
@@ -23,7 +28,12 @@
     "end_moi": 17,
     "start_post_moi": 0.35400000000004184,
     "end_post_moi": 60.28600000000006,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was supportive and focused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1109",
@@ -36,7 +46,12 @@
     "end_moi": 129,
     "start_post_moi": 115.106,
     "end_post_moi": 133.78999999999996,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was pleased",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1110",
@@ -49,7 +64,12 @@
     "end_moi": 150,
     "start_post_moi": 139.32999999999993,
     "end_post_moi": 220.99,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was focused and patient",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1110",
@@ -62,7 +82,12 @@
     "end_moi": 166,
     "start_post_moi": 223.01,
     "end_post_moi": 223.83799999999997,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was hesitant",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1109",
@@ -75,7 +100,12 @@
     "end_moi": 270,
     "start_post_moi": 285.2180000000001,
     "end_post_moi": 287.1980000000001,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was amused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1110",
@@ -88,7 +118,12 @@
     "end_moi": 276,
     "start_post_moi": 270.818,
     "end_post_moi": 284.09400000000005,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was confused",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1109",
@@ -101,7 +136,12 @@
     "end_moi": 293,
     "start_post_moi": 304.5139999999999,
     "end_post_moi": 307.71000000000004,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was excited",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1110",
@@ -114,7 +154,12 @@
     "end_moi": 363,
     "start_post_moi": 362.30600000000004,
     "end_post_moi": 365.50199999999995,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was content",
+    "valence": "positive",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1110",
@@ -127,6 +172,11 @@
     "end_moi": 431,
     "start_post_moi": 426.722,
     "end_post_moi": 434.2059999999999,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was focused and eager",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   }
 ]

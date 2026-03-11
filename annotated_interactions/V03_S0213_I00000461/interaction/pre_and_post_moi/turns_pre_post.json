@@ -10,7 +10,12 @@
     "end_moi": 20,
     "start_post_moi": 22.289999999999964,
     "end_post_moi": 28.142000000000053,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "She seems eager to hear the rest of the story",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1466",
@@ -23,7 +28,12 @@
     "end_moi": 64,
     "start_post_moi": 70.48199999999997,
     "end_post_moi": 76.04600000000005,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant appeared thoughtful, frequently looking up and back while speaking.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1467",
@@ -36,6 +46,11 @@
     "end_moi": 97,
     "start_post_moi": 98.73800000000006,
     "end_post_moi": 99.11800000000005,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "She seems amused with this memory",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   }
 ]

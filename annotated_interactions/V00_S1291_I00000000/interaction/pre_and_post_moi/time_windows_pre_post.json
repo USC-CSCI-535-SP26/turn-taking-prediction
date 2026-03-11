@@ -7,7 +7,12 @@
     "start_moi": 75,
     "end_moi": 77,
     "start_post_moi": 77,
-    "end_post_moi": 92.0
+    "end_post_moi": 92.0,
+    "annotation": "The participant was attentive and surprised ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0430",
@@ -17,7 +22,12 @@
     "start_moi": 87,
     "end_moi": 91,
     "start_post_moi": 91,
-    "end_post_moi": 106.0
+    "end_post_moi": 106.0,
+    "annotation": "The participant was deliberative ",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1121",
@@ -27,7 +37,12 @@
     "start_moi": 137,
     "end_moi": 180,
     "start_post_moi": 180,
-    "end_post_moi": 195.0
+    "end_post_moi": 195.0,
+    "annotation": "The participant was perky ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1121",
@@ -37,7 +52,12 @@
     "start_moi": 208,
     "end_moi": 228,
     "start_post_moi": 228,
-    "end_post_moi": 243.0
+    "end_post_moi": 243.0,
+    "annotation": "The participant was attentive ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1121",
@@ -47,6 +67,11 @@
     "start_moi": 244,
     "end_moi": 246,
     "start_post_moi": 246,
-    "end_post_moi": 261.0
+    "end_post_moi": 261.0,
+    "annotation": "The participant was shy ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

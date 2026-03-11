@@ -10,7 +10,12 @@
     "end_moi": 16,
     "start_post_moi": 111.05799999999999,
     "end_post_moi": 111.78999999999999,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant feels everything is okay.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3750",
@@ -23,7 +28,12 @@
     "end_moi": 42,
     "start_post_moi": 0,
     "end_post_moi": 110.446,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is attentive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3750",
@@ -36,6 +46,11 @@
     "end_moi": 112,
     "start_post_moi": 127.41,
     "end_post_moi": 133.102,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is feeling regret.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

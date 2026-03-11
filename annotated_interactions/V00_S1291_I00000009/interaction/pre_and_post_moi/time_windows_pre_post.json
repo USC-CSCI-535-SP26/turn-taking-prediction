@@ -7,7 +7,12 @@
     "start_moi": 48,
     "end_moi": 54,
     "start_post_moi": 54,
-    "end_post_moi": 69.0
+    "end_post_moi": 69.0,
+    "annotation": "The participant was sympathetic ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0430",
@@ -17,6 +22,11 @@
     "start_moi": 74,
     "end_moi": 77,
     "start_post_moi": 77,
-    "end_post_moi": 92.0
+    "end_post_moi": 92.0,
+    "annotation": "The participant was grateful ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

@@ -10,7 +10,12 @@
     "end_moi": 17,
     "start_post_moi": 25.458,
     "end_post_moi": 27.662,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Participant was attentive and certain",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1288",
@@ -23,7 +28,12 @@
     "end_moi": 82,
     "start_post_moi": 90.098,
     "end_post_moi": 91.854,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is deeply in thought ",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1288",
@@ -36,6 +46,11 @@
     "end_moi": 187,
     "start_post_moi": 187.122,
     "end_post_moi": 187.502,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is certain about his choice ",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

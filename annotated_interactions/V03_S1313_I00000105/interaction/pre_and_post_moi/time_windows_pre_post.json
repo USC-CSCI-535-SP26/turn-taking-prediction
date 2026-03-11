@@ -7,7 +7,12 @@
     "start_moi": 49,
     "end_moi": 52,
     "start_post_moi": 52,
-    "end_post_moi": 67.0
+    "end_post_moi": 67.0,
+    "annotation": "The participant is attentive and engaged.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3979",
@@ -17,6 +22,11 @@
     "start_moi": 251,
     "end_moi": 262,
     "start_post_moi": 262,
-    "end_post_moi": 277.0
+    "end_post_moi": 277.0,
+    "annotation": "The participant is activated.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

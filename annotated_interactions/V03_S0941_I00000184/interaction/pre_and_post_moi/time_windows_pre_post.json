@@ -7,7 +7,12 @@
     "start_moi": 8,
     "end_moi": 10,
     "start_post_moi": 10,
-    "end_post_moi": 25.0
+    "end_post_moi": 25.0,
+    "annotation": "The participant was impressed",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1207",
@@ -17,6 +22,11 @@
     "start_moi": 261,
     "end_moi": 276,
     "start_post_moi": 276,
-    "end_post_moi": 291.0
+    "end_post_moi": 291.0,
+    "annotation": "Participant felt hilarious with some sarcasm",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   }
 ]

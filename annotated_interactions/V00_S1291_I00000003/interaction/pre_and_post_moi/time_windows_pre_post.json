@@ -7,7 +7,12 @@
     "start_moi": 44,
     "end_moi": 46,
     "start_post_moi": 46,
-    "end_post_moi": 61.0
+    "end_post_moi": 61.0,
+    "annotation": "The participant was accommodating and agreeable ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0430",
@@ -17,7 +22,12 @@
     "start_moi": 75,
     "end_moi": 78,
     "start_post_moi": 78,
-    "end_post_moi": 93.0
+    "end_post_moi": 93.0,
+    "annotation": "The participant was frustrated ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0430",
@@ -27,7 +37,12 @@
     "start_moi": 131,
     "end_moi": 135,
     "start_post_moi": 135,
-    "end_post_moi": 150.0
+    "end_post_moi": 150.0,
+    "annotation": "The participant was engaged ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0430",
@@ -37,7 +52,12 @@
     "start_moi": 136,
     "end_moi": 141,
     "start_post_moi": 141,
-    "end_post_moi": 156.0
+    "end_post_moi": 156.0,
+    "annotation": "The participant was uncomfortable",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1121",
@@ -47,7 +67,12 @@
     "start_moi": 212,
     "end_moi": 229,
     "start_post_moi": 229,
-    "end_post_moi": 244.0
+    "end_post_moi": 244.0,
+    "annotation": "The participant was engaged and attentive ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1121",
@@ -57,6 +82,11 @@
     "start_moi": 324,
     "end_moi": 326,
     "start_post_moi": 326,
-    "end_post_moi": 341.0
+    "end_post_moi": 341.0,
+    "annotation": "The participant was interested ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

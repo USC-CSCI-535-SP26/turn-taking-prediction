@@ -10,7 +10,12 @@
     "end_moi": 36,
     "start_post_moi": 38.626000000000204,
     "end_post_moi": 40.190000000000055,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was guilty and embarrassed",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0317",
@@ -23,7 +28,12 @@
     "end_moi": 131,
     "start_post_moi": 129.92200000000003,
     "end_post_moi": 137.2779999999998,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was attentive and intrigued.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -36,7 +46,12 @@
     "end_moi": 139,
     "start_post_moi": 138.49800000000005,
     "end_post_moi": 141.21399999999994,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was contemplative",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0317",
@@ -49,7 +64,12 @@
     "end_moi": 353,
     "start_post_moi": 349.31399999999985,
     "end_post_moi": 353.88599999999997,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was nostalgic and wistful.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -62,6 +82,11 @@
     "end_moi": 401,
     "start_post_moi": 398.8499999999999,
     "end_post_moi": 402.78200000000015,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was thoughtful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

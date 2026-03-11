@@ -10,7 +10,12 @@
     "end_moi": 23,
     "start_post_moi": 108.27399999999989,
     "end_post_moi": 110.2539999999999,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was very confused",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1093",
@@ -23,7 +28,12 @@
     "end_moi": 51,
     "start_post_moi": 8.5300000000002,
     "end_post_moi": 107.98199999999997,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was uncomfortable",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1093",
@@ -36,7 +46,12 @@
     "end_moi": 79,
     "start_post_moi": 108.27399999999989,
     "end_post_moi": 110.2539999999999,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was happy and expressive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0737",
@@ -49,7 +64,12 @@
     "end_moi": 163,
     "start_post_moi": 173.8420000000001,
     "end_post_moi": 190.92599999999993,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was insightful but assertive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1093",
@@ -62,6 +82,11 @@
     "end_moi": 184,
     "start_post_moi": 173.8420000000001,
     "end_post_moi": 190.92599999999993,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was composed",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

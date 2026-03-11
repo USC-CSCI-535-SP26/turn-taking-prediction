@@ -10,7 +10,12 @@
     "end_moi": 24,
     "start_post_moi": 25.090000000000032,
     "end_post_moi": 28.350000000000023,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was activated ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0071",
@@ -23,7 +28,12 @@
     "end_moi": 55,
     "start_post_moi": 52.80200000000002,
     "end_post_moi": 56.09400000000005,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was shy ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0071",
@@ -36,7 +46,12 @@
     "end_moi": 169,
     "start_post_moi": 168.16200000000003,
     "end_post_moi": 169.438,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was bewildered ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0071",
@@ -49,7 +64,12 @@
     "end_moi": 195,
     "start_post_moi": 196.57799999999997,
     "end_post_moi": 197.21400000000006,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was animated ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1119",
@@ -62,7 +82,12 @@
     "end_moi": 278,
     "start_post_moi": 252.99400000000003,
     "end_post_moi": 278.654,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was curious ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1119",
@@ -75,6 +100,11 @@
     "end_moi": 278,
     "start_post_moi": 278.30600000000004,
     "end_post_moi": 279.678,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was insightful ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

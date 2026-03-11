@@ -10,7 +10,12 @@
     "end_moi": 68,
     "start_post_moi": 72.80200000000002,
     "end_post_moi": 73.69399999999996,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Participant is upset and sympathetic",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3109",
@@ -23,7 +28,12 @@
     "end_moi": 91,
     "start_post_moi": 113.12199999999996,
     "end_post_moi": 113.75800000000004,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Participant is playfully ironic",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3109",
@@ -36,7 +46,12 @@
     "end_moi": 195,
     "start_post_moi": 171.202,
     "end_post_moi": 250.58999999999992,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "Participant is bored",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3109",
@@ -49,7 +64,12 @@
     "end_moi": 194,
     "start_post_moi": 230.8499999999999,
     "end_post_moi": 231.32600000000002,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Participant is shocked",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3109",
@@ -62,7 +82,12 @@
     "end_moi": 208,
     "start_post_moi": 230.8499999999999,
     "end_post_moi": 231.32600000000002,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Participant is bored again",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3109",
@@ -75,6 +100,11 @@
     "end_moi": 217,
     "start_post_moi": 230.8499999999999,
     "end_post_moi": 231.32600000000002,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Participant is still bored",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

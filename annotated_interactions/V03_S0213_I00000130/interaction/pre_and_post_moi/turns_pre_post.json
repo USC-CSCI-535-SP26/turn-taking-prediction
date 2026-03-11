@@ -10,7 +10,12 @@
     "end_moi": 14,
     "start_post_moi": 14.657999999999902,
     "end_post_moi": 16.1579999999999,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "She needs some extra info",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1466",
@@ -23,7 +28,12 @@
     "end_moi": 32,
     "start_post_moi": 31.586000000000013,
     "end_post_moi": 32.0619999999999,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant appeared expressive, illustrating a group of people through arm gestures.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1466",
@@ -36,7 +46,12 @@
     "end_moi": 76,
     "start_post_moi": 77.69800000000009,
     "end_post_moi": 78.1099999999999,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant appeared deep in thought, concentrating while clearing her throat.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1467",
@@ -49,7 +64,12 @@
     "end_moi": 108,
     "start_post_moi": 108.86599999999999,
     "end_post_moi": 109.37400000000002,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "She tries to support the other participant",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": null,
@@ -62,7 +82,12 @@
     "end_moi": 108,
     "start_post_moi": 108.86599999999999,
     "end_post_moi": 109.37400000000002,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "She continues to do so",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1466",
@@ -75,6 +100,11 @@
     "end_moi": 163,
     "start_post_moi": 163.7460000000001,
     "end_post_moi": 165.95000000000005,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant appeared grateful and appreciative, expressing thanks with wide arm gestures.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   }
 ]

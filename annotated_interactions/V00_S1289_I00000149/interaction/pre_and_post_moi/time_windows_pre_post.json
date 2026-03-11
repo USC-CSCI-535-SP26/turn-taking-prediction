@@ -7,7 +7,12 @@
     "start_moi": 40,
     "end_moi": 44,
     "start_post_moi": 44,
-    "end_post_moi": 59.0
+    "end_post_moi": 59.0,
+    "annotation": "The participant was absorbed with the talk",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P0709",
@@ -17,7 +22,12 @@
     "start_moi": 89,
     "end_moi": 93,
     "start_post_moi": 93,
-    "end_post_moi": 108.0
+    "end_post_moi": 108.0,
+    "annotation": "The participant was gleeful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1120",
@@ -27,7 +37,12 @@
     "start_moi": 104,
     "end_moi": 110,
     "start_post_moi": 110,
-    "end_post_moi": 125.0
+    "end_post_moi": 125.0,
+    "annotation": "The participant was uncomfortable while being attentive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1120",
@@ -37,7 +52,12 @@
     "start_moi": 114,
     "end_moi": 118,
     "start_post_moi": 118,
-    "end_post_moi": 133.0
+    "end_post_moi": 133.0,
+    "annotation": "The participant was nervous and uncomfortable.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1120",
@@ -47,7 +67,12 @@
     "start_moi": 168,
     "end_moi": 171,
     "start_post_moi": 171,
-    "end_post_moi": 186.0
+    "end_post_moi": 186.0,
+    "annotation": "The participant was inquisitive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1120",
@@ -57,7 +82,12 @@
     "start_moi": 212,
     "end_moi": 217,
     "start_post_moi": 217,
-    "end_post_moi": 232.0
+    "end_post_moi": 232.0,
+    "annotation": "The participant was curious",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1120",
@@ -67,6 +97,11 @@
     "start_moi": 236,
     "end_moi": 238,
     "start_post_moi": 238,
-    "end_post_moi": 253.0
+    "end_post_moi": 253.0,
+    "annotation": "The participant was pleased.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

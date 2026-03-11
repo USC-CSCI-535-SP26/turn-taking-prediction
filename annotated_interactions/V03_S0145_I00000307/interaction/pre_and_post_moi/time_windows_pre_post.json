@@ -7,7 +7,12 @@
     "start_moi": 3,
     "end_moi": 7,
     "start_post_moi": 7,
-    "end_post_moi": 22.0
+    "end_post_moi": 22.0,
+    "annotation": "Participant is confident",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1313",
@@ -17,6 +22,11 @@
     "start_moi": 93,
     "end_moi": 97,
     "start_post_moi": 97,
-    "end_post_moi": 112.0
+    "end_post_moi": 112.0,
+    "annotation": "The person is concentrating on listening to the other person",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

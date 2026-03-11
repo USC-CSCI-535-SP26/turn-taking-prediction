@@ -7,7 +7,12 @@
     "start_moi": 41,
     "end_moi": 44,
     "start_post_moi": 44,
-    "end_post_moi": 59.0
+    "end_post_moi": 59.0,
+    "annotation": "The participant was amazed and incredulous.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -17,7 +22,12 @@
     "start_moi": 112,
     "end_moi": 114,
     "start_post_moi": 114,
-    "end_post_moi": 129.0
+    "end_post_moi": 129.0,
+    "annotation": "The participant was excited and grateful.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -27,7 +37,12 @@
     "start_moi": 140,
     "end_moi": 142,
     "start_post_moi": 142,
-    "end_post_moi": 157.0
+    "end_post_moi": 157.0,
+    "annotation": "The participant was astonished.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0317",
@@ -37,7 +52,12 @@
     "start_moi": 208,
     "end_moi": 209,
     "start_post_moi": 209,
-    "end_post_moi": 224.0
+    "end_post_moi": 224.0,
+    "annotation": "The participant was enthusiastic and delightful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0317",
@@ -47,7 +67,12 @@
     "start_moi": 230,
     "end_moi": 233,
     "start_post_moi": 233,
-    "end_post_moi": 248.0
+    "end_post_moi": 248.0,
+    "annotation": "The participant was stunned and impressed.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0317",
@@ -57,7 +82,12 @@
     "start_moi": 236,
     "end_moi": 241,
     "start_post_moi": 241,
-    "end_post_moi": 256.0
+    "end_post_moi": 256.0,
+    "annotation": "The participant was thrilled",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -67,7 +97,12 @@
     "start_moi": 283,
     "end_moi": 285,
     "start_post_moi": 285,
-    "end_post_moi": 300.0
+    "end_post_moi": 300.0,
+    "annotation": "The participant was concerned and empathetic.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -77,7 +112,12 @@
     "start_moi": 314,
     "end_moi": 316,
     "start_post_moi": 316,
-    "end_post_moi": 331.0
+    "end_post_moi": 331.0,
+    "annotation": "The participant was enthusiastic and impressed.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0317",
@@ -87,7 +127,12 @@
     "start_moi": 346,
     "end_moi": 349,
     "start_post_moi": 349,
-    "end_post_moi": 364.0
+    "end_post_moi": 364.0,
+    "annotation": "The participant was optimistic and expectant.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -97,7 +142,12 @@
     "start_moi": 420,
     "end_moi": 422,
     "start_post_moi": 422,
-    "end_post_moi": 437.0
+    "end_post_moi": 437.0,
+    "annotation": "The participant was elated and joyful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -107,6 +157,11 @@
     "start_moi": 423,
     "end_moi": 424,
     "start_post_moi": 424,
-    "end_post_moi": 439.0
+    "end_post_moi": 439.0,
+    "annotation": "The participant was elated and joyful.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

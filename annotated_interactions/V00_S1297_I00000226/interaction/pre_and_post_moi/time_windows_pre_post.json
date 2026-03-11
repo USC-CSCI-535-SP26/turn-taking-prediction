@@ -7,7 +7,12 @@
     "start_moi": 2,
     "end_moi": 9,
     "start_post_moi": 9,
-    "end_post_moi": 24.0
+    "end_post_moi": 24.0,
+    "annotation": "The participant was excited",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1019",
@@ -17,7 +22,12 @@
     "start_moi": 39,
     "end_moi": 42,
     "start_post_moi": 42,
-    "end_post_moi": 57.0
+    "end_post_moi": 57.0,
+    "annotation": "The participant was excited and amused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1019",
@@ -27,7 +37,12 @@
     "start_moi": 78,
     "end_moi": 80,
     "start_post_moi": 80,
-    "end_post_moi": 95.0
+    "end_post_moi": 95.0,
+    "annotation": "The participant was eager",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1019",
@@ -37,7 +52,12 @@
     "start_moi": 182,
     "end_moi": 183,
     "start_post_moi": 183,
-    "end_post_moi": 198.0
+    "end_post_moi": 198.0,
+    "annotation": "The participant was eager and curious",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1123",
@@ -47,6 +67,11 @@
     "start_moi": 268,
     "end_moi": 269,
     "start_post_moi": 269,
-    "end_post_moi": 284.0
+    "end_post_moi": 284.0,
+    "annotation": "The participant was confused",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

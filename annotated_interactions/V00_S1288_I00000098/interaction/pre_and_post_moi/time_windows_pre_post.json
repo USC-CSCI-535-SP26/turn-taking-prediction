@@ -7,7 +7,12 @@
     "start_moi": 90,
     "end_moi": 93,
     "start_post_moi": 93,
-    "end_post_moi": 108.0
+    "end_post_moi": 108.0,
+    "annotation": "The participant was hurt ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1119",
@@ -17,7 +22,12 @@
     "start_moi": 102,
     "end_moi": 103,
     "start_post_moi": 103,
-    "end_post_moi": 118.0
+    "end_post_moi": 118.0,
+    "annotation": "The participant was cheerful ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0071",
@@ -27,7 +37,12 @@
     "start_moi": 166,
     "end_moi": 169,
     "start_post_moi": 169,
-    "end_post_moi": 184.0
+    "end_post_moi": 184.0,
+    "annotation": "The participant was confident ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0071",
@@ -37,7 +52,12 @@
     "start_moi": 195,
     "end_moi": 197,
     "start_post_moi": 197,
-    "end_post_moi": 212.0
+    "end_post_moi": 212.0,
+    "annotation": "The participant was activated ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1119",
@@ -47,7 +67,12 @@
     "start_moi": 210,
     "end_moi": 211,
     "start_post_moi": 211,
-    "end_post_moi": 226.0
+    "end_post_moi": 226.0,
+    "annotation": "The participant was self-assured ",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1119",
@@ -57,6 +82,11 @@
     "start_moi": 234,
     "end_moi": 237,
     "start_post_moi": 237,
-    "end_post_moi": 252.0
+    "end_post_moi": 252.0,
+    "annotation": "The participant was sarcastic ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

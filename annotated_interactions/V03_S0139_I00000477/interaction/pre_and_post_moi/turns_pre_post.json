@@ -10,7 +10,12 @@
     "end_moi": 4,
     "start_post_moi": 3.0420000000000016,
     "end_post_moi": 5.886000000000003,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is experienced.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -23,7 +28,12 @@
     "end_moi": 10,
     "start_post_moi": 9.537999999999997,
     "end_post_moi": 10.558,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is contented.",
+    "valence": "positive",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -36,7 +46,12 @@
     "end_moi": 12,
     "start_post_moi": 17.634,
     "end_post_moi": 18.398000000000003,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is feeling self-aware.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1302",
@@ -49,7 +64,12 @@
     "end_moi": 16,
     "start_post_moi": 13.090000000000003,
     "end_post_moi": 16.542,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is motivated.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -62,7 +82,12 @@
     "end_moi": 18,
     "start_post_moi": 17.634,
     "end_post_moi": 18.398000000000003,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is feeling curious.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1302",
@@ -75,6 +100,11 @@
     "end_moi": 22,
     "start_post_moi": 21.634,
     "end_post_moi": 48.221999999999994,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is mindful.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

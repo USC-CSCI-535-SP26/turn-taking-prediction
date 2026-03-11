@@ -10,7 +10,12 @@
     "end_moi": 112,
     "start_post_moi": 88.94600000000003,
     "end_post_moi": 116.36599999999999,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was little confused",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
   },
   {
     "event_speaker": "P1518",
@@ -23,7 +28,12 @@
     "end_moi": 149,
     "start_post_moi": 131.82600000000002,
     "end_post_moi": 158.83000000000004,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was pensive",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
   },
   {
     "event_speaker": "P1518",
@@ -36,7 +46,12 @@
     "end_moi": 159,
     "start_post_moi": 159.50599999999997,
     "end_post_moi": 161.13400000000001,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "participant is disappointed",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
   },
   {
     "event_speaker": "P1518",
@@ -49,7 +64,12 @@
     "end_moi": 159,
     "start_post_moi": 162.89800000000002,
     "end_post_moi": 179.822,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was satisfied",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
   },
   {
     "event_speaker": "P1518",
@@ -62,7 +82,12 @@
     "end_moi": 165,
     "start_post_moi": 162.89800000000002,
     "end_post_moi": 179.822,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was complacent",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
   },
   {
     "event_speaker": "P1518",
@@ -75,7 +100,12 @@
     "end_moi": 217,
     "start_post_moi": 233.87400000000002,
     "end_post_moi": 236.558,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "participant is confident yet still disappointed",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
   },
   {
     "event_speaker": "P1518",
@@ -88,6 +118,11 @@
     "end_moi": 247,
     "start_post_moi": 237.13800000000003,
     "end_post_moi": 254.54200000000003,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was engrossed with the story",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
   }
 ]

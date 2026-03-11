@@ -10,7 +10,12 @@
     "end_moi": 6,
     "start_post_moi": 0,
     "end_post_moi": 71.69400000000002,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant feels descriptive and explanatory.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2455",
@@ -23,7 +28,12 @@
     "end_moi": 38,
     "start_post_moi": 0,
     "end_post_moi": 71.69400000000002,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant feels reflective and personal.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2455",
@@ -36,7 +46,12 @@
     "end_moi": 66,
     "start_post_moi": 0,
     "end_post_moi": 71.69400000000002,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant feels self-reflective and uncertain.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2454",
@@ -49,6 +64,11 @@
     "end_moi": 114,
     "start_post_moi": 77.42599999999999,
     "end_post_moi": 123.08600000000001,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant feels direct and blunt.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

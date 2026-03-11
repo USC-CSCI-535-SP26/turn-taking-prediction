@@ -10,7 +10,12 @@
     "end_moi": 47,
     "start_post_moi": 46.577999999999975,
     "end_post_moi": 56.26999999999998,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was curious ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1121",
@@ -23,7 +28,12 @@
     "end_moi": 57,
     "start_post_moi": 56.85000000000002,
     "end_post_moi": 57.35799999999995,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was cheery ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1121",
@@ -36,7 +46,12 @@
     "end_moi": 123,
     "start_post_moi": 57.26599999999996,
     "end_post_moi": 123.21400000000006,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was distracted ",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0430",
@@ -49,7 +64,12 @@
     "end_moi": 125,
     "start_post_moi": 122.76999999999998,
     "end_post_moi": 125.51800000000003,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was embarrassed ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0430",
@@ -62,7 +82,12 @@
     "end_moi": 225,
     "start_post_moi": 218.6099999999999,
     "end_post_moi": 265.0060000000001,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was curious ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0430",
@@ -75,6 +100,11 @@
     "end_moi": 251,
     "start_post_moi": 265.1700000000001,
     "end_post_moi": 265.4860000000001,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was nostalgic and embarrassed ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

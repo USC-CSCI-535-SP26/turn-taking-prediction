@@ -7,7 +7,12 @@
     "start_moi": 156,
     "end_moi": 164,
     "start_post_moi": 164,
-    "end_post_moi": 179.0
+    "end_post_moi": 179.0,
+    "annotation": "The participant is being supportive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3750",
@@ -17,6 +22,11 @@
     "start_moi": 210,
     "end_moi": 215,
     "start_post_moi": 215,
-    "end_post_moi": 230.0
+    "end_post_moi": 230.0,
+    "annotation": "The participant is feeling uncomfortable sharing.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

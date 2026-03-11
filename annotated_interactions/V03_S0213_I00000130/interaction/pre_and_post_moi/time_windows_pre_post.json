@@ -7,7 +7,12 @@
     "start_moi": 12,
     "end_moi": 14,
     "start_post_moi": 14,
-    "end_post_moi": 29.0
+    "end_post_moi": 29.0,
+    "annotation": "She needs some extra info",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1466",
@@ -17,7 +22,12 @@
     "start_moi": 30,
     "end_moi": 32,
     "start_post_moi": 32,
-    "end_post_moi": 47.0
+    "end_post_moi": 47.0,
+    "annotation": "The participant appeared expressive, illustrating a group of people through arm gestures.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1466",
@@ -27,7 +37,12 @@
     "start_moi": 73,
     "end_moi": 76,
     "start_post_moi": 76,
-    "end_post_moi": 91.0
+    "end_post_moi": 91.0,
+    "annotation": "The participant appeared deep in thought, concentrating while clearing her throat.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1467",
@@ -37,7 +52,12 @@
     "start_moi": 104,
     "end_moi": 108,
     "start_post_moi": 108,
-    "end_post_moi": 123.0
+    "end_post_moi": 123.0,
+    "annotation": "She tries to support the other participant",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": null,
@@ -47,7 +67,12 @@
     "start_moi": 108,
     "end_moi": 108,
     "start_post_moi": 108,
-    "end_post_moi": 123.0
+    "end_post_moi": 123.0,
+    "annotation": "She continues to do so",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1466",
@@ -57,6 +82,11 @@
     "start_moi": 161,
     "end_moi": 163,
     "start_post_moi": 163,
-    "end_post_moi": 178.0
+    "end_post_moi": 178.0,
+    "annotation": "The participant appeared grateful and appreciative, expressing thanks with wide arm gestures.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   }
 ]

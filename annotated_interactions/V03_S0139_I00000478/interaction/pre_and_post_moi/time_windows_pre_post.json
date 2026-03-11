@@ -7,7 +7,12 @@
     "start_moi": 10,
     "end_moi": 14,
     "start_post_moi": 14,
-    "end_post_moi": 29.0
+    "end_post_moi": 29.0,
+    "annotation": "The participant is innovative.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -17,7 +22,12 @@
     "start_moi": 14,
     "end_moi": 16,
     "start_post_moi": 16,
-    "end_post_moi": 31.0
+    "end_post_moi": 31.0,
+    "annotation": "The participant is feeling excited and intrigued.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -27,7 +37,12 @@
     "start_moi": 25,
     "end_moi": 26,
     "start_post_moi": 26,
-    "end_post_moi": 41.0
+    "end_post_moi": 41.0,
+    "annotation": "The participant is surprised.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1302",
@@ -37,7 +52,12 @@
     "start_moi": 27,
     "end_moi": 30,
     "start_post_moi": 30,
-    "end_post_moi": 45.0
+    "end_post_moi": 45.0,
+    "annotation": "The participant is precise.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -47,7 +67,12 @@
     "start_moi": 30,
     "end_moi": 33,
     "start_post_moi": 33,
-    "end_post_moi": 48.0
+    "end_post_moi": 48.0,
+    "annotation": "The participant is feeling confident.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -57,7 +82,12 @@
     "start_moi": 53,
     "end_moi": 57,
     "start_post_moi": 57,
-    "end_post_moi": 72.0
+    "end_post_moi": 72.0,
+    "annotation": "The participant is feeling contemplative.",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1302",
@@ -67,7 +97,12 @@
     "start_moi": 64,
     "end_moi": 67,
     "start_post_moi": 67,
-    "end_post_moi": 82.0
+    "end_post_moi": 82.0,
+    "annotation": "The participant is doubtful.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -77,6 +112,11 @@
     "start_moi": 92,
     "end_moi": 97,
     "start_post_moi": 97,
-    "end_post_moi": 112.0
+    "end_post_moi": 112.0,
+    "annotation": "The participant is feeling focused and organized.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

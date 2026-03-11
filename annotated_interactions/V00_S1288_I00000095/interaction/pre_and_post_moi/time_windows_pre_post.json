@@ -7,7 +7,12 @@
     "start_moi": 39,
     "end_moi": 43,
     "start_post_moi": 43,
-    "end_post_moi": 58.0
+    "end_post_moi": 58.0,
+    "annotation": "The participant was surprised ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1119",
@@ -17,7 +22,12 @@
     "start_moi": 45,
     "end_moi": 47,
     "start_post_moi": 47,
-    "end_post_moi": 62.0
+    "end_post_moi": 62.0,
+    "annotation": "The participant was aroused ",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0071",
@@ -27,7 +37,12 @@
     "start_moi": 110,
     "end_moi": 112,
     "start_post_moi": 112,
-    "end_post_moi": 127.0
+    "end_post_moi": 127.0,
+    "annotation": "The participant was proud and excited ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0071",
@@ -37,7 +52,12 @@
     "start_moi": 145,
     "end_moi": 147,
     "start_post_moi": 147,
-    "end_post_moi": 162.0
+    "end_post_moi": 162.0,
+    "annotation": "The participant was vivacious ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0071",
@@ -47,7 +67,12 @@
     "start_moi": 185,
     "end_moi": 187,
     "start_post_moi": 187,
-    "end_post_moi": 202.0
+    "end_post_moi": 202.0,
+    "annotation": "The participant was embarrassed ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1119",
@@ -57,6 +82,11 @@
     "start_moi": 313,
     "end_moi": 314,
     "start_post_moi": 314,
-    "end_post_moi": 329.0
+    "end_post_moi": 329.0,
+    "annotation": "The participant was pleasantly surprised ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

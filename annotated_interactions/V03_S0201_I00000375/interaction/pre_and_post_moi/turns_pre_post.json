@@ -10,7 +10,12 @@
     "end_moi": 87,
     "start_post_moi": 105.13799999999992,
     "end_post_moi": 112.17399999999998,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "He appeared concerned and slightly frustrated.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1433",
@@ -23,6 +28,11 @@
     "end_moi": 220,
     "start_post_moi": 225.8420000000001,
     "end_post_moi": 228.1099999999999,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "He felt frustrated and annoyed",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

@@ -7,7 +7,12 @@
     "start_moi": 6,
     "end_moi": 10,
     "start_post_moi": 10,
-    "end_post_moi": 25.0
+    "end_post_moi": 25.0,
+    "annotation": "The participant seemed puzzled or uncertain about the pamphlet content.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1274",
@@ -17,6 +22,11 @@
     "start_moi": 104,
     "end_moi": 105,
     "start_post_moi": 105,
-    "end_post_moi": 120.0
+    "end_post_moi": 120.0,
+    "annotation": "The participant is sure",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

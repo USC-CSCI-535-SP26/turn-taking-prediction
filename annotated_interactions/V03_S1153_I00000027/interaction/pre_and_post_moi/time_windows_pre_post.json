@@ -7,7 +7,12 @@
     "start_moi": 59,
     "end_moi": 64,
     "start_post_moi": 64,
-    "end_post_moi": 79.0
+    "end_post_moi": 79.0,
+    "annotation": "The participant is interested",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3641",
@@ -17,6 +22,11 @@
     "start_moi": 301,
     "end_moi": 303,
     "start_post_moi": 303,
-    "end_post_moi": 318.0
+    "end_post_moi": 318.0,
+    "annotation": "The participant is joyful and agreeing",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

@@ -10,7 +10,12 @@
     "end_moi": 77,
     "start_post_moi": 8.706000000000003,
     "end_post_moi": 88.25399999999999,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was attentive and surprised ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0430",
@@ -23,7 +28,12 @@
     "end_moi": 91,
     "start_post_moi": 101.922,
     "end_post_moi": 102.75,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was deliberative ",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1121",
@@ -36,7 +46,12 @@
     "end_moi": 180,
     "start_post_moi": 180.834,
     "end_post_moi": 192.414,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was perky ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1121",
@@ -49,7 +64,12 @@
     "end_moi": 228,
     "start_post_moi": 227.906,
     "end_post_moi": 228.25400000000002,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was attentive ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1121",
@@ -62,6 +82,11 @@
     "end_moi": 246,
     "start_post_moi": 248.35399999999998,
     "end_post_moi": 248.67000000000002,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was shy ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

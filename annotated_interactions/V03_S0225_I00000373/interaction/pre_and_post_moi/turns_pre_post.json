@@ -10,7 +10,12 @@
     "end_moi": 18,
     "start_post_moi": 11.057999999999993,
     "end_post_moi": 59.341999999999985,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "participant is anticipating and somewhat vulnerable",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
   },
   {
     "event_speaker": "P1518",
@@ -23,7 +28,12 @@
     "end_moi": 62,
     "start_post_moi": 60.30599999999998,
     "end_post_moi": 69.358,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was tranquil",
+    "valence": "positive",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
   },
   {
     "event_speaker": "P1518",
@@ -36,7 +46,12 @@
     "end_moi": 114,
     "start_post_moi": 117.58600000000001,
     "end_post_moi": 124.94200000000001,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "participant is agreeing and supportive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
   },
   {
     "event_speaker": "P1518",
@@ -49,6 +64,11 @@
     "end_moi": 114,
     "start_post_moi": 112.37,
     "end_post_moi": 118.02999999999997,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was restful",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
   }
 ]

@@ -7,7 +7,12 @@
     "start_moi": 228,
     "end_moi": 230,
     "start_post_moi": 230,
-    "end_post_moi": 245.0
+    "end_post_moi": 245.0,
+    "annotation": "the speaker is certain ",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1209",
@@ -17,6 +22,11 @@
     "start_moi": 232,
     "end_moi": 234,
     "start_post_moi": 234,
-    "end_post_moi": 249.0
+    "end_post_moi": 249.0,
+    "annotation": "Participant was attentive but uncomfortable",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

@@ -10,7 +10,12 @@
     "end_moi": 18,
     "start_post_moi": 0,
     "end_post_moi": 18.158000000000015,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant feels open and conversational.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2454",
@@ -23,6 +28,11 @@
     "end_moi": 45,
     "start_post_moi": 20.466000000000008,
     "end_post_moi": 56.42999999999995,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant feels informative and confident.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

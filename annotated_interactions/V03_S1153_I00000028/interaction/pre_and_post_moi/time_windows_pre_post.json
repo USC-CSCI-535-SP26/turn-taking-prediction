@@ -7,7 +7,12 @@
     "start_moi": 218,
     "end_moi": 223,
     "start_post_moi": 223,
-    "end_post_moi": 238.0
+    "end_post_moi": 238.0,
+    "annotation": "The participant is confident and relieved",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3641",
@@ -17,7 +22,12 @@
     "start_moi": 301,
     "end_moi": 306,
     "start_post_moi": 306,
-    "end_post_moi": 321.0
+    "end_post_moi": 321.0,
+    "annotation": "The participant is attentive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3641",
@@ -27,6 +37,11 @@
     "start_moi": 433,
     "end_moi": 435,
     "start_post_moi": 435,
-    "end_post_moi": 450.0
+    "end_post_moi": 450.0,
+    "annotation": "The participant is curious",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

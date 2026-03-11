@@ -7,7 +7,12 @@
     "start_moi": 83,
     "end_moi": 87,
     "start_post_moi": 87,
-    "end_post_moi": 102.0
+    "end_post_moi": 102.0,
+    "annotation": "He appeared concerned and slightly frustrated.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1433",
@@ -17,6 +22,11 @@
     "start_moi": 217,
     "end_moi": 220,
     "start_post_moi": 220,
-    "end_post_moi": 235.0
+    "end_post_moi": 235.0,
+    "annotation": "He felt frustrated and annoyed",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

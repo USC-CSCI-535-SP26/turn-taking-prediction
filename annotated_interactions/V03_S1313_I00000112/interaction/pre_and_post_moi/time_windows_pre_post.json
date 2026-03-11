@@ -7,7 +7,12 @@
     "start_moi": 0,
     "end_moi": 6,
     "start_post_moi": 6,
-    "end_post_moi": 21.0
+    "end_post_moi": 21.0,
+    "annotation": "The participant is perceptive.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3978",
@@ -17,6 +22,11 @@
     "start_moi": 145,
     "end_moi": 148,
     "start_post_moi": 148,
-    "end_post_moi": 163.0
+    "end_post_moi": 163.0,
+    "annotation": "The participant is joyful and happy.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

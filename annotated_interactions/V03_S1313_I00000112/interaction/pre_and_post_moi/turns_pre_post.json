@@ -10,7 +10,12 @@
     "end_moi": 6,
     "start_post_moi": 40.625999999999976,
     "end_post_moi": 181.16600000000017,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is perceptive.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3978",
@@ -23,6 +28,11 @@
     "end_moi": 148,
     "start_post_moi": 148.49800000000005,
     "end_post_moi": 148.942,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is joyful and happy.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

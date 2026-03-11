@@ -10,7 +10,12 @@
     "end_moi": 12,
     "start_post_moi": 0,
     "end_post_moi": 37.15000000000009,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant feels reflective and adaptive.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2454",
@@ -23,7 +28,12 @@
     "end_moi": 99,
     "start_post_moi": 79.8739999999998,
     "end_post_moi": 124.47800000000007,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant feels goal-oriented and driven.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2454",
@@ -36,6 +46,11 @@
     "end_moi": 147,
     "start_post_moi": 129.28200000000015,
     "end_post_moi": 169.1500000000001,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant feels reassured and confident.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

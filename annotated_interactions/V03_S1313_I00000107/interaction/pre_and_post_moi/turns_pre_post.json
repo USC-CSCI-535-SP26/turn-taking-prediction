@@ -10,7 +10,12 @@
     "end_moi": 33,
     "start_post_moi": 48.49800000000005,
     "end_post_moi": 49.101999999999975,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is excited.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3978",
@@ -23,6 +28,11 @@
     "end_moi": 108,
     "start_post_moi": 135.40999999999997,
     "end_post_moi": 136.49400000000003,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is contributing and supportive.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

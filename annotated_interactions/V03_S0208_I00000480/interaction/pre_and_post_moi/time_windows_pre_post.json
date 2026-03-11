@@ -7,7 +7,12 @@
     "start_moi": 74,
     "end_moi": 75,
     "start_post_moi": 75,
-    "end_post_moi": 90.0
+    "end_post_moi": 90.0,
+    "annotation": "The participant was confused",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1455",
@@ -17,7 +22,12 @@
     "start_moi": 88,
     "end_moi": 95,
     "start_post_moi": 95,
-    "end_post_moi": 110.0
+    "end_post_moi": 110.0,
+    "annotation": "The participant was amused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1455",
@@ -27,7 +37,12 @@
     "start_moi": 97,
     "end_moi": 98,
     "start_post_moi": 98,
-    "end_post_moi": 113.0
+    "end_post_moi": 113.0,
+    "annotation": "The speaker is trying to show firmness",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": null,
@@ -37,6 +52,11 @@
     "start_moi": 145,
     "end_moi": 145,
     "start_post_moi": 145,
-    "end_post_moi": 160.0
+    "end_post_moi": 160.0,
+    "annotation": "The speaker is compliant",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

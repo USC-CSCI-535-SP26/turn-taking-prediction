@@ -10,7 +10,12 @@
     "end_moi": 25,
     "start_post_moi": 24.114000000000033,
     "end_post_moi": 25.45400000000018,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is feeling uncertain.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1302",
@@ -23,6 +28,11 @@
     "end_moi": 58,
     "start_post_moi": 56.33800000000019,
     "end_post_moi": 58.98999999999978,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is tired.",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

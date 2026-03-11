@@ -7,7 +7,12 @@
     "start_moi": 56,
     "end_moi": 68,
     "start_post_moi": 68,
-    "end_post_moi": 83.0
+    "end_post_moi": 83.0,
+    "annotation": "Participant is upset and sympathetic",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3109",
@@ -17,7 +22,12 @@
     "start_moi": 85,
     "end_moi": 91,
     "start_post_moi": 91,
-    "end_post_moi": 106.0
+    "end_post_moi": 106.0,
+    "annotation": "Participant is playfully ironic",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3109",
@@ -27,7 +37,12 @@
     "start_moi": 187,
     "end_moi": 195,
     "start_post_moi": 195,
-    "end_post_moi": 210.0
+    "end_post_moi": 210.0,
+    "annotation": "Participant is bored",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3109",
@@ -37,7 +52,12 @@
     "start_moi": 189,
     "end_moi": 194,
     "start_post_moi": 194,
-    "end_post_moi": 209.0
+    "end_post_moi": 209.0,
+    "annotation": "Participant is shocked",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3109",
@@ -47,7 +67,12 @@
     "start_moi": 205,
     "end_moi": 208,
     "start_post_moi": 208,
-    "end_post_moi": 223.0
+    "end_post_moi": 223.0,
+    "annotation": "Participant is bored again",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3109",
@@ -57,6 +82,11 @@
     "start_moi": 213,
     "end_moi": 217,
     "start_post_moi": 217,
-    "end_post_moi": 232.0
+    "end_post_moi": 232.0,
+    "annotation": "Participant is still bored",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

@@ -10,7 +10,12 @@
     "end_moi": 40,
     "start_post_moi": 46.35400000000004,
     "end_post_moi": 46.702,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Look for the appropriate and relevant words to make themselves clear",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1359",
@@ -23,6 +28,11 @@
     "end_moi": 76,
     "start_post_moi": 90.54600000000005,
     "end_post_moi": 90.894,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Participant stayed focused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

@@ -10,7 +10,12 @@
     "end_moi": 12,
     "start_post_moi": 26.786000000000058,
     "end_post_moi": 27.93399999999997,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was amused and supportive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1455",
@@ -23,7 +28,12 @@
     "end_moi": 18,
     "start_post_moi": 26.786000000000058,
     "end_post_moi": 27.93399999999997,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was hesitant",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1455",
@@ -36,7 +46,12 @@
     "end_moi": 28,
     "start_post_moi": 28.930000000000064,
     "end_post_moi": 29.534000000000106,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The speaker is excited",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1455",
@@ -49,7 +64,12 @@
     "end_moi": 44,
     "start_post_moi": 52.6099999999999,
     "end_post_moi": 69.11799999999994,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was interested",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1454",
@@ -62,7 +82,12 @@
     "end_moi": 54,
     "start_post_moi": 69.53800000000001,
     "end_post_moi": 70.26999999999998,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The speaker is feeling slightly uncomfortable",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1454",
@@ -75,6 +100,11 @@
     "end_moi": 69,
     "start_post_moi": 69.53800000000001,
     "end_post_moi": 70.26999999999998,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The speaker is feeling elated",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

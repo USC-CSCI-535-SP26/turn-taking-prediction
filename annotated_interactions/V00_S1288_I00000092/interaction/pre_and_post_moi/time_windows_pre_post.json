@@ -7,7 +7,12 @@
     "start_moi": 49,
     "end_moi": 51,
     "start_post_moi": 51,
-    "end_post_moi": 66.0
+    "end_post_moi": 66.0,
+    "annotation": "The participant was contemplating ",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0071",
@@ -17,7 +22,12 @@
     "start_moi": 86,
     "end_moi": 87,
     "start_post_moi": 87,
-    "end_post_moi": 102.0
+    "end_post_moi": 102.0,
+    "annotation": "The participant was excited ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1119",
@@ -27,7 +37,12 @@
     "start_moi": 123,
     "end_moi": 124,
     "start_post_moi": 124,
-    "end_post_moi": 139.0
+    "end_post_moi": 139.0,
+    "annotation": "The participant was surprised and excited ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0071",
@@ -37,7 +52,12 @@
     "start_moi": 247,
     "end_moi": 250,
     "start_post_moi": 250,
-    "end_post_moi": 265.0
+    "end_post_moi": 265.0,
+    "annotation": "The participant was uncomfortable ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1119",
@@ -47,7 +67,12 @@
     "start_moi": 289,
     "end_moi": 292,
     "start_post_moi": 292,
-    "end_post_moi": 307.0
+    "end_post_moi": 307.0,
+    "annotation": "The participant was skeptical ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1119",
@@ -57,7 +82,12 @@
     "start_moi": 349,
     "end_moi": 350,
     "start_post_moi": 350,
-    "end_post_moi": 365.0
+    "end_post_moi": 365.0,
+    "annotation": "The participant was enthusiastic ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1119",
@@ -67,7 +97,12 @@
     "start_moi": 370,
     "end_moi": 371,
     "start_post_moi": 371,
-    "end_post_moi": 386.0
+    "end_post_moi": 386.0,
+    "annotation": "The participant was jittery ",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0071",
@@ -77,6 +112,11 @@
     "start_moi": 372,
     "end_moi": 373,
     "start_post_moi": 373,
-    "end_post_moi": 388.0
+    "end_post_moi": 388.0,
+    "annotation": "The participant was interested and engaged ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

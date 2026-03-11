@@ -10,7 +10,12 @@
     "end_moi": 17,
     "start_post_moi": 19.18600000000015,
     "end_post_moi": 21.58199999999988,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was joyful and bashful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1122",
@@ -23,7 +28,12 @@
     "end_moi": 50,
     "start_post_moi": 50.48199999999997,
     "end_post_moi": 70.95800000000008,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was playful and mischievous.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0518",
@@ -36,7 +46,12 @@
     "end_moi": 85,
     "start_post_moi": 85.29799999999977,
     "end_post_moi": 87.59799999999996,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was cheerful and upbeat",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1122",
@@ -49,7 +64,12 @@
     "end_moi": 93,
     "start_post_moi": 91.82600000000002,
     "end_post_moi": 96.55799999999999,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was glad and grateful.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1122",
@@ -62,7 +82,12 @@
     "end_moi": 133,
     "start_post_moi": 129.45800000000008,
     "end_post_moi": 135.30999999999995,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was apologetic and grateful.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1122",
@@ -75,7 +100,12 @@
     "end_moi": 133,
     "start_post_moi": 134.962,
     "end_post_moi": 136.97400000000016,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was lighthearted and slightly awkward.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0518",
@@ -88,6 +118,11 @@
     "end_moi": 201,
     "start_post_moi": 192.3380000000002,
     "end_post_moi": 201.29399999999987,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was valued and generous",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

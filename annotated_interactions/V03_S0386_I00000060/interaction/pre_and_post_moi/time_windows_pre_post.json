@@ -7,7 +7,12 @@
     "start_moi": 114,
     "end_moi": 116,
     "start_post_moi": 116,
-    "end_post_moi": 131.0
+    "end_post_moi": 131.0,
+    "annotation": "Participant was attentive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2024",
@@ -17,7 +22,12 @@
     "start_moi": 188,
     "end_moi": 205,
     "start_post_moi": 205,
-    "end_post_moi": 220.0
+    "end_post_moi": 220.0,
+    "annotation": "Is getting ready for the next exercise",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": null,
@@ -27,6 +37,11 @@
     "start_moi": 208,
     "end_moi": 210,
     "start_post_moi": 210,
-    "end_post_moi": 225.0
+    "end_post_moi": 225.0,
+    "annotation": "Is amused while being patient",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

@@ -10,7 +10,12 @@
     "end_moi": 15,
     "start_post_moi": 16.066,
     "end_post_moi": 16.862,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "He felt confused and had difficulty thinking.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1433",
@@ -23,7 +28,12 @@
     "end_moi": 45,
     "start_post_moi": 50.338,
     "end_post_moi": 51.166,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "He was excited and confident with what he was saying.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1432",
@@ -36,7 +46,12 @@
     "end_moi": 95,
     "start_post_moi": 100.45,
     "end_post_moi": 101.342,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Participant felt unsure if the other person understood what he was saying",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1432",
@@ -49,6 +64,11 @@
     "end_moi": 172,
     "start_post_moi": 171.714,
     "end_post_moi": 172.062,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "Participant felt concerned and a bit uncomfortable.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

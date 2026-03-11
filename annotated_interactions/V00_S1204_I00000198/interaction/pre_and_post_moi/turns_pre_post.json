@@ -10,7 +10,12 @@
     "end_moi": 13,
     "start_post_moi": 33.98599999999999,
     "end_post_moi": 34.398000000000025,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The partner was hesitant",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1109",
@@ -23,6 +28,11 @@
     "end_moi": 61,
     "start_post_moi": 61.05799999999999,
     "end_post_moi": 64.798,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was interested",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   }
 ]

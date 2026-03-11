@@ -7,7 +7,12 @@
     "start_moi": 19,
     "end_moi": 24,
     "start_post_moi": 24,
-    "end_post_moi": 39.0
+    "end_post_moi": 39.0,
+    "annotation": "The participant feels positive and proud.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2454",
@@ -17,7 +22,12 @@
     "start_moi": 45,
     "end_moi": 49,
     "start_post_moi": 49,
-    "end_post_moi": 64.0
+    "end_post_moi": 64.0,
+    "annotation": "The participant feels concerned and empathetic.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2454",
@@ -27,7 +37,12 @@
     "start_moi": 58,
     "end_moi": 63,
     "start_post_moi": 63,
-    "end_post_moi": 78.0
+    "end_post_moi": 78.0,
+    "annotation": "The participant feels protective and self-reflective.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2455",
@@ -37,7 +52,12 @@
     "start_moi": 75,
     "end_moi": 76,
     "start_post_moi": 76,
-    "end_post_moi": 91.0
+    "end_post_moi": 91.0,
+    "annotation": "The participant feels curious and seeking validation.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2454",
@@ -47,7 +67,12 @@
     "start_moi": 108,
     "end_moi": 110,
     "start_post_moi": 110,
-    "end_post_moi": 125.0
+    "end_post_moi": 125.0,
+    "annotation": "The participant feels confused and reflective.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2455",
@@ -57,6 +82,11 @@
     "start_moi": 152,
     "end_moi": 155,
     "start_post_moi": 155,
-    "end_post_moi": 170.0
+    "end_post_moi": 170.0,
+    "annotation": "The participant feels descriptive and casual.",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

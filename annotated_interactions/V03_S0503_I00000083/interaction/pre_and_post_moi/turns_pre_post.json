@@ -10,7 +10,12 @@
     "end_moi": 34,
     "start_post_moi": 22.226000000000113,
     "end_post_moi": 46.958000000000084,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant feels observational and neutral.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2454",
@@ -23,7 +28,12 @@
     "end_moi": 47,
     "start_post_moi": 48.978000000000065,
     "end_post_moi": 62.190000000000055,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant feels self-deprecating and humorous.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2455",
@@ -36,6 +46,11 @@
     "end_moi": 87,
     "start_post_moi": 96.59400000000005,
     "end_post_moi": 114,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant feels descriptive and visual.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

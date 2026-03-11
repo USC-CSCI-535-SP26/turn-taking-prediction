@@ -7,7 +7,12 @@
     "start_moi": 26,
     "end_moi": 28,
     "start_post_moi": 28,
-    "end_post_moi": 43.0
+    "end_post_moi": 43.0,
+    "annotation": "The participant was delighted",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1093",
@@ -17,7 +22,12 @@
     "start_moi": 50,
     "end_moi": 52,
     "start_post_moi": 52,
-    "end_post_moi": 67.0
+    "end_post_moi": 67.0,
+    "annotation": "The participant was interested in the talk",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0737",
@@ -27,7 +37,12 @@
     "start_moi": 62,
     "end_moi": 66,
     "start_post_moi": 66,
-    "end_post_moi": 81.0
+    "end_post_moi": 81.0,
+    "annotation": "The participant was engrossed and enthusiastic",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0737",
@@ -37,7 +52,12 @@
     "start_moi": 126,
     "end_moi": 127,
     "start_post_moi": 127,
-    "end_post_moi": 142.0
+    "end_post_moi": 142.0,
+    "annotation": "The participant was surprised",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0737",
@@ -47,7 +67,12 @@
     "start_moi": 204,
     "end_moi": 206,
     "start_post_moi": 206,
-    "end_post_moi": 221.0
+    "end_post_moi": 221.0,
+    "annotation": "The participant was expressive and happy",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0737",
@@ -57,7 +82,12 @@
     "start_moi": 208,
     "end_moi": 214,
     "start_post_moi": 214,
-    "end_post_moi": 229.0
+    "end_post_moi": 229.0,
+    "annotation": "The participant was impressed and interested",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0737",
@@ -67,6 +97,11 @@
     "start_moi": 240,
     "end_moi": 243,
     "start_post_moi": 243,
-    "end_post_moi": 258.0
+    "end_post_moi": 258.0,
+    "annotation": "The participant was taken aback",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

@@ -10,7 +10,12 @@
     "end_moi": 131,
     "start_post_moi": 143.02600000000007,
     "end_post_moi": 145.32600000000002,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Participant found it hilarious",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   },
   {
     "event_speaker": "P1207",
@@ -23,6 +28,11 @@
     "end_moi": 267,
     "start_post_moi": 266.93000000000006,
     "end_post_moi": 289.2940000000001,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "Participant was slightly proud with some caution",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
   }
 ]

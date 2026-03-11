@@ -10,7 +10,12 @@
     "end_moi": 11,
     "start_post_moi": 0,
     "end_post_moi": 123.07000000000016,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is peaceful and attentive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P3641",
@@ -23,6 +28,11 @@
     "end_moi": 646,
     "start_post_moi": 651.2339999999999,
     "end_post_moi": 664.9899999999998,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is anticipating ",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

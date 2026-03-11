@@ -7,7 +7,12 @@
     "start_moi": 39,
     "end_moi": 52,
     "start_post_moi": 52,
-    "end_post_moi": 67.0
+    "end_post_moi": 67.0,
+    "annotation": "The participant was annoyed and indignant",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -17,7 +22,12 @@
     "start_moi": 76,
     "end_moi": 78,
     "start_post_moi": 78,
-    "end_post_moi": 93.0
+    "end_post_moi": 93.0,
+    "annotation": "The participant was empathetic and pitiful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0317",
@@ -27,7 +37,12 @@
     "start_moi": 102,
     "end_moi": 105,
     "start_post_moi": 105,
-    "end_post_moi": 120.0
+    "end_post_moi": 120.0,
+    "annotation": "The participant was skeptical and suspicious.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -37,7 +52,12 @@
     "start_moi": 192,
     "end_moi": 199,
     "start_post_moi": 199,
-    "end_post_moi": 214.0
+    "end_post_moi": 214.0,
+    "annotation": "The participant was surprised and astonished.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -47,7 +67,12 @@
     "start_moi": 227,
     "end_moi": 229,
     "start_post_moi": 229,
-    "end_post_moi": 244.0
+    "end_post_moi": 244.0,
+    "annotation": "The participant was flustered and guilty",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -57,6 +82,11 @@
     "start_moi": 232,
     "end_moi": 236,
     "start_post_moi": 236,
-    "end_post_moi": 251.0
+    "end_post_moi": 251.0,
+    "annotation": "The participant was sympathetic and amused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

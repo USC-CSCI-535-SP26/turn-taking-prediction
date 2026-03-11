@@ -7,7 +7,12 @@
     "start_moi": 0,
     "end_moi": 17,
     "start_post_moi": 17,
-    "end_post_moi": 32.0
+    "end_post_moi": 32.0,
+    "annotation": "The participant was confused",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1109",
@@ -17,7 +22,12 @@
     "start_moi": 0,
     "end_moi": 17,
     "start_post_moi": 17,
-    "end_post_moi": 32.0
+    "end_post_moi": 32.0,
+    "annotation": "The participant was supportive and focused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1109",
@@ -27,7 +37,12 @@
     "start_moi": 127,
     "end_moi": 129,
     "start_post_moi": 129,
-    "end_post_moi": 144.0
+    "end_post_moi": 144.0,
+    "annotation": "The participant was pleased",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1110",
@@ -37,7 +52,12 @@
     "start_moi": 139,
     "end_moi": 150,
     "start_post_moi": 150,
-    "end_post_moi": 165.0
+    "end_post_moi": 165.0,
+    "annotation": "The participant was focused and patient",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1110",
@@ -47,7 +67,12 @@
     "start_moi": 150,
     "end_moi": 166,
     "start_post_moi": 166,
-    "end_post_moi": 181.0
+    "end_post_moi": 181.0,
+    "annotation": "The participant was hesitant",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1109",
@@ -57,7 +82,12 @@
     "start_moi": 266,
     "end_moi": 270,
     "start_post_moi": 270,
-    "end_post_moi": 285.0
+    "end_post_moi": 285.0,
+    "annotation": "The participant was amused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1110",
@@ -67,7 +97,12 @@
     "start_moi": 271,
     "end_moi": 276,
     "start_post_moi": 276,
-    "end_post_moi": 291.0
+    "end_post_moi": 291.0,
+    "annotation": "The participant was confused",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1109",
@@ -77,7 +112,12 @@
     "start_moi": 288,
     "end_moi": 293,
     "start_post_moi": 293,
-    "end_post_moi": 308.0
+    "end_post_moi": 308.0,
+    "annotation": "The participant was excited",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1110",
@@ -87,7 +127,12 @@
     "start_moi": 362,
     "end_moi": 363,
     "start_post_moi": 363,
-    "end_post_moi": 378.0
+    "end_post_moi": 378.0,
+    "annotation": "The participant was content",
+    "valence": "positive",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   },
   {
     "event_speaker": "P1110",
@@ -97,6 +142,11 @@
     "start_moi": 427,
     "end_moi": 431,
     "start_post_moi": 431,
-    "end_post_moi": 446.0
+    "end_post_moi": 446.0,
+    "annotation": "The participant was focused and eager",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
   }
 ]

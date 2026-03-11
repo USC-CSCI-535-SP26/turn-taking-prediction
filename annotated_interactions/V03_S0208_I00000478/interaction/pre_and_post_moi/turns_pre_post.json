@@ -10,7 +10,12 @@
     "end_moi": 17,
     "start_post_moi": 37.682000000000016,
     "end_post_moi": 41.51799999999997,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The speaker is agreeable",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1454",
@@ -23,7 +28,12 @@
     "end_moi": 49,
     "start_post_moi": 94.25799999999998,
     "end_post_moi": 124.36599999999999,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The speaker is feeling content",
+    "valence": "positive",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1454",
@@ -36,7 +46,12 @@
     "end_moi": 126,
     "start_post_moi": 126.54599999999999,
     "end_post_moi": 140.30200000000002,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The speaker is amused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1454",
@@ -49,7 +64,12 @@
     "end_moi": 143,
     "start_post_moi": 143.60199999999998,
     "end_post_moi": 144.49400000000003,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The speaker is engaged with the other person's words",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1454",
@@ -62,7 +82,12 @@
     "end_moi": 145,
     "start_post_moi": 146.28999999999996,
     "end_post_moi": 164.90999999999997,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The speaker is cheerful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1455",
@@ -75,7 +100,12 @@
     "end_moi": 159,
     "start_post_moi": 211.60199999999998,
     "end_post_moi": 218,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant was interested",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1454",
@@ -88,6 +118,11 @@
     "end_moi": 215,
     "start_post_moi": null,
     "end_post_moi": null,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The speaker is assertive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

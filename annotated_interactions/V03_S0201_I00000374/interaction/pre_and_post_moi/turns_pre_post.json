@@ -10,7 +10,12 @@
     "end_moi": 10,
     "start_post_moi": 67.07399999999996,
     "end_post_moi": 67.42200000000003,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "He felt comfortable and confident with what he was saying.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1433",
@@ -23,7 +28,12 @@
     "end_moi": 70,
     "start_post_moi": 3.009999999999991,
     "end_post_moi": 86.78200000000004,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "He felt comfortable, confident and joyful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1433",
@@ -36,6 +46,11 @@
     "end_moi": 151,
     "start_post_moi": 164.86599999999999,
     "end_post_moi": 169.88599999999997,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "He felt uncertain.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

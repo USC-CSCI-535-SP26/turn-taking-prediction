@@ -10,7 +10,12 @@
     "end_moi": 36,
     "start_post_moi": 36.30600000000004,
     "end_post_moi": 38.28600000000006,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Participant feels itchy",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1020",
@@ -23,6 +28,11 @@
     "end_moi": 37,
     "start_post_moi": 36.49800000000005,
     "end_post_moi": 37.03800000000001,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "Participant feels itchy",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

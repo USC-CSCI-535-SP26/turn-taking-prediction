@@ -10,7 +10,12 @@
     "end_moi": 23,
     "start_post_moi": 7.730000000000018,
     "end_post_moi": 25.86999999999989,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was amused a lot",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0737",
@@ -23,7 +28,12 @@
     "end_moi": 31,
     "start_post_moi": 30.097999999999956,
     "end_post_moi": 31.534000000000106,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was cracked up",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0737",
@@ -36,6 +46,11 @@
     "end_moi": 84,
     "start_post_moi": 69.298,
     "end_post_moi": 105.03800000000001,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant was creased up",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

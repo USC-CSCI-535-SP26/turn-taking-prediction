@@ -7,7 +7,12 @@
     "start_moi": 14,
     "end_moi": 21,
     "start_post_moi": 21,
-    "end_post_moi": 36.0
+    "end_post_moi": 36.0,
+    "annotation": "The participant was expressive and outspoken",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1093",
@@ -17,7 +22,12 @@
     "start_moi": 22,
     "end_moi": 24,
     "start_post_moi": 24,
-    "end_post_moi": 39.0
+    "end_post_moi": 39.0,
+    "annotation": "The participant was slightly surprised and interested in the talk",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1093",
@@ -27,7 +37,12 @@
     "start_moi": 67,
     "end_moi": 70,
     "start_post_moi": 70,
-    "end_post_moi": 85.0
+    "end_post_moi": 85.0,
+    "annotation": "The participant was a little nostalgic",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1093",
@@ -37,7 +52,12 @@
     "start_moi": 92,
     "end_moi": 96,
     "start_post_moi": 96,
-    "end_post_moi": 111.0
+    "end_post_moi": 111.0,
+    "annotation": "The participant was serene",
+    "valence": "positive",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1093",
@@ -47,7 +67,12 @@
     "start_moi": 105,
     "end_moi": 109,
     "start_post_moi": 109,
-    "end_post_moi": 124.0
+    "end_post_moi": 124.0,
+    "annotation": "The participant was stunned",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0737",
@@ -57,7 +82,12 @@
     "start_moi": 118,
     "end_moi": 123,
     "start_post_moi": 123,
-    "end_post_moi": 138.0
+    "end_post_moi": 138.0,
+    "annotation": "The participant was insightful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0737",
@@ -67,6 +97,11 @@
     "start_moi": 133,
     "end_moi": 135,
     "start_post_moi": 135,
-    "end_post_moi": 150.0
+    "end_post_moi": 150.0,
+    "annotation": "The participant was surprised and joyful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

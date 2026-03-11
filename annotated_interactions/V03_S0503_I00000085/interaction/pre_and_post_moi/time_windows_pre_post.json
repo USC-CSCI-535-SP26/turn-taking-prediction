@@ -7,7 +7,12 @@
     "start_moi": 11,
     "end_moi": 19,
     "start_post_moi": 19,
-    "end_post_moi": 34.0
+    "end_post_moi": 34.0,
+    "annotation": "The participant feels casual and descriptive.",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2454",
@@ -17,7 +22,12 @@
     "start_moi": 54,
     "end_moi": 55,
     "start_post_moi": 55,
-    "end_post_moi": 70.0
+    "end_post_moi": 70.0,
+    "annotation": "The participant feels upset and indignant.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2454",
@@ -27,7 +37,12 @@
     "start_moi": 119,
     "end_moi": 123,
     "start_post_moi": 123,
-    "end_post_moi": 138.0
+    "end_post_moi": 138.0,
+    "annotation": "The participant feels concerned and assertive.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2455",
@@ -37,6 +52,11 @@
     "start_moi": 149,
     "end_moi": 156,
     "start_post_moi": 156,
-    "end_post_moi": 171.0
+    "end_post_moi": 171.0,
+    "annotation": "The participant feels frustrated and reflective.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

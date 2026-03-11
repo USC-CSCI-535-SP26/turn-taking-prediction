@@ -7,7 +7,12 @@
     "start_moi": 28,
     "end_moi": 36,
     "start_post_moi": 36,
-    "end_post_moi": 51.0
+    "end_post_moi": 51.0,
+    "annotation": "The participant was guilty and embarrassed",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0317",
@@ -17,7 +22,12 @@
     "start_moi": 129,
     "end_moi": 131,
     "start_post_moi": 131,
-    "end_post_moi": 146.0
+    "end_post_moi": 146.0,
+    "annotation": "The participant was attentive and intrigued.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -27,7 +37,12 @@
     "start_moi": 137,
     "end_moi": 139,
     "start_post_moi": 139,
-    "end_post_moi": 154.0
+    "end_post_moi": 154.0,
+    "annotation": "The participant was contemplative",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0317",
@@ -37,7 +52,12 @@
     "start_moi": 349,
     "end_moi": 353,
     "start_post_moi": 353,
-    "end_post_moi": 368.0
+    "end_post_moi": 368.0,
+    "annotation": "The participant was nostalgic and wistful.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1118",
@@ -47,6 +67,11 @@
     "start_moi": 398,
     "end_moi": 401,
     "start_post_moi": 401,
-    "end_post_moi": 416.0
+    "end_post_moi": 416.0,
+    "annotation": "The participant was thoughtful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

@@ -10,7 +10,12 @@
     "end_moi": 149,
     "start_post_moi": 149.57,
     "end_post_moi": 149.95,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Is emotional about a specific situation",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2024",
@@ -23,7 +28,12 @@
     "end_moi": 153,
     "start_post_moi": 144.962,
     "end_post_moi": 160.222,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "Participant was focused on what was shared by the other speaker",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2024",
@@ -36,7 +46,12 @@
     "end_moi": 203,
     "start_post_moi": 204.546,
     "end_post_moi": 211.358,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "Expresses difficulties in a personal matter",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P2024",
@@ -49,6 +64,11 @@
     "end_moi": 279,
     "start_post_moi": 267.106,
     "end_post_moi": 381.15,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "Participant was engaged with what was shared by the other speaker",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

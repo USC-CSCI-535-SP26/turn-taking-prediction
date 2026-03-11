@@ -7,7 +7,12 @@
     "start_moi": 15,
     "end_moi": 17,
     "start_post_moi": 17,
-    "end_post_moi": 32.0
+    "end_post_moi": 32.0,
+    "annotation": "The participant was joyful and bashful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1122",
@@ -17,7 +22,12 @@
     "start_moi": 48,
     "end_moi": 50,
     "start_post_moi": 50,
-    "end_post_moi": 65.0
+    "end_post_moi": 65.0,
+    "annotation": "The participant was playful and mischievous.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0518",
@@ -27,7 +37,12 @@
     "start_moi": 84,
     "end_moi": 85,
     "start_post_moi": 85,
-    "end_post_moi": 100.0
+    "end_post_moi": 100.0,
+    "annotation": "The participant was cheerful and upbeat",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1122",
@@ -37,7 +52,12 @@
     "start_moi": 90,
     "end_moi": 93,
     "start_post_moi": 93,
-    "end_post_moi": 108.0
+    "end_post_moi": 108.0,
+    "annotation": "The participant was glad and grateful.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1122",
@@ -47,7 +67,12 @@
     "start_moi": 131,
     "end_moi": 133,
     "start_post_moi": 133,
-    "end_post_moi": 148.0
+    "end_post_moi": 148.0,
+    "annotation": "The participant was apologetic and grateful.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P1122",
@@ -57,7 +82,12 @@
     "start_moi": 131,
     "end_moi": 133,
     "start_post_moi": 133,
-    "end_post_moi": 148.0
+    "end_post_moi": 148.0,
+    "annotation": "The participant was lighthearted and slightly awkward.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   },
   {
     "event_speaker": "P0518",
@@ -67,6 +97,11 @@
     "start_moi": 192,
     "end_moi": 201,
     "start_post_moi": 201,
-    "end_post_moi": 216.0
+    "end_post_moi": 216.0,
+    "annotation": "The participant was valued and generous",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
   }
 ]

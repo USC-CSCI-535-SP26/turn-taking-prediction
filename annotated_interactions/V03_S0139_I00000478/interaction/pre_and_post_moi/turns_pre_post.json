@@ -10,7 +10,12 @@
     "end_moi": 14,
     "start_post_moi": 18.226,
     "end_post_moi": 24.141999999999996,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is innovative.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -23,7 +28,12 @@
     "end_moi": 16,
     "start_post_moi": 24.305999999999983,
     "end_post_moi": 25.677999999999997,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is feeling excited and intrigued.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -36,7 +46,12 @@
     "end_moi": 26,
     "start_post_moi": 25.970000000000027,
     "end_post_moi": 27.50200000000001,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is surprised.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1302",
@@ -49,7 +64,12 @@
     "end_moi": 30,
     "start_post_moi": 27.826000000000022,
     "end_post_moi": 30.029999999999973,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is precise.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -62,7 +82,12 @@
     "end_moi": 33,
     "start_post_moi": 30.386000000000024,
     "end_post_moi": 38.829999999999984,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is feeling confident.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -75,7 +100,12 @@
     "end_moi": 57,
     "start_post_moi": 62.386000000000024,
     "end_post_moi": 63.214,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is feeling contemplative.",
+    "valence": "neutral",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1302",
@@ -88,7 +118,12 @@
     "end_moi": 67,
     "start_post_moi": 65.17000000000002,
     "end_post_moi": 67.50200000000001,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is doubtful.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1303",
@@ -101,6 +136,11 @@
     "end_moi": 97,
     "start_post_moi": 77.55399999999997,
     "end_post_moi": 99.56599999999997,
-    "post_overlap": true
+    "post_overlap": true,
+    "annotation": "The participant is feeling focused and organized.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

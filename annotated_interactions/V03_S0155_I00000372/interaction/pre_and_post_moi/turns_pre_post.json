@@ -10,7 +10,12 @@
     "end_moi": 10,
     "start_post_moi": 36.99400000000003,
     "end_post_moi": 85.918,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant seemed puzzled or uncertain about the pamphlet content.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1274",
@@ -23,6 +28,11 @@
     "end_moi": 105,
     "start_post_moi": 110.274,
     "end_post_moi": 116.15800000000002,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is sure",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]

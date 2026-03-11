@@ -10,7 +10,12 @@
     "end_moi": 5,
     "start_post_moi": 6.897999999999911,
     "end_post_moi": 13.614000000000033,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is deep in thought ",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   },
   {
     "event_speaker": "P1288",
@@ -23,6 +28,11 @@
     "end_moi": 48,
     "start_post_moi": 53.233999999999924,
     "end_post_moi": 55.597999999999956,
-    "post_overlap": false
+    "post_overlap": false,
+    "annotation": "The participant is genuine about her sentiments ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
   }
 ]
