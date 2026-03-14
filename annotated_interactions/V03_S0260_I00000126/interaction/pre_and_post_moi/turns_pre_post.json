@@ -1,0 +1,38 @@
+[
+  {
+    "event_speaker": "P1629",
+    "annotated_participant": "P1628",
+    "non_annotated_participant": "P1629",
+    "start_pre_moi": 0.44999999999998863,
+    "end_pre_moi": 56.50999999999999,
+    "pre_overlap": true,
+    "start_moi": 2,
+    "end_moi": 5,
+    "start_post_moi": 0.44999999999998863,
+    "end_post_moi": 56.50999999999999,
+    "post_overlap": true,
+    "annotation": "He is trying to please everyone",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1629",
+    "annotated_participant": "P1629",
+    "non_annotated_participant": "P1628",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 17,
+    "end_moi": 24,
+    "start_post_moi": 58.434000000000026,
+    "end_post_moi": 58.81400000000002,
+    "post_overlap": false,
+    "annotation": "He is confident about answer",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

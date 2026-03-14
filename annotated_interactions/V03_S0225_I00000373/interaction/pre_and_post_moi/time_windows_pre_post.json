@@ -1,0 +1,62 @@
+[
+  {
+    "event_speaker": "P1519",
+    "annotated_participant": "P1518",
+    "start_pre_moi": 0.0,
+    "end_pre_moi": 15,
+    "start_moi": 15,
+    "end_moi": 18,
+    "start_post_moi": 18,
+    "end_post_moi": 33.0,
+    "annotation": "participant is anticipating and somewhat vulnerable",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
+  },
+  {
+    "event_speaker": "P1518",
+    "annotated_participant": "P1519",
+    "start_pre_moi": 45.0,
+    "end_pre_moi": 60,
+    "start_moi": 60,
+    "end_moi": 62,
+    "start_post_moi": 62,
+    "end_post_moi": 77.0,
+    "annotation": "The participant was tranquil",
+    "valence": "positive",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
+  },
+  {
+    "event_speaker": "P1518",
+    "annotated_participant": "P1518",
+    "start_pre_moi": 97.0,
+    "end_pre_moi": 112,
+    "start_moi": 112,
+    "end_moi": 114,
+    "start_post_moi": 114,
+    "end_post_moi": 129.0,
+    "annotation": "participant is agreeing and supportive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
+  },
+  {
+    "event_speaker": "P1518",
+    "annotated_participant": "P1519",
+    "start_pre_moi": 97.0,
+    "end_pre_moi": 112,
+    "start_moi": 112,
+    "end_moi": 114,
+    "start_post_moi": 114,
+    "end_post_moi": 129.0,
+    "annotation": "The participant was restful",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "dating/spouse/romantic_partner"
+  }
+]

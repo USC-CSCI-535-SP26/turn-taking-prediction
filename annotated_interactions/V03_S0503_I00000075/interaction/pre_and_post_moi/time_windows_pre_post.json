@@ -1,0 +1,32 @@
+[
+  {
+    "event_speaker": "P2455",
+    "annotated_participant": "P2454",
+    "start_pre_moi": 2.0,
+    "end_pre_moi": 17,
+    "start_moi": 17,
+    "end_moi": 18,
+    "start_post_moi": 18,
+    "end_post_moi": 33.0,
+    "annotation": "The participant feels open and conversational.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2454",
+    "annotated_participant": "P2455",
+    "start_pre_moi": 28.0,
+    "end_pre_moi": 43,
+    "start_moi": 43,
+    "end_moi": 45,
+    "start_post_moi": 45,
+    "end_post_moi": 60.0,
+    "annotation": "The participant feels informative and confident.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "event_speaker": "P2454",
+    "annotated_participant": "P2455",
+    "start_pre_moi": 13.0,
+    "end_pre_moi": 28,
+    "start_moi": 28,
+    "end_moi": 34,
+    "start_post_moi": 34,
+    "end_post_moi": 49.0,
+    "annotation": "The participant feels observational and neutral.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2454",
+    "annotated_participant": "P2455",
+    "start_pre_moi": 27.0,
+    "end_pre_moi": 42,
+    "start_moi": 42,
+    "end_moi": 47,
+    "start_post_moi": 47,
+    "end_post_moi": 62.0,
+    "annotation": "The participant feels self-deprecating and humorous.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2455",
+    "annotated_participant": "P2454",
+    "start_pre_moi": 68.0,
+    "end_pre_moi": 83,
+    "start_moi": 83,
+    "end_moi": 87,
+    "start_post_moi": 87,
+    "end_post_moi": 102.0,
+    "annotation": "The participant feels descriptive and visual.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

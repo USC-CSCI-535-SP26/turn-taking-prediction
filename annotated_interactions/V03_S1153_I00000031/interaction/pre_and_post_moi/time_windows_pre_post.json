@@ -1,0 +1,32 @@
+[
+  {
+    "event_speaker": "P3641",
+    "annotated_participant": "P3622",
+    "start_pre_moi": -8.0,
+    "end_pre_moi": 7,
+    "start_moi": 7,
+    "end_moi": 11,
+    "start_post_moi": 11,
+    "end_post_moi": 26.0,
+    "annotation": "The participant is peaceful and attentive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3641",
+    "annotated_participant": "P3641",
+    "start_pre_moi": 627.0,
+    "end_pre_moi": 642,
+    "start_moi": 642,
+    "end_moi": 646,
+    "start_post_moi": 646,
+    "end_post_moi": 661.0,
+    "annotation": "The participant is anticipating ",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "event_speaker": "P1093",
+    "annotated_participant": "P0737",
+    "start_pre_moi": -2.0,
+    "end_pre_moi": 13,
+    "start_moi": 13,
+    "end_moi": 23,
+    "start_post_moi": 23,
+    "end_post_moi": 38.0,
+    "annotation": "The participant was amused a lot",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  },
+  {
+    "event_speaker": "P0737",
+    "annotated_participant": "P1093",
+    "start_pre_moi": 10.0,
+    "end_pre_moi": 25,
+    "start_moi": 25,
+    "end_moi": 31,
+    "start_post_moi": 31,
+    "end_post_moi": 46.0,
+    "annotation": "The participant was cracked up",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  },
+  {
+    "event_speaker": "P0737",
+    "annotated_participant": "P1093",
+    "start_pre_moi": 65.0,
+    "end_pre_moi": 80,
+    "start_moi": 80,
+    "end_moi": 84,
+    "start_post_moi": 84,
+    "end_post_moi": 99.0,
+    "annotation": "The participant was creased up",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  }
+]

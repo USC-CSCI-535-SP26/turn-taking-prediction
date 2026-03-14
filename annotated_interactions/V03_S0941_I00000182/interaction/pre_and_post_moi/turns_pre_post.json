@@ -1,0 +1,38 @@
+[
+  {
+    "event_speaker": "P1207",
+    "annotated_participant": "P1207",
+    "non_annotated_participant": "P2154",
+    "start_pre_moi": 84.04999999999995,
+    "end_pre_moi": 98.894,
+    "pre_overlap": false,
+    "start_moi": 128,
+    "end_moi": 131,
+    "start_post_moi": 143.02600000000007,
+    "end_post_moi": 145.32600000000002,
+    "post_overlap": false,
+    "annotation": "Participant found it hilarious",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  },
+  {
+    "event_speaker": "P1207",
+    "annotated_participant": "P2154",
+    "non_annotated_participant": "P1207",
+    "start_pre_moi": 235.08999999999992,
+    "end_pre_moi": 264.4939999999999,
+    "pre_overlap": true,
+    "start_moi": 262,
+    "end_moi": 267,
+    "start_post_moi": 266.93000000000006,
+    "end_post_moi": 289.2940000000001,
+    "post_overlap": true,
+    "annotation": "Participant was slightly proud with some caution",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

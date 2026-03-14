@@ -1,0 +1,32 @@
+[
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1288",
+    "start_pre_moi": -15.0,
+    "end_pre_moi": 0,
+    "start_moi": 0,
+    "end_moi": 5,
+    "start_post_moi": 5,
+    "end_post_moi": 20.0,
+    "annotation": "The participant is deep in thought ",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1425",
+    "start_pre_moi": 29.0,
+    "end_pre_moi": 44,
+    "start_moi": 44,
+    "end_moi": 48,
+    "start_post_moi": 48,
+    "end_post_moi": 63.0,
+    "annotation": "The participant is genuine about her sentiments ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

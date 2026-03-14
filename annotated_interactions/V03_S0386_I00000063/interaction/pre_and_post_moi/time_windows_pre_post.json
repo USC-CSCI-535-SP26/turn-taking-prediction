@@ -1,0 +1,32 @@
+[
+  {
+    "event_speaker": "P2024",
+    "annotated_participant": "P2024",
+    "start_pre_moi": 17.0,
+    "end_pre_moi": 32,
+    "start_moi": 32,
+    "end_moi": 40,
+    "start_post_moi": 40,
+    "end_post_moi": 55.0,
+    "annotation": "Look for the appropriate and relevant words to make themselves clear",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1359",
+    "annotated_participant": "P1359",
+    "start_pre_moi": 56.0,
+    "end_pre_moi": 71,
+    "start_moi": 71,
+    "end_moi": 76,
+    "start_post_moi": 76,
+    "end_post_moi": 91.0,
+    "annotation": "Participant stayed focused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "event_speaker": "P3979",
+    "annotated_participant": "P3979",
+    "non_annotated_participant": "P3978",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 0,
+    "end_moi": 6,
+    "start_post_moi": 40.625999999999976,
+    "end_post_moi": 181.16600000000017,
+    "post_overlap": false,
+    "annotation": "The participant is perceptive.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3978",
+    "annotated_participant": "P3978",
+    "non_annotated_participant": "P3979",
+    "start_pre_moi": 102.83399999999983,
+    "end_pre_moi": 103.21399999999994,
+    "pre_overlap": false,
+    "start_moi": 145,
+    "end_moi": 148,
+    "start_post_moi": 148.49800000000005,
+    "end_post_moi": 148.942,
+    "post_overlap": false,
+    "annotation": "The participant is joyful and happy.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

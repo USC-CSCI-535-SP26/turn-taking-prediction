@@ -1,0 +1,38 @@
+[
+  {
+    "event_speaker": "P3979",
+    "annotated_participant": "P3979",
+    "non_annotated_participant": "P3978",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 30,
+    "end_moi": 33,
+    "start_post_moi": 48.49800000000005,
+    "end_post_moi": 49.101999999999975,
+    "post_overlap": false,
+    "annotation": "The participant is excited.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3978",
+    "annotated_participant": "P3978",
+    "non_annotated_participant": "P3979",
+    "start_pre_moi": 48.52999999999997,
+    "end_pre_moi": 50.894000000000005,
+    "pre_overlap": false,
+    "start_moi": 101,
+    "end_moi": 108,
+    "start_post_moi": 135.40999999999997,
+    "end_post_moi": 136.49400000000003,
+    "post_overlap": false,
+    "annotation": "The participant is contributing and supportive.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

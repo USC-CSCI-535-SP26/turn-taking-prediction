@@ -1,0 +1,32 @@
+[
+  {
+    "event_speaker": "P1303",
+    "annotated_participant": "P1302",
+    "start_pre_moi": 8.0,
+    "end_pre_moi": 23,
+    "start_moi": 23,
+    "end_moi": 25,
+    "start_post_moi": 25,
+    "end_post_moi": 40.0,
+    "annotation": "The participant is feeling uncertain.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1302",
+    "annotated_participant": "P1303",
+    "start_pre_moi": 41.0,
+    "end_pre_moi": 56,
+    "start_moi": 56,
+    "end_moi": 58,
+    "start_post_moi": 58,
+    "end_post_moi": 73.0,
+    "annotation": "The participant is tired.",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

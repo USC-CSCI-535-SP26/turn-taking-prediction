@@ -1,0 +1,47 @@
+[
+  {
+    "event_speaker": "P1433",
+    "annotated_participant": "P1433",
+    "start_pre_moi": -10.0,
+    "end_pre_moi": 5,
+    "start_moi": 5,
+    "end_moi": 10,
+    "start_post_moi": 10,
+    "end_post_moi": 25.0,
+    "annotation": "He felt comfortable and confident with what he was saying.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1433",
+    "annotated_participant": "P1432",
+    "start_pre_moi": 51.0,
+    "end_pre_moi": 66,
+    "start_moi": 66,
+    "end_moi": 70,
+    "start_post_moi": 70,
+    "end_post_moi": 85.0,
+    "annotation": "He felt comfortable, confident and joyful",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1433",
+    "annotated_participant": "P1433",
+    "start_pre_moi": 129.0,
+    "end_pre_moi": 144,
+    "start_moi": 144,
+    "end_moi": 151,
+    "start_post_moi": 151,
+    "end_post_moi": 166.0,
+    "annotation": "He felt uncertain.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

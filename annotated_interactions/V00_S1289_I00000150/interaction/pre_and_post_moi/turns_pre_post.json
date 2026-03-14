@@ -1,0 +1,38 @@
+[
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P1120",
+    "non_annotated_participant": "P0709",
+    "start_pre_moi": 111.80999999999995,
+    "end_pre_moi": 125.5659999999998,
+    "pre_overlap": false,
+    "start_moi": 128,
+    "end_moi": 131,
+    "start_post_moi": 132.19399999999996,
+    "end_post_moi": 132.86200000000008,
+    "post_overlap": false,
+    "annotation": "The participant was very expressive and assertive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P0709",
+    "non_annotated_participant": "P1120",
+    "start_pre_moi": 133.47400000000016,
+    "end_pre_moi": 184.54199999999992,
+    "pre_overlap": true,
+    "start_moi": 142,
+    "end_moi": 145,
+    "start_post_moi": 133.47400000000016,
+    "end_post_moi": 184.54199999999992,
+    "post_overlap": true,
+    "annotation": "The participant was attentive.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

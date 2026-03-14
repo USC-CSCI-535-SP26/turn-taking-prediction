@@ -1,0 +1,38 @@
+[
+  {
+    "event_speaker": "P3978",
+    "annotated_participant": "P3978",
+    "non_annotated_participant": "P3979",
+    "start_pre_moi": 42.562,
+    "end_pre_moi": 42.878,
+    "pre_overlap": false,
+    "start_moi": 49,
+    "end_moi": 52,
+    "start_post_moi": 132.514,
+    "end_post_moi": 132.926,
+    "post_overlap": false,
+    "annotation": "The participant is attentive and engaged.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3979",
+    "annotated_participant": "P3979",
+    "non_annotated_participant": "P3978",
+    "start_pre_moi": 250.402,
+    "end_pre_moi": 251.038,
+    "pre_overlap": true,
+    "start_moi": 251,
+    "end_moi": 262,
+    "start_post_moi": 262.466,
+    "end_post_moi": 263.358,
+    "post_overlap": false,
+    "annotation": "The participant is activated.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

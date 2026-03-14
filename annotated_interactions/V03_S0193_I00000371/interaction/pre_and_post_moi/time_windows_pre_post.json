@@ -1,0 +1,47 @@
+[
+  {
+    "event_speaker": "P1425",
+    "annotated_participant": "P1425",
+    "start_pre_moi": 0.0,
+    "end_pre_moi": 15,
+    "start_moi": 15,
+    "end_moi": 17,
+    "start_post_moi": 17,
+    "end_post_moi": 32.0,
+    "annotation": "Participant was attentive and certain",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1288",
+    "start_pre_moi": 65.0,
+    "end_pre_moi": 80,
+    "start_moi": 80,
+    "end_moi": 82,
+    "start_post_moi": 82,
+    "end_post_moi": 97.0,
+    "annotation": "The participant is deeply in thought ",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1288",
+    "start_pre_moi": 170.0,
+    "end_pre_moi": 185,
+    "start_moi": 185,
+    "end_moi": 187,
+    "start_post_moi": 187,
+    "end_post_moi": 202.0,
+    "annotation": "The participant is certain about his choice ",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

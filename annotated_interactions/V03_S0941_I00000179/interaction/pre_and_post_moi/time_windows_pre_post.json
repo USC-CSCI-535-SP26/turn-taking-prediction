@@ -1,0 +1,47 @@
+[
+  {
+    "event_speaker": "P1207",
+    "annotated_participant": "P2154",
+    "start_pre_moi": 73.0,
+    "end_pre_moi": 88,
+    "start_moi": 88,
+    "end_moi": 100,
+    "start_post_moi": 100,
+    "end_post_moi": 115.0,
+    "annotation": "Participant felt amused and empathetic",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  },
+  {
+    "event_speaker": "P1207",
+    "annotated_participant": "P1207",
+    "start_pre_moi": 118.0,
+    "end_pre_moi": 133,
+    "start_moi": 133,
+    "end_moi": 139,
+    "start_post_moi": 139,
+    "end_post_moi": 154.0,
+    "annotation": "Participant felt hilarious",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  },
+  {
+    "event_speaker": "P2154",
+    "annotated_participant": "P2154",
+    "start_pre_moi": 127.0,
+    "end_pre_moi": 142,
+    "start_moi": 142,
+    "end_moi": 144,
+    "start_post_moi": 144,
+    "end_post_moi": 159.0,
+    "annotation": "The participant was curious and pensive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

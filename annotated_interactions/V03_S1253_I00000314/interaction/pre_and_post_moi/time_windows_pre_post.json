@@ -1,0 +1,47 @@
+[
+  {
+    "event_speaker": "P3750",
+    "annotated_participant": "P3750",
+    "start_pre_moi": -6.0,
+    "end_pre_moi": 9,
+    "start_moi": 9,
+    "end_moi": 16,
+    "start_post_moi": 16,
+    "end_post_moi": 31.0,
+    "annotation": "The participant feels everything is okay.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3750",
+    "annotated_participant": "P3782",
+    "start_pre_moi": 17.0,
+    "end_pre_moi": 32,
+    "start_moi": 32,
+    "end_moi": 42,
+    "start_post_moi": 42,
+    "end_post_moi": 57.0,
+    "annotation": "The participant is attentive",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3750",
+    "annotated_participant": "P3750",
+    "start_pre_moi": 78.0,
+    "end_pre_moi": 93,
+    "start_moi": 93,
+    "end_moi": 112,
+    "start_post_moi": 112,
+    "end_post_moi": 127.0,
+    "annotation": "The participant is feeling regret.",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "event_speaker": "P1110",
+    "annotated_participant": "P1109",
+    "start_pre_moi": 9.0,
+    "end_pre_moi": 24,
+    "start_moi": 24,
+    "end_moi": 29,
+    "start_post_moi": 29,
+    "end_post_moi": 44.0,
+    "annotation": "The participant was amused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
+  },
+  {
+    "event_speaker": "P1110",
+    "annotated_participant": "P1109",
+    "start_pre_moi": 61.0,
+    "end_pre_moi": 76,
+    "start_moi": 76,
+    "end_moi": 80,
+    "start_post_moi": 80,
+    "end_post_moi": 95.0,
+    "annotation": "The participant was entertained",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
+  },
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1110",
+    "start_pre_moi": 69.0,
+    "end_pre_moi": 84,
+    "start_moi": 84,
+    "end_moi": 84,
+    "start_post_moi": 84,
+    "end_post_moi": 99.0,
+    "annotation": "The participant was excited",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
+  },
+  {
+    "event_speaker": "P1109",
+    "annotated_participant": "P1110",
+    "start_pre_moi": 85.0,
+    "end_pre_moi": 100,
+    "start_moi": 100,
+    "end_moi": 105,
+    "start_post_moi": 105,
+    "end_post_moi": 120.0,
+    "annotation": "The participant was amused",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
+  }
+]

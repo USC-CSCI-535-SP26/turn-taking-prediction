@@ -1,0 +1,47 @@
+[
+  {
+    "event_speaker": "P2455",
+    "annotated_participant": "P2454",
+    "start_pre_moi": 2.0,
+    "end_pre_moi": 17,
+    "start_moi": 17,
+    "end_moi": 24,
+    "start_post_moi": 24,
+    "end_post_moi": 39.0,
+    "annotation": "The participant feels disappointed and reflective.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2455",
+    "annotated_participant": "P2455",
+    "start_pre_moi": 61.0,
+    "end_pre_moi": 76,
+    "start_moi": 76,
+    "end_moi": 77,
+    "start_post_moi": 77,
+    "end_post_moi": 92.0,
+    "annotation": "The participant feels curious and engaging.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2454",
+    "annotated_participant": "P2455",
+    "start_pre_moi": 85.0,
+    "end_pre_moi": 100,
+    "start_moi": 100,
+    "end_moi": 103,
+    "start_post_moi": 103,
+    "end_post_moi": 118.0,
+    "annotation": "The participant feels conditional and thoughtful.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

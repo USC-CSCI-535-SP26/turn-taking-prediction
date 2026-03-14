@@ -1,0 +1,32 @@
+[
+  {
+    "event_speaker": "P1020",
+    "annotated_participant": "P1020",
+    "start_pre_moi": 17.0,
+    "end_pre_moi": 32,
+    "start_moi": 32,
+    "end_moi": 36,
+    "start_post_moi": 36,
+    "end_post_moi": 51.0,
+    "annotation": "Participant feels itchy",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1020",
+    "annotated_participant": "P3681",
+    "start_pre_moi": 19.0,
+    "end_pre_moi": 34,
+    "start_moi": 34,
+    "end_moi": 37,
+    "start_post_moi": 37,
+    "end_post_moi": 52.0,
+    "annotation": "Participant feels itchy",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

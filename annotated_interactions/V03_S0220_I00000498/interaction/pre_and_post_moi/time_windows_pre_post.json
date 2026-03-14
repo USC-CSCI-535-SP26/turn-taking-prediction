@@ -1,0 +1,62 @@
+[
+  {
+    "event_speaker": "P1488",
+    "annotated_participant": "P1489",
+    "start_pre_moi": -5.0,
+    "end_pre_moi": 10,
+    "start_moi": 10,
+    "end_moi": 15,
+    "start_post_moi": 15,
+    "end_post_moi": 30.0,
+    "annotation": "The participant  may be somewhat bored/tired",
+    "valence": "negative",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1488",
+    "annotated_participant": "P1489",
+    "start_pre_moi": 5.0,
+    "end_pre_moi": 20,
+    "start_moi": 20,
+    "end_moi": 25,
+    "start_post_moi": 25,
+    "end_post_moi": 40.0,
+    "annotation": "The participant  seems alert and activated",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1488",
+    "annotated_participant": "P1489",
+    "start_pre_moi": 41.0,
+    "end_pre_moi": 56,
+    "start_moi": 56,
+    "end_moi": 60,
+    "start_post_moi": 60,
+    "end_post_moi": 75.0,
+    "annotation": "The participant  seems somewhat tired and impatient perhaps",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1488",
+    "annotated_participant": "P1488",
+    "start_pre_moi": 47.0,
+    "end_pre_moi": 62,
+    "start_moi": 62,
+    "end_moi": 66,
+    "start_post_moi": 66,
+    "end_post_moi": 81.0,
+    "annotation": "The participant  is bored, but still tries to be polite",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

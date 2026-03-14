@@ -1,0 +1,38 @@
+[
+  {
+    "event_speaker": "P1332",
+    "annotated_participant": "P1332",
+    "non_annotated_participant": "P1274",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 6,
+    "end_moi": 10,
+    "start_post_moi": 36.99400000000003,
+    "end_post_moi": 85.918,
+    "post_overlap": false,
+    "annotation": "The participant seemed puzzled or uncertain about the pamphlet content.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1274",
+    "annotated_participant": "P1274",
+    "non_annotated_participant": "P1332",
+    "start_pre_moi": 86.52999999999997,
+    "end_pre_moi": 90.142,
+    "pre_overlap": false,
+    "start_moi": 104,
+    "end_moi": 105,
+    "start_post_moi": 110.274,
+    "end_post_moi": 116.15800000000002,
+    "post_overlap": false,
+    "annotation": "The participant is sure",
+    "valence": "neutral",
+    "valence_engaged": false,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

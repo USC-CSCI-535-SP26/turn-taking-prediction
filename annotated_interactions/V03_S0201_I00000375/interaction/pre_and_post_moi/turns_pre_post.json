@@ -1,0 +1,38 @@
+[
+  {
+    "event_speaker": "P1432",
+    "annotated_participant": "P1432",
+    "non_annotated_participant": "P1433",
+    "start_pre_moi": 34.097999999999956,
+    "end_pre_moi": 34.766000000000076,
+    "pre_overlap": false,
+    "start_moi": 83,
+    "end_moi": 87,
+    "start_post_moi": 105.13799999999992,
+    "end_post_moi": 112.17399999999998,
+    "post_overlap": false,
+    "annotation": "He appeared concerned and slightly frustrated.",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1433",
+    "annotated_participant": "P1433",
+    "non_annotated_participant": "P1432",
+    "start_pre_moi": 172.72199999999998,
+    "end_pre_moi": 173.3900000000001,
+    "pre_overlap": false,
+    "start_moi": 217,
+    "end_moi": 220,
+    "start_post_moi": 225.8420000000001,
+    "end_post_moi": 228.1099999999999,
+    "post_overlap": false,
+    "annotation": "He felt frustrated and annoyed",
+    "valence": "negative",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

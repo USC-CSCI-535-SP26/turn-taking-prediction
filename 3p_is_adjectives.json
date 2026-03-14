@@ -1,7 +1,7 @@
 {
   "total_annotations": 492,
-  "unique_adjectives": 189,
-  "total_occurrences": 636,
+  "unique_adjectives": 190,
+  "total_occurrences": 637,
   "engaged": {
     "positive": {
       "count": 95,
@@ -105,8 +105,8 @@
       }
     },
     "neutral": {
-      "count": 16,
-      "occurrences": 25,
+      "count": 17,
+      "occurrences": 26,
       "adjectives": {
         "alert": 1,
         "aroused": 2,
@@ -123,6 +123,7 @@
         "persuasive": 1,
         "reminiscent": 1,
         "ruminative": 2,
+        "taken aback": 1,
         "wistful": 1
       }
     },
@@ -194,8 +195,8 @@
         "vulnerable": 2
       }
     },
-    "count": 173,
-    "occurrences": 603
+    "count": 174,
+    "occurrences": 604
   },
   "disengaged": {
     "positive": {

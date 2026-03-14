@@ -1,0 +1,32 @@
+[
+  {
+    "event_speaker": "P3979",
+    "annotated_participant": "P3979",
+    "start_pre_moi": 15.0,
+    "end_pre_moi": 30,
+    "start_moi": 30,
+    "end_moi": 33,
+    "start_post_moi": 33,
+    "end_post_moi": 48.0,
+    "annotation": "The participant is excited.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3978",
+    "annotated_participant": "P3978",
+    "start_pre_moi": 86.0,
+    "end_pre_moi": 101,
+    "start_moi": 101,
+    "end_moi": 108,
+    "start_post_moi": 108,
+    "end_post_moi": 123.0,
+    "annotation": "The participant is contributing and supportive.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "event_speaker": "P0071",
+    "annotated_participant": "P0071",
+    "start_pre_moi": 4.0,
+    "end_pre_moi": 19,
+    "start_moi": 19,
+    "end_moi": 23,
+    "start_post_moi": 23,
+    "end_post_moi": 38.0,
+    "annotation": "The participant was perky ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  },
+  {
+    "event_speaker": "P0071",
+    "annotated_participant": "P1119",
+    "start_pre_moi": 8.0,
+    "end_pre_moi": 23,
+    "start_moi": 23,
+    "end_moi": 26,
+    "start_post_moi": 26,
+    "end_post_moi": 41.0,
+    "annotation": "The participant was cheerful ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  },
+  {
+    "event_speaker": "P1119",
+    "annotated_participant": "P0071",
+    "start_pre_moi": 72.0,
+    "end_pre_moi": 87,
+    "start_moi": 87,
+    "end_moi": 88,
+    "start_post_moi": 88,
+    "end_post_moi": 103.0,
+    "annotation": "The participant was energetic and grateful ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  },
+  {
+    "event_speaker": "P0071",
+    "annotated_participant": "P1119",
+    "start_pre_moi": 73.0,
+    "end_pre_moi": 88,
+    "start_moi": 88,
+    "end_moi": 89,
+    "start_post_moi": 89,
+    "end_post_moi": 104.0,
+    "annotation": "The participant was jovial ",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P0709",
+    "start_pre_moi": 48.0,
+    "end_pre_moi": 63,
+    "start_moi": 63,
+    "end_moi": 67,
+    "start_post_moi": 67,
+    "end_post_moi": 82.0,
+    "annotation": "The participant was thoughtful.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P1120",
+    "start_pre_moi": 79.0,
+    "end_pre_moi": 94,
+    "start_moi": 94,
+    "end_moi": 97,
+    "start_post_moi": 97,
+    "end_post_moi": 112.0,
+    "annotation": "The participant was curious",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P0709",
+    "start_pre_moi": 136.0,
+    "end_pre_moi": 151,
+    "start_moi": 151,
+    "end_moi": 154,
+    "start_post_moi": 154,
+    "end_post_moi": 169.0,
+    "annotation": "The participant was composed and calm.",
+    "valence": "positive",
+    "valence_engaged": true,
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]
