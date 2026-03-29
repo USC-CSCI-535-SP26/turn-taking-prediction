@@ -11,7 +11,7 @@ The 5 features downloaded per participant:
     2. movement/EmotionArousalToken — quantized arousal (12 bins), shape (N_frames,)
     3. movement/emotion_valence     — continuous valence [-1, 1], shape (N_frames,)
     4. movement/EmotionValenceToken — quantized valence (12 bins), shape (N_frames,)
-    5. movement/emotion_scores      — 8-category emotion scores, shape (N_frames, 8)
+    5. movement/emotion_scores      — 8-category emotion logits (not probabilities), shape (N_frames, 8)
 
 Each feature is stored on S3 as a separate .npy file at:
     https://dl.fbaipublicfiles.com/seamless_interaction/{label}/{split}/movement/{feature}/{file_id}.npy
