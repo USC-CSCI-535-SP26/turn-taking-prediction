@@ -1,179 +1,192 @@
-# Download Both-Annotated Naturalistic Interactions
+# CSCI 535 Project — Seamless Interaction Dataset Analysis
 
-This script downloads the **100 naturalistic interactions** from Meta's [Seamless Interaction dataset](https://github.com/facebookresearch/seamless_interaction) where **both participants** in the dyad have third-party (3P) annotations.
-
-## Background
-
-The Seamless Interaction dataset contains ~65,000 interactions totaling 4,065 hours of in-person dyadic audiovisual data. A subset of interactions were annotated by trained third-party (3P) annotators who identified Moments of Interest (conspicuous visual behaviors) and provided:
-
-- **3P-IS**: Perceived internal state of the participant at that moment
-- **3P-R**: Rationale for the perceived behavior
-- **3P-V**: Description of the visual element that prompted the annotation
-
-Among the naturalistic interactions, 543 participant-level file entries have 3P annotations, spanning 443 unique interactions. Of those, **100 interactions have both participants annotated** (the remaining 343 have only one participant annotated). This script downloads all data for those 100 both-annotated interactions.
-
-## Prerequisites
-
-1. **Python 3.8+** (no external packages required -- uses only the standard library)
-2. **Clone the seamless_interaction repository**:
-   ```bash
-   git clone https://github.com/facebookresearch/seamless_interaction.git
-   ```
-   The script reads CSV files from the `assets/` directory in this repo:
-   - `filelist.csv` -- master list of all files in the dataset with annotation flags
-   - `interactions.csv` -- prompt text, IPC codes, and interaction types
-   - `participants.csv` -- Big Five personality scores
-   - `relationships.csv` -- stranger/familiar status per session
-3. **Internet access** to download from Meta's public S3 bucket (`dl.fbaipublicfiles.com`)
-
-## Usage
-
-```bash
-# Basic usage (annotations + VAD only, no audio)
-python download_annotated_interactions.py --repo-path /path/to/seamless_interaction
-
-# Include audio (.wav) files
-python download_annotated_interactions.py --repo-path /path/to/seamless_interaction --include-wav
-
-# Specify output directory
-python download_annotated_interactions.py --repo-path /path/to/seamless_interaction --output-dir /path/to/output
-
-# Dry run (prints what would be downloaded without downloading)
-python download_annotated_interactions.py --repo-path /path/to/seamless_interaction --dry-run
-
-# Use more download threads (default: 4)
-python download_annotated_interactions.py --repo-path /path/to/seamless_interaction --num-workers 8
-```
-
-### Arguments
-
-| Argument | Required | Default | Description |
-|---|---|---|---|
-| `--repo-path` | Yes | -- | Path to the cloned `seamless_interaction` GitHub repository |
-| `--output-dir` | No | `.` (current directory) | Directory in which to create the `annotated_interactions/` folder |
-| `--include-wav` | No | off | Also download per-participant audio (.wav) files |
-| `--num-workers` | No | `4` | Number of parallel download threads |
-| `--dry-run` | No | off | Print what would be downloaded without actually downloading |
-
-## What Gets Downloaded
-
-### Per interaction (in the `interaction/` subdirectory)
-
-These are assembled from the repo's CSV metadata files (not downloaded from S3):
-
-| File | Source | Contents |
-|---|---|---|
-| `interaction_metadata.json` | `interactions.csv` | Prompt text for both participants, IPC octant codes (Agency/Communion), interaction type |
-| `session_relationship.json` | `relationships.csv` | Whether the dyad members are strangers or familiar, plus detail (e.g., friends, coworkers) |
-| `participants_metadata.json` | `participants.csv` | Big Five personality raw scores for both participants (many are "Undisclosed") |
-| `filelist_entries.json` | `filelist.csv` | Raw metadata rows for both participants, including annotation flags, movement availability, split, and batch info |
-
-### Per participant (in `participant_a_<id>/` and `participant_b_<id>/` subdirectories)
-
-These are downloaded from Meta's public S3 bucket:
-
-| File | Format | Description |
-|---|---|---|
-| `3P-IS_<file_id>.json` | JSONL (one JSON object per line) | Third-party perceived internal state annotations |
-| `3P-R_<file_id>.json` | JSONL | Third-party perceived behavior rationale annotations |
-| `3P-V_<file_id>.json` | JSONL | Third-party visual element description annotations |
-| `vad_<file_id>.jsonl` | JSONL | Silero Voice Activity Detection segments (`{"start": <sec>, "end": <sec>}`) |
-| `<file_id>.wav` | WAV (mono, 48kHz, 32-bit float) | Per-participant audio, echo-cancelled via Beryl AEC. **Only with `--include-wav`.** |
-
-**Without `--include-wav`**: 4 metadata + 4 per-participant files × 2 participants = **12 files** per interaction (**1,200 total**).
-
-**With `--include-wav`**: 4 metadata + 5 per-participant files × 2 participants = **14 files** per interaction (**1,400 total**).
-
-## Interaction Naming Convention
-
-Each interaction directory is named `V{vendor}_S{session}_I{prompt_hash}`:
-
-- **V{vendor}** — The data collection vendor/site (only V00 and V03 appear in the annotated subset).
-- **S{session}** — The recording session: a 1-hour continuous recording of a specific dyad guided by a moderator.
-- **I{prompt_hash}** — A hash identifying the prompt pair given to the dyad for this interaction. This is NOT a sequence number — the same prompt hash can appear across many sessions, and the numbering does not reflect chronological order within a session.
-
-A unique interaction instance (one specific dyad performing one specific prompt) is identified by the full V+S+I combination.
-
-## Output Directory Structure
-
-The download script produces `annotated_interactions/` with WAV files included. A separate copy (`annotated_interactions/` without WAVs) is maintained for the GitHub repository.
+## Directory Structure of `annotated_interactions`
 
 ```
-annotated_interactions/
-├── V00_S1288_I00000099/
-│   ├── interaction/
-│   │   ├── interaction_metadata.json      ← created by download script (from dataset CSVs)
-│   │   ├── session_relationship.json      ← created by download script (from dataset CSVs)
-│   │   ├── participants_metadata.json     ← created by download script (from dataset CSVs)
-│   │   ├── filelist_entries.json          ← created by download script (from dataset CSVs)
-│   │   ├── timestamps_by_turn.json        ← created by us (from VAD files)
-│   │   └── pre_and_post_moi/
-│   │       ├── time_windows_pre_post.json ← created by us (from 3P-IS + turns)
-│   │       └── turns_pre_post.json        ← created by us (from 3P-IS + turns)
-│   ├── participant_a_P0071/
-│   │   ├── 3P-IS_..._P0071.json          ← from dataset
-│   │   ├── 3P-R_..._P0071.json           ← from dataset
-│   │   ├── 3P-V_..._P0071.json           ← from dataset
-│   │   ├── V00_S1288_I00000099_P0071.wav  ← from dataset (excluded from GitHub copy)
-│   │   └── vad_..._P0071.jsonl            ← from dataset
-│   └── participant_b_P1119/
-│       ├── 3P-IS_..._P1119.json           ← from dataset
-│       ├── 3P-R_..._P1119.json            ← from dataset
-│       ├── 3P-V_..._P1119.json            ← from dataset
-│       ├── V00_S1288_I00000099_P1119.wav   ← from dataset (excluded from GitHub copy)
-│       └── vad_..._P1119.jsonl             ← from dataset
+annotated_interactions/                        ◁── 100 interaction directories
+├── V00_S1288_I00000099/                       ◁── one interaction (V=vendor, S=session, I=prompt hash)
+│   ├── interaction/                           ◁── interaction-level metadata + derived files
+│   │   ├── interaction_metadata.json          ← from dataset CSVs (download_annotated_interactions.py)
+│   │   ├── session_relationship.json          ← from dataset CSVs (download_annotated_interactions.py)
+│   │   ├── participants_metadata.json         ← from dataset CSVs (download_annotated_interactions.py)
+│   │   ├── filelist_entries.json              ← from dataset CSVs (download_annotated_interactions.py)
+│   │   ├── timestamps_by_turn.json            ← derived by us (generate_timestamps_by_turn.py)
+│   │   ├── moi_emotion_summaries.json         ← derived by us (extract_moi_summaries.py)
+│   │   └── pre_and_post_moi/                 ◁── pre/post MOI time windows
+│   │       ├── time_windows_pre_post.json     ← derived by us (generate_moi_time_windows.py)
+│   │       └── turns_pre_post.json            ← derived by us (generate_moi_turns.py)
+│   ├── participant_a_P0071/                   ◁── a/b assigned alphabetically by participant ID
+│   │   ├── 3P-IS_..._P0071.json              ← from dataset (download_annotated_interactions.py)
+│   │   ├── 3P-R_..._P0071.json               ← from dataset (download_annotated_interactions.py)
+│   │   ├── 3P-V_..._P0071.json               ← from dataset (download_annotated_interactions.py)
+│   │   ├── vad_..._P0071.jsonl                ← from dataset (download_annotated_interactions.py)
+│   │   ├── V00_S1288_I00000099_P0071.wav      ← from dataset (excluded from GitHub)
+│   │   └── emotion_features.npz               ← from dataset (download_emotion_features.py)
+│   └── participant_b_P1119/                   ◁── same files as participant_a
+│       └── ...
 │
 ├── V00_S1288_I00000102/
 │   └── ...
 └── ... (100 interactions total)
 ```
 
-## Files Created by Us
+Each interaction directory is named **`V{vendor}_S{session}_I{prompt_hash}`**: `V{vendor}` is the data collection site (only V00 and V03 appear), `S{session}` is the recording session (a 1-hour continuous recording of a specific dyad), and `I{prompt_hash}` is a hash identifying the prompt pair (not a sequence number). A unique interaction is identified by the full V+S+I combination. Participant subdirectories are assigned alphabetically by participant ID (lower ID = participant_a); this does **not** correspond to the prompt-role assignment in the dataset's `interactions.csv`.
 
-In addition to the files downloaded from the dataset, we generate the following derived files.
+### File Reference
 
-**Per interaction** (in `interaction/`):
+#### `interaction/` — Metadata (from dataset CSVs)
 
-- **`timestamps_by_turn.json`** — Conversational turn structure derived from both participants' VAD files. Each entry represents one turn (a maximal stretch of one participant's speech uninterrupted by the other) with four fields:
-  - `participant_id`: who is speaking
-  - `start`: turn start time in seconds
-  - `end`: turn end time in seconds
-  - `overlapping`: `true` if the other participant has any VAD activity within this turn's time window
+**`interaction_metadata.json`** — Prompt text for both participants, IPC octant codes (Agency/Communion), and interaction type (always "naturalistic" for our 100-interaction subset). Assembled from the dataset's `interactions.csv`.
 
-  Turns are ordered chronologically. Consecutive turns alternate speakers unless overlap is present. A turn boundary is created only when the other participant speaks — pauses within a single participant's speech do not create new turns.
+**`session_relationship.json`** — Whether the dyad members are strangers or familiar, plus detail (e.g., friends, coworkers). Assembled from `relationships.csv`.
 
-**Per interaction** (in `interaction/pre_and_post_moi/`):
+**`participants_metadata.json`** — Big Five personality raw scores for both participants. Many values are "Undisclosed". Assembled from `participants.csv`.
 
-- **`time_windows_pre_post.json`** — Fixed-duration time windows around each Moment of Interest (MOI) from 3P-IS annotations. Each entry corresponds to one 3P-IS annotation and contains:
-  - `event_speaker`: participant ID of whoever is speaking most during the MOI, determined by overlap with `timestamps_by_turn.json`. `null` if both participants have equal overlap or no one is speaking.
-  - `annotated_participant`: participant ID whose 3P-IS file this annotation comes from (i.e., the participant being observed).
-  - `start_pre_moi`: start of the pre-MOI window (`start_moi - window` seconds).
-  - `end_pre_moi`: end of the pre-MOI window (equal to `start_moi`).
-  - `start_moi`: start of the MOI in seconds (from the 3P-IS annotation's `start_ts`).
-  - `end_moi`: end of the MOI in seconds (from the 3P-IS annotation's `end_ts`).
-  - `start_post_moi`: start of the post-MOI window (equal to `end_moi`).
-  - `end_post_moi`: end of the post-MOI window (`end_moi + window` seconds).
+**`filelist_entries.json`** — Raw metadata rows for both participants from `filelist.csv`, including annotation flags, movement feature availability (`has_imitator_movement`), dataset split, and batch info.
 
-  Entries are sorted chronologically by `start_moi`. The default window size is ±15 seconds.
+#### `interaction/` — Derived files (created by us)
 
-- **`turns_pre_post.json`** — Turn-based windows around each MOI, defined by the nearest turn of the **non-annotated** participant (the person whose 3P-IS file this annotation does NOT come from). Each entry contains:
-  - `event_speaker`: same as in `time_windows_pre_post.json`.
-  - `annotated_participant`: same as in `time_windows_pre_post.json`.
-  - `non_annotated_participant`: participant ID of the other participant in the interaction.
-  - `start_pre_moi`: start of the non-annotated participant's last turn that begins before `start_moi`. `null` if no such turn exists.
-  - `end_pre_moi`: end of that same pre-MOI turn. `null` if no such turn exists.
-  - `pre_overlap`: `true` if the pre-MOI turn extends past `start_moi` into the MOI window itself.
-  - `start_moi`: start of the MOI in seconds.
-  - `end_moi`: end of the MOI in seconds.
-  - `start_post_moi`: start of the non-annotated participant's first turn that ends after `end_moi`. `null` if no such turn exists.
-  - `end_post_moi`: end of that same post-MOI turn. `null` if no such turn exists.
-  - `post_overlap`: `true` if the post-MOI turn begins before `end_moi`, overlapping into the MOI window itself.
+**`timestamps_by_turn.json`** — Conversational turn structure derived from both participants' VAD files. Each entry is one turn (a maximal stretch of one participant's speech uninterrupted by the other). Fields:
 
-  Entries are sorted chronologically by `start_moi`.
+- `participant_id` — who is speaking
+- `start` — turn start time in seconds
+- `end` — turn end time in seconds
+- `overlapping` — `true` if the other participant has any VAD activity within this turn's window
+
+Turns are ordered chronologically and alternate speakers unless overlap is present. A turn boundary is created only when the other participant speaks — pauses within a single participant's speech do not create new turns.
+
+**`pre_and_post_moi/time_windows_pre_post.json`** — Fixed-duration time windows around each MOI from 3P-IS annotations. Each entry corresponds to one 3P-IS annotation. Fields:
+
+- `event_speaker` — participant ID of whoever is speaking most during the MOI (determined by overlap with `timestamps_by_turn.json`); `null` if tied or no one is speaking
+- `annotated_participant` — participant ID whose 3P-IS file this annotation comes from (i.e., the participant being observed)
+- `start_pre_moi` — start of the pre-MOI window (`start_moi - window` seconds)
+- `end_pre_moi` — end of the pre-MOI window (equal to `start_moi`)
+- `start_moi` — start of the MOI in seconds (from the 3P-IS annotation's `start_ts`)
+- `end_moi` — end of the MOI in seconds (from `end_ts`)
+- `start_post_moi` — start of the post-MOI window (equal to `end_moi`)
+- `end_post_moi` — end of the post-MOI window (`end_moi + window` seconds)
+
+Entries are sorted chronologically by `start_moi`. Default window size is ±15 seconds.
+
+**`pre_and_post_moi/turns_pre_post.json`** — Turn-based windows around each MOI, defined by the nearest turn of the **non-annotated** participant (the person whose 3P-IS file this annotation does NOT come from). Fields:
+
+- `event_speaker` — same as above
+- `annotated_participant` — same as above
+- `non_annotated_participant` — participant ID of the other participant
+- `start_pre_moi` — start of the non-annotated participant's last turn that begins before `start_moi`; `null` if none exists
+- `end_pre_moi` — end of that same pre-MOI turn; `null` if none exists
+- `pre_overlap` — `true` if the pre-MOI turn extends past `start_moi` into the MOI window
+- `start_moi` — start of the MOI in seconds
+- `end_moi` — end of the MOI in seconds
+- `start_post_moi` — start of the non-annotated participant's first turn that ends after `end_moi`; `null` if none exists
+- `end_post_moi` — end of that same post-MOI turn; `null` if none exists
+- `post_overlap` — `true` if the post-MOI turn begins before `end_moi`, overlapping into the MOI window
+
+Entries are sorted chronologically by `start_moi`.
+
+**`moi_emotion_summaries.json`** — Per-MOI emotion summary statistics for both participants. Each entry corresponds to one MOI (one 3P-IS annotation) and contains frame indices for slicing the raw `emotion_features.npz` arrays, plus precomputed mean valence, mean arousal, and mean Ekman emotion logits for both the annotated and non-annotated participant. Fields:
+
+- `interaction_id` — interaction directory name (e.g., `V00_S1132_I00000333`)
+- `annotated_participant` — participant ID whose 3P-IS file this MOI came from
+- `non_annotated_participant` — the other participant in the interaction
+- `imitator_emotion_features_present` — `true` if both participants have `emotion_features.npz`
+- `annotation` — free-text 3P-IS annotation
+- `start_ts` — MOI start time in seconds (integer)
+- `end_ts` — MOI end time in seconds (integer)
+- `start_idx` — first frame index at 30 Hz (inclusive); computed as `start_ts × 30`
+- `end_idx` — last frame index at 30 Hz (exclusive); computed as `end_ts × 30`, clamped to array length
+- `n_frames` — number of frames in the window (`end_idx - start_idx`)
+- `annotated_mean_valence` — mean `emotion_valence` over the window (annotated participant)
+- `annotated_mean_arousal` — mean `emotion_arousal` over the window (annotated participant)
+- `annotated_mean_emotion_scores` — dict of mean logits for each of the 8 Ekman categories (annotated participant)
+- `non_annotated_mean_valence` — mean `emotion_valence` over the window (non-annotated participant)
+- `non_annotated_mean_arousal` — mean `emotion_arousal` over the window (non-annotated participant)
+- `non_annotated_mean_emotion_scores` — dict of mean logits for each of the 8 Ekman categories (non-annotated participant)
+
+All emotion fields are `null` when the corresponding participant's `emotion_features.npz` is missing. Entries are sorted chronologically by `start_ts`. The stored indices allow downstream scripts to slice the raw arrays and compute alternative statistics without redoing the timestamp-to-frame alignment.
+
+#### `participant_a_<id>/` and `participant_b_<id>/` — Per-participant files
+
+**`3P-IS_<file_id>.json`** — Third-party perceived **internal state** annotations. JSONL format (one JSON object per line despite the `.json` extension). Each line: `{"annotation": "<free text>", "start_ts": <seconds>, "end_ts": <seconds>}`. These are the MOI annotations — each line is one Moment of Interest identified by a 3P annotator.
+
+**`3P-R_<file_id>.json`** — Third-party perceived behavior **rationale** annotations. Same JSONL format and timestamps as 3P-IS. Each line explains *why* the annotator thought the participant exhibited the perceived internal state.
+
+**`3P-V_<file_id>.json`** — Third-party **visual element** description annotations. Same JSONL format and timestamps. Each line describes the specific visual cue (gesture, expression, posture change) that prompted the annotation.
+
+**`vad_<file_id>.jsonl`** — Silero Voice Activity Detection segments. JSONL format. Each line: `{"start": <seconds>, "end": <seconds>}`, representing a contiguous speech segment for this participant.
+
+**`<file_id>.wav`** — Per-participant audio (mono, 48 kHz, 32-bit float), echo-cancelled via Beryl AEC. Excluded from the GitHub copy due to size; only present if downloaded with `--include-wav`.
+
+**`emotion_features.npz`** — NumPy compressed archive containing 5 emotion-related features extracted from Meta's Imitator face-tracking model at 30 Hz. Load with `np.load("emotion_features.npz")`. Keys:
+
+- `emotion_arousal` — continuous arousal score per frame, range [-1, 1]
+- `EmotionArousalToken` — quantized arousal, 12 discrete bins
+- `emotion_valence` — continuous valence score per frame, range [-1, 1]
+- `EmotionValenceToken` — quantized valence, 12 discrete bins
+- `emotion_scores` — 8-category Ekman emotion logits per frame (shape: n_frames × 8; raw logits, not softmax probabilities)
+
+Not present for participants whose `has_imitator_movement` flag in `filelist.csv` is `0` (Meta's Imitator model was not successfully run on their video).
+
+---
+
+## Project-Level Files
+
+### `3p_is_adjectives.json`
+
+A vocabulary of 190 unique adjectives extracted from the 492 3P-IS annotations across all 100 interactions, organized by engagement and sentiment. Top-level fields:
+
+- `total_annotations` — total number of 3P-IS annotations (492)
+- `unique_adjectives` — number of distinct adjectives found (190)
+- `total_occurrences` — total adjective occurrences across all annotations (637; some annotations contain multiple adjectives)
+- `engaged` — adjectives describing engaged states (174 unique, 604 occurrences)
+- `disengaged` — adjectives describing disengaged states (16 unique, 33 occurrences)
+
+Each engagement category (`engaged`, `disengaged`) contains three sentiment sub-groups — `positive`, `neutral`, and `negative` — each with a `count` (number of unique adjectives), `occurrences` (total usage count), and an `adjectives` dict mapping each adjective to its occurrence count. For example, "amused" appears 28 times under engaged/positive, while "surprised" appears 19 times under engaged/negative.
+
+### `moi_valence_arousal_table.csv`
+
+A flat CSV with one row per MOI (492 rows), aggregated from all per-interaction `moi_emotion_summaries.json` files by `build_moi_valence_arousal_table.py`. Columns:
+
+- `interaction_id` — interaction directory name (e.g., `V00_S1132_I00000333`)
+- `annotated_participant` — participant ID whose 3P-IS file this MOI came from
+- `non_annotated_participant` — the other participant in the interaction
+- `emotion_features_present` — `True` if both participants have `emotion_features.npz`, `False` otherwise
+- `annotation` — free-text 3P-IS annotation (e.g., "The participant was delighted")
+- `start_ts` — MOI start time in seconds
+- `end_ts` — MOI end time in seconds
+- `start_idx` — first frame index at 30 Hz (inclusive)
+- `end_idx` — last frame index at 30 Hz (exclusive)
+- `n_frames` — number of frames in the window
+- `annotated_mean_valence` — mean valence for the annotated participant over the MOI window
+- `annotated_mean_arousal` — mean arousal for the annotated participant over the MOI window
+- `non_annotated_mean_valence` — mean valence for the non-annotated participant over the MOI window
+- `non_annotated_mean_arousal` — mean arousal for the non-annotated participant over the MOI window
+
+Valence and arousal values are empty for MOIs in the 46 interactions that lack emotion features. Ekman emotion scores are intentionally excluded to keep the CSV spreadsheet-friendly; use the per-interaction `moi_emotion_summaries.json` files for those.
+
+---
 
 ## Scripts
 
-**`download_annotated_interactions.py`** — Downloads the 100 both-annotated naturalistic interactions from Meta's S3 bucket. For each interaction, it creates the directory structure (`interaction/`, `participant_a_{id}/`, `participant_b_{id}/`), assembles interaction-level metadata JSON files from the dataset's CSVs (`interactions.csv`, `relationships.csv`, `participants.csv`, `filelist.csv`), and downloads per-participant annotation files (3P-IS, 3P-R, 3P-V) and VAD files. Audio (.wav) files are excluded by default.
+Everything below is reference for running and maintaining the download/generation scripts.
+
+### Prerequisites
+
+1. **Python 3.8+** with **numpy** (numpy is required by `download_emotion_features.py`; the other scripts use only the standard library)
+2. **Clone the seamless_interaction repository**:
+   ```bash
+   git clone https://github.com/facebookresearch/seamless_interaction.git
+   ```
+   The scripts read CSV files from the `assets/` directory in this repo:
+   - `filelist.csv` — master list of all files in the dataset with annotation flags
+   - `interactions.csv` — prompt text, IPC codes, and interaction types
+   - `participants.csv` — Big Five personality scores
+   - `relationships.csv` — stranger/familiar status per session
+3. **Internet access** to download from Meta's public S3 bucket (`dl.fbaipublicfiles.com`)
+
+### `download_annotated_interactions.py`
+
+Downloads the 100 both-annotated naturalistic interactions from Meta's S3 bucket. For each interaction, it creates the directory structure (`interaction/`, `participant_a_{id}/`, `participant_b_{id}/`), assembles interaction-level metadata JSON files from the dataset's CSVs, and downloads per-participant annotation files (3P-IS, 3P-R, 3P-V) and VAD files. Audio (.wav) files are excluded by default.
 
 ```bash
 # Download annotations, VAD, and metadata only (no audio)
@@ -188,11 +201,15 @@ python download_annotated_interactions.py --repo-path /path/to/seamless_interact
 
 - `--repo-path` (required): path to the cloned [seamless_interaction](https://github.com/facebookresearch/seamless_interaction) GitHub repository. Must contain the `assets/` directory with `filelist.csv`, `interactions.csv`, `participants.csv`, and `relationships.csv`.
 - `--output-dir` (optional, default `.`): directory in which to create the `annotated_interactions/` folder.
-- `--include-wav` (optional): also download per-participant audio files (mono, 48kHz, 32-bit float WAV, echo-cancelled via Beryl AEC). Excluded by default to keep the download lightweight.
+- `--include-wav` (optional): also download per-participant audio files. Excluded by default to keep the download lightweight.
 - `--num-workers` (optional, default 4): number of parallel download threads.
 - `--dry-run` (optional): print what would be downloaded without actually downloading.
 
-**`generate_timestamps_by_turn.py`** — Generates `timestamps_by_turn.json` for each interaction. Must be run before the two scripts below.
+The script identifies the 100 interactions by filtering `filelist.csv`: keep only `label == "naturalistic"` (93,620 of 129,370 entries) → keep only `has_annotation_3p == "1"` (543 entries) → group by interaction ID → keep only interactions with exactly 2 entries (both participants annotated) → **100 interactions** (200 file entries). Without `--include-wav`, the total download is under 100 MB. With `--include-wav`, roughly **5–15 GB**. Common issues: `"filelist.csv not found"` means `--repo-path` should point to the repo root (not `assets/`); HTTP 403 errors are normal for files that don't exist on S3; re-running is safe (existing files are overwritten).
+
+### `generate_timestamps_by_turn.py`
+
+Generates `timestamps_by_turn.json` for each interaction. Must be run before the two MOI scripts below.
 
 ```bash
 python generate_timestamps_by_turn.py annotated_interactions
@@ -200,16 +217,20 @@ python generate_timestamps_by_turn.py annotated_interactions
 
 - Takes a single positional argument: path to the `annotated_interactions/` directory.
 
-**`generate_moi_time_windows.py`** — Generates `time_windows_pre_post.json` for each interaction.
+### `generate_moi_time_windows.py`
+
+Generates `time_windows_pre_post.json` for each interaction.
 
 ```bash
 python generate_moi_time_windows.py --input-dir annotated_interactions --window 15
 ```
 
 - `--input-dir` (required): path to the `annotated_interactions/` directory.
-- `--window` (optional, default 15): seconds before and after each MOI for the pre/post windows.
+- `--window` (optional, default 15): seconds before and after each MOI.
 
-**`generate_moi_turns.py`** — Generates `turns_pre_post.json` for each interaction.
+### `generate_moi_turns.py`
+
+Generates `turns_pre_post.json` for each interaction.
 
 ```bash
 python generate_moi_turns.py --input-dir annotated_interactions
@@ -217,49 +238,60 @@ python generate_moi_turns.py --input-dir annotated_interactions
 
 - `--input-dir` (required): path to the `annotated_interactions/` directory.
 
-## How the 100 Interactions Are Identified
+### `valence_arousal/download_emotion_features.py`
 
-The script applies the following filtering logic to `filelist.csv`:
+Downloads 5 emotion features from Meta's S3 bucket for each participant and saves them as `emotion_features.npz` in each participant's directory. Requires `annotated_interactions/` to already exist (created by `download_annotated_interactions.py`). Skips participants whose `has_imitator_movement` flag is `0`.
 
-1. **Filter by label**: Keep only rows where `label == "naturalistic"` (93,620 of 129,370 total entries)
-2. **Filter by 3P annotation**: Keep only rows where `has_annotation_3p == "1"` (543 entries)
-3. **Group by interaction**: Extract the interaction ID from each file ID by removing the participant suffix (e.g., `V00_S1288_I00000099_P1119` becomes `V00_S1288_I00000099`). This yields 443 unique interactions.
-4. **Filter for both annotated**: Keep only interactions where the group contains exactly 2 entries -- meaning both participants were annotated. This yields **100 interactions** (200 file entries). The remaining 343 interactions have only one participant annotated.
+```bash
+# Download emotion features for all participants
+python download_emotion_features.py --repo-path /path/to/seamless_interaction
 
-The script prints these counts as it runs so you can verify the filtering logic.
+# Preview what would be downloaded
+python download_emotion_features.py --repo-path /path/to/seamless_interaction --dry-run
 
-## Note on participant_a vs. participant_b
-
-The dataset's `interactions.csv` defines "participant_a" and "participant_b" prompt roles (each participant receives different prompt text), but there is no mapping from those roles to actual participant IDs in the file names. This script assigns participant_a and participant_b **alphabetically by participant ID** (lower ID = participant_a). This is a deterministic convention but does **not** correspond to the prompt assignment in `interactions.csv`.
-
-## Note on the Annotation File Format
-
-The annotation files (3P-IS, 3P-R, 3P-V) have a `.json` extension but are actually **JSONL format** (one JSON object per line). Each line typically looks like:
-
-```json
-{"annotation": "The participant appears attentive...", "start_ts": 45.2, "end_ts": 48.7}
+# Re-download even if emotion_features.npz already exists
+python download_emotion_features.py --repo-path /path/to/seamless_interaction --overwrite
 ```
 
-The official `seamless_interaction` Python package has a known bug (`fs.py`, method `_wget_download_from_s3`, ~line 997) where it calls `json.load()` on these files, which fails with `JSONDecodeError: Extra data: line 2 column 1` because `json.load()` expects a single JSON object. **This script avoids the bug** by downloading annotation files directly via HTTP and saving the raw bytes without parsing.
+- `--repo-path` (required): path to the cloned [seamless_interaction](https://github.com/facebookresearch/seamless_interaction) GitHub repository.
+- `--interactions-dir` (optional, default `./annotated_interactions`): path to the `annotated_interactions/` directory.
+- `--num-workers` (optional, default 4): number of parallel download threads.
+- `--dry-run` (optional): print what would be downloaded without actually downloading.
+- `--overwrite` (optional): re-download even if `emotion_features.npz` already exists.
 
-To read these files in your own code, use:
 
-```python
-import json
+### `valence_arousal/extract_moi_summaries.py`
 
-annotations = []
-with open("3P-IS_V00_S1288_I00000099_P1119.json") as f:
-    for line in f:
-        annotations.append(json.loads(line.strip()))
+For each interaction, reads the 3P-IS annotation files (which define Moments of Interest) and `emotion_features.npz` for both participants, then writes `interaction/moi_emotion_summaries.json` containing one record per MOI with frame indices, mean valence/arousal, and mean Ekman emotion logits for both the annotated and non-annotated participant. Requires `emotion_features.npz` to already exist (created by `download_emotion_features.py`).
+
+```bash
+# Extract summaries for all interactions
+python scripts/valence_arousal/extract_moi_summaries.py --interactions-dir ./annotated_interactions
+
+# Only process interactions where both participants have emotion features (54 of 100)
+python scripts/valence_arousal/extract_moi_summaries.py --interactions-dir ./annotated_interactions --both-required
+
+# Preview without writing
+python scripts/valence_arousal/extract_moi_summaries.py --interactions-dir ./annotated_interactions --dry-run
 ```
 
-## Download Size Estimate
+- `--interactions-dir` (optional, default `./annotated_interactions`): path to the `annotated_interactions/` directory.
+- `--both-required` (optional): only process interactions where both participants have `emotion_features.npz` (54 of 100). Default: process all.
+- `--overwrite` (optional): overwrite existing `moi_emotion_summaries.json` files.
+- `--dry-run` (optional): print what would be processed without writing files.
 
-Without `--include-wav`, each interaction downloads 8 small annotation/metadata files — the total download is lightweight (under 100 MB). With `--include-wav`, each interaction also downloads 2 WAV files (the largest component), and the total size is roughly **5-15 GB** depending on interaction durations. The `--dry-run` flag lets you preview without downloading.
+### `valence_arousal/build_moi_valence_arousal_table.py`
 
-## Troubleshooting
+Aggregates all per-interaction `moi_emotion_summaries.json` files into a single flat CSV (`moi_valence_arousal_table.csv`) with one row per MOI. Requires `moi_emotion_summaries.json` to already exist in each interaction (created by `extract_moi_summaries.py`). Ekman emotion scores are excluded from the CSV to keep it spreadsheet-friendly; use the per-interaction JSON files for those.
 
-- **"filelist.csv not found"**: Make sure `--repo-path` points to the root of the cloned `seamless_interaction` repository (not the `assets/` subdirectory itself).
-- **Many "NOT FOUND (HTTP 403)" messages**: This is normal for some files. Meta's S3 bucket returns 403 for nonexistent keys. Not all features are available for all interactions.
-- **Slow downloads**: WAV files can be large. Try reducing `--num-workers` if you're hitting rate limits, or increasing it if your connection can handle more parallelism.
-- **Resuming an interrupted download**: Re-running the script is safe; existing files will be overwritten. It does not currently skip already-downloaded files.
+```bash
+# Build the table (default output: ./moi_valence_arousal_table.csv)
+python scripts/valence_arousal/build_moi_valence_arousal_table.py --interactions-dir ./annotated_interactions
+
+# Specify a custom output path
+python scripts/valence_arousal/build_moi_valence_arousal_table.py --interactions-dir ./annotated_interactions --output ./custom_path.csv
+```
+
+- `--interactions-dir` (optional, default `./annotated_interactions`): path to the `annotated_interactions/` directory.
+- `--output` (optional, default `./moi_valence_arousal_table.csv`): output CSV file path.
+
