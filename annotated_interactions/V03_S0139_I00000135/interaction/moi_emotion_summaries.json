@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S0139_I00000135",
+    "annotated_participant": "P1302",
+    "non_annotated_participant": "P1303",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is feeling reflective.",
+    "start_ts": 21,
+    "end_ts": 25,
+    "start_idx": 630,
+    "end_idx": 750,
+    "n_frames": 120,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S0139_I00000135",
+    "annotated_participant": "P1303",
+    "non_annotated_participant": "P1302",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is disappointed.",
+    "start_ts": 154,
+    "end_ts": 157,
+    "start_idx": 4620,
+    "end_idx": 4710,
+    "n_frames": 90,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

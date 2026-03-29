@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S1270_I00000059",
+    "annotated_participant": "P1020",
+    "non_annotated_participant": "P3681",
+    "imitator_emotion_features_present": false,
+    "annotation": "Participant feels itchy",
+    "start_ts": 32,
+    "end_ts": 36,
+    "start_idx": 960,
+    "end_idx": 1080,
+    "n_frames": 120,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S1270_I00000059",
+    "annotated_participant": "P3681",
+    "non_annotated_participant": "P1020",
+    "imitator_emotion_features_present": false,
+    "annotation": "Participant feels itchy",
+    "start_ts": 34,
+    "end_ts": 37,
+    "start_idx": 1020,
+    "end_idx": 1110,
+    "n_frames": 90,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

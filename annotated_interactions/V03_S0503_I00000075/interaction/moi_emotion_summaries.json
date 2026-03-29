@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S0503_I00000075",
+    "annotated_participant": "P2454",
+    "non_annotated_participant": "P2455",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant feels open and conversational.",
+    "start_ts": 17,
+    "end_ts": 18,
+    "start_idx": 510,
+    "end_idx": 540,
+    "n_frames": 30,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S0503_I00000075",
+    "annotated_participant": "P2455",
+    "non_annotated_participant": "P2454",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant feels informative and confident.",
+    "start_ts": 43,
+    "end_ts": 45,
+    "start_idx": 1290,
+    "end_idx": 1350,
+    "n_frames": 60,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

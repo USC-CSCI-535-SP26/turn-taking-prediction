@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S0386_I00000063",
+    "annotated_participant": "P2024",
+    "non_annotated_participant": "P1359",
+    "imitator_emotion_features_present": false,
+    "annotation": "Look for the appropriate and relevant words to make themselves clear",
+    "start_ts": 32,
+    "end_ts": 40,
+    "start_idx": 960,
+    "end_idx": 1200,
+    "n_frames": 240,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S0386_I00000063",
+    "annotated_participant": "P1359",
+    "non_annotated_participant": "P2024",
+    "imitator_emotion_features_present": false,
+    "annotation": "Participant stayed focused",
+    "start_ts": 71,
+    "end_ts": 76,
+    "start_idx": 2130,
+    "end_idx": 2280,
+    "n_frames": 150,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S1313_I00000107",
+    "annotated_participant": "P3979",
+    "non_annotated_participant": "P3978",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is excited.",
+    "start_ts": 30,
+    "end_ts": 33,
+    "start_idx": 900,
+    "end_idx": 990,
+    "n_frames": 90,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S1313_I00000107",
+    "annotated_participant": "P3978",
+    "non_annotated_participant": "P3979",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is contributing and supportive.",
+    "start_ts": 101,
+    "end_ts": 108,
+    "start_idx": 3030,
+    "end_idx": 3240,
+    "n_frames": 210,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

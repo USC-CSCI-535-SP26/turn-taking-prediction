@@ -1,0 +1,110 @@
+[
+  {
+    "interaction_id": "V00_S1297_I00000201",
+    "annotated_participant": "P1019",
+    "non_annotated_participant": "P1123",
+    "imitator_emotion_features_present": true,
+    "annotation": "The participant was amused",
+    "start_ts": 11,
+    "end_ts": 14,
+    "start_idx": 330,
+    "end_idx": 420,
+    "n_frames": 90,
+    "annotated_mean_valence": 0.434654,
+    "annotated_mean_arousal": 0.417982,
+    "annotated_mean_emotion_scores": {
+      "neutral": -1.791023,
+      "happy": -0.108784,
+      "sad": -0.237799,
+      "surprise": -0.792586,
+      "fear": 4.905867,
+      "disgust": -2.122508,
+      "anger": -2.640471,
+      "contempt": 1.019654
+    },
+    "non_annotated_mean_valence": 0.487983,
+    "non_annotated_mean_arousal": 0.385943,
+    "non_annotated_mean_emotion_scores": {
+      "neutral": -1.200818,
+      "happy": -0.991249,
+      "sad": -0.136174,
+      "surprise": -0.025299,
+      "fear": 5.599435,
+      "disgust": -1.4076,
+      "anger": -0.80959,
+      "contempt": -0.398787
+    }
+  },
+  {
+    "interaction_id": "V00_S1297_I00000201",
+    "annotated_participant": "P1019",
+    "non_annotated_participant": "P1123",
+    "imitator_emotion_features_present": true,
+    "annotation": "The participant was content and eager",
+    "start_ts": 100,
+    "end_ts": 103,
+    "start_idx": 3000,
+    "end_idx": 3090,
+    "n_frames": 90,
+    "annotated_mean_valence": 0.173789,
+    "annotated_mean_arousal": 0.107583,
+    "annotated_mean_emotion_scores": {
+      "neutral": -0.454861,
+      "happy": 2.070425,
+      "sad": 0.581944,
+      "surprise": -1.979704,
+      "fear": 2.824532,
+      "disgust": 0.701906,
+      "anger": 0.070281,
+      "contempt": -1.898541
+    },
+    "non_annotated_mean_valence": 0.029199,
+    "non_annotated_mean_arousal": 0.643474,
+    "non_annotated_mean_emotion_scores": {
+      "neutral": 0.024796,
+      "happy": -0.725382,
+      "sad": 0.140425,
+      "surprise": 2.93284,
+      "fear": 0.042813,
+      "disgust": 0.568955,
+      "anger": -0.885272,
+      "contempt": 1.725158
+    }
+  },
+  {
+    "interaction_id": "V00_S1297_I00000201",
+    "annotated_participant": "P1123",
+    "non_annotated_participant": "P1019",
+    "imitator_emotion_features_present": true,
+    "annotation": "The participant was confused",
+    "start_ts": 109,
+    "end_ts": 111,
+    "start_idx": 3270,
+    "end_idx": 3330,
+    "n_frames": 60,
+    "annotated_mean_valence": -0.072937,
+    "annotated_mean_arousal": 0.074568,
+    "annotated_mean_emotion_scores": {
+      "neutral": 0.674269,
+      "happy": -0.494858,
+      "sad": -0.281607,
+      "surprise": 0.174698,
+      "fear": 0.792831,
+      "disgust": 2.454823,
+      "anger": 2.105737,
+      "contempt": -1.039995
+    },
+    "non_annotated_mean_valence": 0.101788,
+    "non_annotated_mean_arousal": 0.096586,
+    "non_annotated_mean_emotion_scores": {
+      "neutral": -0.172031,
+      "happy": 2.276025,
+      "sad": 0.136722,
+      "surprise": -2.266991,
+      "fear": 2.62047,
+      "disgust": 1.233003,
+      "anger": 0.668359,
+      "contempt": -2.323002
+    }
+  }
+]

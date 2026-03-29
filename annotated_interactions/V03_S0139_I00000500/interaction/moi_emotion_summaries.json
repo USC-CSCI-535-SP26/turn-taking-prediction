@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S0139_I00000500",
+    "annotated_participant": "P1302",
+    "non_annotated_participant": "P1303",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is feeling uncertain.",
+    "start_ts": 23,
+    "end_ts": 25,
+    "start_idx": 690,
+    "end_idx": 750,
+    "n_frames": 60,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S0139_I00000500",
+    "annotated_participant": "P1303",
+    "non_annotated_participant": "P1302",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is tired.",
+    "start_ts": 56,
+    "end_ts": 58,
+    "start_idx": 1680,
+    "end_idx": 1740,
+    "n_frames": 60,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

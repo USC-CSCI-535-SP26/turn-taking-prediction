@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S1253_I00000316",
+    "annotated_participant": "P3782",
+    "non_annotated_participant": "P3750",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is being supportive",
+    "start_ts": 156,
+    "end_ts": 164,
+    "start_idx": 4680,
+    "end_idx": 4920,
+    "n_frames": 240,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S1253_I00000316",
+    "annotated_participant": "P3750",
+    "non_annotated_participant": "P3782",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is feeling uncomfortable sharing.",
+    "start_ts": 210,
+    "end_ts": 215,
+    "start_idx": 6300,
+    "end_idx": 6450,
+    "n_frames": 150,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]
