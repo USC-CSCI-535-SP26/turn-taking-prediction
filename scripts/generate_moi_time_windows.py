@@ -64,6 +64,16 @@ def determine_speaker(start, end, turns):
     return None
 
 
+def load_session_relationship(interaction_dir):
+    """Load session_relationship.json, return (relationship, relationship_detail) or (None, None)."""
+    path = os.path.join(interaction_dir, "interaction", "session_relationship.json")
+    if not os.path.exists(path):
+        return None, None
+    with open(path) as f:
+        data = json.load(f)
+    return data.get("relationship"), data.get("relationship_detail")
+
+
 def process_interaction(interaction_dir, window_seconds):
     """
     Process one interaction: read 3P-IS files for both participants,
@@ -72,6 +82,8 @@ def process_interaction(interaction_dir, window_seconds):
     turns = load_turns(interaction_dir)
     if turns is None:
         return None, "missing timestamps_by_turn.json"
+
+    relationship, relationship_detail = load_session_relationship(interaction_dir)
 
     # Find participant directories and their 3P-IS files
     entries = []
@@ -110,6 +122,9 @@ def process_interaction(interaction_dir, window_seconds):
                             "end_moi": end_moi,
                             "start_post_moi": end_moi,
                             "end_post_moi": end_moi + window_seconds,
+                            "annotation": ann.get("annotation"),
+                            "relationship": relationship,
+                            "relationship_detail": relationship_detail,
                         })
 
     # Sort chronologically by MOI start time
