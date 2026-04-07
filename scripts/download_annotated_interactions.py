@@ -677,6 +677,80 @@ def download_all_interactions(
 
 
 # =============================================================================
+# Video viewer generation
+# =============================================================================
+
+def generate_video_viewer(interaction_id, interactions_dir="./annotated_interactions"):
+    """
+    Create an HTML file with side-by-side video players for both participants
+    in an interaction, streaming from Meta's S3 bucket.
+
+    Assumes filelist_entries.json already exists in the interaction's
+    interaction/ directory (created by download_all_interactions).
+
+    Args:
+        interaction_id: e.g. "V00_S1132_I00000333"
+        interactions_dir: path to annotated_interactions/
+
+    Returns:
+        Path to the generated HTML file.
+    """
+    entries_path = os.path.join(
+        interactions_dir, interaction_id, "interaction", "filelist_entries.json"
+    )
+    with open(entries_path) as f:
+        entries = json.load(f)
+
+    # Sort alphabetically by participant ID (same convention as directory naming)
+    entries.sort(key=lambda e: e["file_id"].rsplit("_", 1)[1])
+
+    participants = []
+    for i, entry in enumerate(entries):
+        pid = entry["file_id"].rsplit("_", 1)[1]
+        letter = "a" if i == 0 else "b"
+        url = f"{S3_BASE_URL}/naturalistic/{entry['split']}/video/{entry['file_id']}.mp4"
+        participants.append((pid, letter, url))
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{interaction_id}</title>
+<style>
+  body {{ font-family: -apple-system, sans-serif; background: #111; color: #eee; margin: 0; padding: 24px; }}
+  h1 {{ font-size: 18px; font-weight: 500; margin-bottom: 16px; }}
+  .videos {{ display: flex; gap: 16px; }}
+  .vid-container {{ flex: 1; }}
+  .vid-container label {{ display: block; font-size: 14px; color: #aaa; margin-bottom: 6px; }}
+  video {{ width: 100%; border-radius: 6px; background: #000; }}
+</style>
+</head>
+<body>
+<h1>{interaction_id}</h1>
+<div class="videos">
+"""
+    for pid, letter, url in participants:
+        html += f"""  <div class="vid-container">
+    <label>{pid} (participant_{letter})</label>
+    <video controls preload="metadata">
+      <source src="{url}" type="video/mp4">
+    </video>
+  </div>
+"""
+    html += """</div>
+</body>
+</html>"""
+
+    output_path = os.path.join(
+        interactions_dir, interaction_id, "interaction", "video_viewer.html"
+    )
+    with open(output_path, "w") as f:
+        f.write(html)
+
+    return output_path
+
+
+# =============================================================================
 # Main
 # =============================================================================
 
