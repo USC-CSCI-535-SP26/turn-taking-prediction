@@ -479,15 +479,20 @@ def download_participant_files(
     split: str,
     output_dir: str,
     include_wav: bool = False,
+    include_annotations: bool = True,
     dry_run: bool = False,
 ) -> list[tuple[str, bool, str]]:
     """
-    Download all per-participant files for one file_id:
+    Download per-participant files for one file_id.
+
+    By default downloads:
         - 3P-IS annotation (perceived internal state)
         - 3P-R annotation (perceived behavior rationale)
         - 3P-V annotation (visual element description)
-        - Audio (.wav) — only if include_wav is True
         - VAD (.jsonl) — Silero Voice Activity Detection segments
+
+    Set include_annotations=False to download only VAD (useful for
+    participants who lack 3P annotations).
 
     The annotation files are JSON with one JSON object per line (JSONL format),
     despite having a .json extension. Each line contains:
@@ -502,21 +507,27 @@ def download_participant_files(
         split: "train" or "test"
         output_dir: Directory to save files into.
         include_wav: If True, also download the audio .wav file.
+        include_annotations: If True (default), download 3P-IS/3P-R/3P-V.
+            Set to False for participants without 3P annotations.
         dry_run: If True, print what would be downloaded without downloading.
 
     Returns:
         List of (filename, success, message) tuples.
     """
-    # Define all files to download for this participant.
+    # Define files to download for this participant.
     # Each tuple is (S3_category_path, filename_prefix, extension).
-    files_to_download = [
+    files_to_download = []
+
+    if include_annotations:
         # Third-party annotations
-        ("annotations/3P-IS", f"3P-IS_{file_id}", "json"),
-        ("annotations/3P-R",  f"3P-R_{file_id}",  "json"),
-        ("annotations/3P-V",  f"3P-V_{file_id}",  "json"),
-        # Voice Activity Detection (Silero VAD at 100Hz)
-        ("metadata/vad",      f"vad_{file_id}",    "jsonl"),
-    ]
+        files_to_download.extend([
+            ("annotations/3P-IS", f"3P-IS_{file_id}", "json"),
+            ("annotations/3P-R",  f"3P-R_{file_id}",  "json"),
+            ("annotations/3P-V",  f"3P-V_{file_id}",  "json"),
+        ])
+
+    # Voice Activity Detection (Silero VAD at 100Hz) — always downloaded
+    files_to_download.append(("metadata/vad", f"vad_{file_id}", "jsonl"))
 
     if include_wav:
         # Audio (mono, 48kHz, 32-bit float, echo-cancelled via Beryl AEC)
