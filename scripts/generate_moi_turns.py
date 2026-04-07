@@ -98,6 +98,16 @@ def find_pre_post_turns(start_moi, end_moi, non_ann_turns):
     return pre_turn, pre_overlap, post_turn, post_overlap
 
 
+def load_session_relationship(interaction_dir):
+    """Load session_relationship.json, return (relationship, relationship_detail) or (None, None)."""
+    path = os.path.join(interaction_dir, "interaction", "session_relationship.json")
+    if not os.path.exists(path):
+        return None, None
+    with open(path) as f:
+        data = json.load(f)
+    return data.get("relationship"), data.get("relationship_detail")
+
+
 def process_interaction(interaction_dir):
     """
     Process one interaction: read 3P-IS files, find non-annotated participant's
@@ -106,6 +116,8 @@ def process_interaction(interaction_dir):
     turns = load_turns(interaction_dir)
     if turns is None:
         return None, "missing timestamps_by_turn.json"
+
+    relationship, relationship_detail = load_session_relationship(interaction_dir)
 
     pids = get_participant_ids(interaction_dir)
     if len(pids) != 2:
@@ -162,6 +174,9 @@ def process_interaction(interaction_dir):
                             "start_post_moi": post_turn["start"] if post_turn else None,
                             "end_post_moi": post_turn["end"] if post_turn else None,
                             "post_overlap": post_overlap,
+                            "annotation": ann.get("annotation"),
+                            "relationship": relationship,
+                            "relationship_detail": relationship_detail,
                         }
                         entries.append(entry)
 
