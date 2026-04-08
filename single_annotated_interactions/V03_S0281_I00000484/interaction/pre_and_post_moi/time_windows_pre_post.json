@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1446",
+    "annotated_participant": "P1446",
+    "start_pre_moi": 121.0,
+    "end_pre_moi": 136,
+    "start_moi": 136,
+    "end_moi": 144,
+    "start_post_moi": 144,
+    "end_post_moi": 159.0,
+    "annotation": "The participant is elaborating on what scares them in a sensitive way",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

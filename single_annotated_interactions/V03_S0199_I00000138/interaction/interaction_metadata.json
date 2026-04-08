@@ -1,0 +1,11 @@
+{
+  "": "130",
+  "prompt_hash": "00000138",
+  "prompt_id_unique": "P0017_DP_AMCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you a story from their past. Listen to them and engage with the story.",
+  "participant_b_prompt_text": "Tell a story about a success or challenge you've overcome in life. Take your time telling your\npartner, providing context around the event and describe your feelings surrounding it.",
+  "ipc_a": "AMCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 222.0218
+}

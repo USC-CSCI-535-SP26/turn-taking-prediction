@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P3978",
+    "annotated_participant": "P3978",
+    "start_pre_moi": 23.0,
+    "end_pre_moi": 38,
+    "start_moi": 38,
+    "end_moi": 47,
+    "start_post_moi": 47,
+    "end_post_moi": 62.0,
+    "annotation": "The participant is jolly and fascinated.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

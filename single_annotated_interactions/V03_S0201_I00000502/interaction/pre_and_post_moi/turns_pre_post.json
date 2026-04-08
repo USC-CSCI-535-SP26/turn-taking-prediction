@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1432",
+    "annotated_participant": "P1432",
+    "non_annotated_participant": "P1433",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 99,
+    "end_moi": 101,
+    "start_post_moi": 157.9699999999998,
+    "end_post_moi": 172.59000000000015,
+    "post_overlap": false,
+    "annotation": "He felt somewhat uneasy and uncomfortable.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

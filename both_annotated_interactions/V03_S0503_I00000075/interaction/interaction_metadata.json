@@ -1,0 +1,11 @@
+{
+  "": "70",
+  "prompt_hash": "00000075",
+  "prompt_id_unique": "P0100_v3.6.str_APCP_XXXX",
+  "participant_a_prompt_text": "Discuss a hobby or activity that you're passionate about and enjoy sharing with others. How do you like to involve others in this activity, and what do you get out of it?",
+  "participant_b_prompt_text": "Your partner will tell you about a hobby or activity they're enthusiastic about. Ask them questions about how they got into it, and how they like to share it with others.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 134.000533
+}

@@ -1,0 +1,11 @@
+{
+  "": "356",
+  "prompt_hash": "00000315",
+  "prompt_id_unique": "P0124_v3.7.str_AMCM_XXXX",
+  "participant_a_prompt_text": "Tell your partner about a time when you wished someone would have just listened to you without interrupting or offering unsolicited advice. Describe how that would have made you feel heard.",
+  "participant_b_prompt_text": "Your partner will tell you about a situation where they felt misunderstood. Listen attentively and try not to interrupt, allowing them to fully express themselves.",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 212.011433
+}

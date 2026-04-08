@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P2069",
+    "annotated_participant": "P2069",
+    "non_annotated_participant": "P2114",
+    "start_pre_moi": 29.682000000000002,
+    "end_pre_moi": 42.158,
+    "pre_overlap": true,
+    "start_moi": 42,
+    "end_moi": 47,
+    "start_post_moi": 60.402,
+    "end_post_moi": 60.846000000000004,
+    "post_overlap": false,
+    "annotation": "He Is empathizing with her ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2069",
+    "annotated_participant": "P2069",
+    "non_annotated_participant": "P2114",
+    "start_pre_moi": 64.21,
+    "end_pre_moi": 64.654,
+    "pre_overlap": false,
+    "start_moi": 66,
+    "end_moi": 73,
+    "start_post_moi": 84.05,
+    "end_post_moi": 111.886,
+    "post_overlap": false,
+    "annotation": "He is interested in her ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

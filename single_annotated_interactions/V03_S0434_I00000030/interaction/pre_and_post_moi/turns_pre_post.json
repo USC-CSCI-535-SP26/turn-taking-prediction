@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1359",
+    "annotated_participant": "P1359",
+    "non_annotated_participant": "P1993",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 18,
+    "end_moi": 25,
+    "start_post_moi": 50.577999999999975,
+    "end_post_moi": 64.07799999999997,
+    "post_overlap": false,
+    "annotation": "The participant is cheerful ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

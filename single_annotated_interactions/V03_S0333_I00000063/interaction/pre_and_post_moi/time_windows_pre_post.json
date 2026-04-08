@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1892",
+    "annotated_participant": "P1892",
+    "start_pre_moi": 30.0,
+    "end_pre_moi": 45,
+    "start_moi": 45,
+    "end_moi": 62,
+    "start_post_moi": 62,
+    "end_post_moi": 77.0,
+    "annotation": "He is commending partner",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

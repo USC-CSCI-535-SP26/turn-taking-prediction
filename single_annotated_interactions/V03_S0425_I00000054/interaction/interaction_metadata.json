@@ -1,0 +1,11 @@
+{
+  "": "52",
+  "prompt_hash": "00000054",
+  "prompt_id_unique": "P0009_v3.0.str_APCN_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they took charge of a situation. Ask them questions to clarify their role and the outcome, and discuss the qualities that made them effective leaders.",
+  "participant_b_prompt_text": "Tell your partner about a time when you took charge of a situation and led others to achieve a common goal. What was the situation, and how did you assert your leadership?",
+  "ipc_a": "APCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 148.014533
+}

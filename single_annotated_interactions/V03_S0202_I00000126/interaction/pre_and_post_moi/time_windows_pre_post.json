@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1429",
+    "annotated_participant": "P1288",
+    "start_pre_moi": -1.0,
+    "end_pre_moi": 14,
+    "start_moi": 14,
+    "end_moi": 16,
+    "start_post_moi": 16,
+    "end_post_moi": 31.0,
+    "annotation": "The participant feels reflective and analytical.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

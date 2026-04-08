@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1639",
+    "annotated_participant": "P1288",
+    "start_pre_moi": 128.0,
+    "end_pre_moi": 143,
+    "start_moi": 143,
+    "end_moi": 147,
+    "start_post_moi": 147,
+    "end_post_moi": 162.0,
+    "annotation": "Participant appears animated and expressive while describing an important moment.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

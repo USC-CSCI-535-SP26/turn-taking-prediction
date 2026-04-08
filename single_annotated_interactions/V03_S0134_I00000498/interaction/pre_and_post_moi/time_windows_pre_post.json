@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1288",
+    "start_pre_moi": 65.0,
+    "end_pre_moi": 80,
+    "start_moi": 80,
+    "end_moi": 85,
+    "start_post_moi": 85,
+    "end_post_moi": 100.0,
+    "annotation": "The participant is feeling stressed.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1427",
+    "non_annotated_participant": "P1259",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 197,
+    "end_moi": 218,
+    "start_post_moi": null,
+    "end_post_moi": null,
+    "post_overlap": false,
+    "annotation": "The participant felt worried",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

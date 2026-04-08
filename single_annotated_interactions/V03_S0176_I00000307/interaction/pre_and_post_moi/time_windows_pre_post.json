@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1259",
+    "annotated_participant": "P1378",
+    "start_pre_moi": 41.0,
+    "end_pre_moi": 56,
+    "start_moi": 56,
+    "end_moi": 62,
+    "start_post_moi": 62,
+    "end_post_moi": 77.0,
+    "annotation": "Feels awkward and uninterested",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "": "190",
+  "prompt_hash": "00000200",
+  "prompt_id_unique": "P0031_v3.1.fam_APCM_XXXX",
+  "participant_a_prompt_text": "Discuss a decision you made that affected your partner, but didn't necessarily consult them on. Explain why you made the decision without their input and how you think they felt about it.",
+  "participant_b_prompt_text": "Your partner will tell you about a time they felt like you made a decision without considering their thoughts or opinions. Discuss the decision and how you can work together to make more collaborative choices in the future.",
+  "ipc_a": "APCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 122.0
+}

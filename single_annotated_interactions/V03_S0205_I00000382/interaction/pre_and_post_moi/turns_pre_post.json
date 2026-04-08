@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1449",
+    "annotated_participant": "P1211",
+    "non_annotated_participant": "P1449",
+    "start_pre_moi": 152.4340000000002,
+    "end_pre_moi": 178.79799999999977,
+    "pre_overlap": true,
+    "start_moi": 161,
+    "end_moi": 164,
+    "start_post_moi": 152.4340000000002,
+    "end_post_moi": 178.79799999999977,
+    "post_overlap": true,
+    "annotation": "The participant appeared engaged and illustrative while discussing putting on the goggles.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1990",
+    "annotated_participant": "P1990",
+    "start_pre_moi": 0.0,
+    "end_pre_moi": 15,
+    "start_moi": 15,
+    "end_moi": 19,
+    "start_post_moi": 19,
+    "end_post_moi": 34.0,
+    "annotation": "Participant was uncomfortable and worried",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1990",
+    "annotated_participant": "P1990",
+    "start_pre_moi": 41.0,
+    "end_pre_moi": 56,
+    "start_moi": 56,
+    "end_moi": 64,
+    "start_post_moi": 64,
+    "end_post_moi": 79.0,
+    "annotation": "Participant was disturbed and overwhelmed",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1309",
+    "annotated_participant": "P1309",
+    "start_pre_moi": 63.0,
+    "end_pre_moi": 78,
+    "start_moi": 78,
+    "end_moi": 84,
+    "start_post_moi": 84,
+    "end_post_moi": 99.0,
+    "annotation": "Participant is pleased",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

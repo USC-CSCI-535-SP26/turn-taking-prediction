@@ -1,0 +1,11 @@
+{
+  "": "151",
+  "prompt_hash": "00000159",
+  "prompt_id_unique": "P0134_v3.8.str_ANCM_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they were affected by someone's inconsiderate behavior. Listen to their story and discuss whether you think the person's actions were intentional or not.",
+  "participant_b_prompt_text": "Recall a time when someone's thoughtless behavior had a significant impact on you. Describe the situation and how it made you feel. Do you think the person was aware of the effect of their actions?",
+  "ipc_a": "ANCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 280.013067
+}

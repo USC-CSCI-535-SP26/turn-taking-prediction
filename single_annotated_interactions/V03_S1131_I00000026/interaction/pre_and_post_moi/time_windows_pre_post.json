@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P3506",
+    "annotated_participant": "P3498",
+    "start_pre_moi": 56.0,
+    "end_pre_moi": 71,
+    "start_moi": 71,
+    "end_moi": 75,
+    "start_post_moi": 75,
+    "end_post_moi": 90.0,
+    "annotation": "Participant conveys reflective thought",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3498",
+    "annotated_participant": "P3498",
+    "start_pre_moi": 175.0,
+    "end_pre_moi": 190,
+    "start_moi": 190,
+    "end_moi": 198,
+    "start_post_moi": 198,
+    "end_post_moi": 213.0,
+    "annotation": "Participant demonstrates acknowledgment",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

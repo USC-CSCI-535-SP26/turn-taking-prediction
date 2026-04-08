@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2059",
+    "annotated_participant": "P2059",
+    "start_pre_moi": 26.0,
+    "end_pre_moi": 41,
+    "start_moi": 41,
+    "end_moi": 45,
+    "start_post_moi": 45,
+    "end_post_moi": 60.0,
+    "annotation": "He is proud of himself ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

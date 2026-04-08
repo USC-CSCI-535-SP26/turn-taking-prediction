@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1990",
+    "annotated_participant": "P1990",
+    "start_pre_moi": -1.0,
+    "end_pre_moi": 14,
+    "start_moi": 14,
+    "end_moi": 16,
+    "start_post_moi": 16,
+    "end_post_moi": 31.0,
+    "annotation": "Participant was confident and calm",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1990",
+    "annotated_participant": "P1990",
+    "start_pre_moi": 81.0,
+    "end_pre_moi": 96,
+    "start_moi": 96,
+    "end_moi": 99,
+    "start_post_moi": 99,
+    "end_post_moi": 114.0,
+    "annotation": "Participant was anxious ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

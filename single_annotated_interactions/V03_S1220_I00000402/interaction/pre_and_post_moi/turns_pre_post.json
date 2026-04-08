@@ -1,0 +1,50 @@
+[
+  {
+    "event_speaker": "P3777",
+    "annotated_participant": "P3777",
+    "non_annotated_participant": "P3776",
+    "start_pre_moi": 10.225999999999999,
+    "end_pre_moi": 170.76599999999996,
+    "pre_overlap": false,
+    "start_moi": 180,
+    "end_moi": 186,
+    "start_post_moi": 187.95399999999995,
+    "end_post_moi": 188.42999999999995,
+    "post_overlap": false,
+    "annotation": "The participant is perplexed and surprised",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3777",
+    "annotated_participant": "P3777",
+    "non_annotated_participant": "P3776",
+    "start_pre_moi": 271.058,
+    "end_pre_moi": 362.57400000000007,
+    "pre_overlap": false,
+    "start_moi": 369,
+    "end_moi": 373,
+    "start_post_moi": 380.6579999999999,
+    "end_post_moi": 381.06999999999994,
+    "post_overlap": false,
+    "annotation": "The participant is disapproving and judgmental",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3777",
+    "annotated_participant": "P3777",
+    "non_annotated_participant": "P3776",
+    "start_pre_moi": 433.90599999999995,
+    "end_pre_moi": 434.6700000000001,
+    "pre_overlap": false,
+    "start_moi": 436,
+    "end_moi": 446,
+    "start_post_moi": 446.3219999999999,
+    "end_post_moi": 467.56600000000003,
+    "post_overlap": false,
+    "annotation": "The participant is perplexed and disapproving",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

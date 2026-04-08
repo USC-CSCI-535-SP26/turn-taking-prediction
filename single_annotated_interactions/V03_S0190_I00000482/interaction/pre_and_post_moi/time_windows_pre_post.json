@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1404",
+    "annotated_participant": "P1125",
+    "start_pre_moi": 94.0,
+    "end_pre_moi": 109,
+    "start_moi": 109,
+    "end_moi": 115,
+    "start_post_moi": 115,
+    "end_post_moi": 130.0,
+    "annotation": "The participant feels attentive but slightly anxious while listening.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

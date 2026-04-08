@@ -1,0 +1,110 @@
+[
+  {
+    "interaction_id": "V00_S1132_I00000337",
+    "annotated_participant": "P0737",
+    "non_annotated_participant": "P1093",
+    "imitator_emotion_features_present": true,
+    "annotation": "The participant was amused a lot",
+    "start_ts": 13,
+    "end_ts": 23,
+    "start_idx": 390,
+    "end_idx": 690,
+    "n_frames": 300,
+    "annotated_mean_valence": 0.185901,
+    "annotated_mean_arousal": 0.196266,
+    "annotated_mean_emotion_scores": {
+      "neutral": 0.265947,
+      "happy": -0.278919,
+      "sad": 0.040844,
+      "surprise": -0.110318,
+      "fear": 2.562158,
+      "disgust": 1.063573,
+      "anger": -0.571344,
+      "contempt": -0.826095
+    },
+    "non_annotated_mean_valence": 0.410587,
+    "non_annotated_mean_arousal": 0.209001,
+    "non_annotated_mean_emotion_scores": {
+      "neutral": -1.281516,
+      "happy": 1.680532,
+      "sad": 0.057584,
+      "surprise": -1.220591,
+      "fear": 4.537219,
+      "disgust": -0.250487,
+      "anger": -3.147281,
+      "contempt": 0.459413
+    }
+  },
+  {
+    "interaction_id": "V00_S1132_I00000337",
+    "annotated_participant": "P1093",
+    "non_annotated_participant": "P0737",
+    "imitator_emotion_features_present": true,
+    "annotation": "The participant was cracked up",
+    "start_ts": 25,
+    "end_ts": 31,
+    "start_idx": 750,
+    "end_idx": 930,
+    "n_frames": 180,
+    "annotated_mean_valence": 0.490969,
+    "annotated_mean_arousal": 0.233916,
+    "annotated_mean_emotion_scores": {
+      "neutral": -1.997533,
+      "happy": 2.449663,
+      "sad": 1.090109,
+      "surprise": -3.142378,
+      "fear": 6.330022,
+      "disgust": -1.821332,
+      "anger": -3.016332,
+      "contempt": -2.133912
+    },
+    "non_annotated_mean_valence": 0.417157,
+    "non_annotated_mean_arousal": 0.282895,
+    "non_annotated_mean_emotion_scores": {
+      "neutral": -0.377036,
+      "happy": -0.700332,
+      "sad": 0.277294,
+      "surprise": -0.428812,
+      "fear": 4.846129,
+      "disgust": -0.111235,
+      "anger": -2.592481,
+      "contempt": -0.026119
+    }
+  },
+  {
+    "interaction_id": "V00_S1132_I00000337",
+    "annotated_participant": "P1093",
+    "non_annotated_participant": "P0737",
+    "imitator_emotion_features_present": true,
+    "annotation": "The participant was creased up",
+    "start_ts": 80,
+    "end_ts": 84,
+    "start_idx": 2400,
+    "end_idx": 2520,
+    "n_frames": 120,
+    "annotated_mean_valence": 0.234597,
+    "annotated_mean_arousal": 0.106172,
+    "annotated_mean_emotion_scores": {
+      "neutral": -0.794175,
+      "happy": 0.813675,
+      "sad": 0.241168,
+      "surprise": -1.314625,
+      "fear": 3.124575,
+      "disgust": -0.435062,
+      "anger": -1.232631,
+      "contempt": -0.918267
+    },
+    "non_annotated_mean_valence": 0.516079,
+    "non_annotated_mean_arousal": 0.311862,
+    "non_annotated_mean_emotion_scores": {
+      "neutral": -1.323957,
+      "happy": -0.785126,
+      "sad": -0.512162,
+      "surprise": -0.717505,
+      "fear": 6.870395,
+      "disgust": -1.177777,
+      "anger": -3.690227,
+      "contempt": 0.54684
+    }
+  }
+]

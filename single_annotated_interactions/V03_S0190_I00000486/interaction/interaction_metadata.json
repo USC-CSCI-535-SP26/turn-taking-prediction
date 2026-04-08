@@ -1,0 +1,11 @@
+{
+  "": "485",
+  "prompt_hash": "00000486",
+  "prompt_id_unique": "P0016_MP_AMCN_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you a personal story. Listen to them and engage with the story.",
+  "participant_b_prompt_text": "Recall a time that you were stuck in life or on a project and someone helped you to get\r\nthrough it. Tell the story about this time, describe how the person helped you, and what you learned from the experience.",
+  "ipc_a": "AMCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 705.518
+}

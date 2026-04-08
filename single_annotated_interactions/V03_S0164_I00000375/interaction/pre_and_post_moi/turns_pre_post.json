@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1354",
+    "annotated_participant": "P1354",
+    "non_annotated_participant": "P1322",
+    "start_pre_moi": 285.826,
+    "end_pre_moi": 286.3019999999999,
+    "pre_overlap": true,
+    "start_moi": 286,
+    "end_moi": 292,
+    "start_post_moi": 295.71399999999994,
+    "end_post_moi": 296.2539999999999,
+    "post_overlap": false,
+    "annotation": "Participant is excited",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

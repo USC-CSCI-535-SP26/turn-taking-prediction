@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1422",
+    "annotated_participant": "P1488",
+    "start_pre_moi": 68.0,
+    "end_pre_moi": 83,
+    "start_moi": 83,
+    "end_moi": 88,
+    "start_post_moi": 88,
+    "end_post_moi": 103.0,
+    "annotation": "The participant is attentively listening to the other participant ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

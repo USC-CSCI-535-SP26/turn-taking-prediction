@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P4030",
+    "annotated_participant": "P4030",
+    "non_annotated_participant": "P3083",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 65,
+    "end_moi": 70,
+    "start_post_moi": 120.49800000000005,
+    "end_post_moi": 121.03800000000001,
+    "post_overlap": false,
+    "annotation": "The participant is straightforward and certain.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

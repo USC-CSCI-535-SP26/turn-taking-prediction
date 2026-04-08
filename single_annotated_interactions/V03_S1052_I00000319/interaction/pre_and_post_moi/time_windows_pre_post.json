@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P2610",
+    "annotated_participant": "P2610",
+    "start_pre_moi": 136.0,
+    "end_pre_moi": 151,
+    "start_moi": 151,
+    "end_moi": 157,
+    "start_post_moi": 157,
+    "end_post_moi": 172.0,
+    "annotation": "The participant is dramatic and descriptive",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1567",
+    "annotated_participant": "P2610",
+    "start_pre_moi": 262.0,
+    "end_pre_moi": 277,
+    "start_moi": 277,
+    "end_moi": 281,
+    "start_post_moi": 281,
+    "end_post_moi": 296.0,
+    "annotation": "The participant is thoughtful and deliberative",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

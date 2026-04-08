@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1207",
+    "annotated_participant": "P1207",
+    "non_annotated_participant": "P2154",
+    "start_pre_moi": 286.818,
+    "end_pre_moi": 287.54999999999995,
+    "pre_overlap": false,
+    "start_moi": 336,
+    "end_moi": 346,
+    "start_post_moi": 348.994,
+    "end_post_moi": 349.374,
+    "post_overlap": false,
+    "annotation": "Participant felt relieved",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1120",
+    "annotated_participant": "P1120",
+    "non_annotated_participant": "P0709",
+    "start_pre_moi": 17.202000000000226,
+    "end_pre_moi": 43.40599999999995,
+    "pre_overlap": true,
+    "start_moi": 43,
+    "end_moi": 47,
+    "start_post_moi": 48.78600000000006,
+    "end_post_moi": 51.5659999999998,
+    "post_overlap": false,
+    "annotation": "The participant was engrossed with the topic",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

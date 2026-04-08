@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1880",
+    "annotated_participant": "P1880",
+    "non_annotated_participant": "P1881",
+    "start_pre_moi": 42.898000000000025,
+    "end_pre_moi": 45.837999999999965,
+    "pre_overlap": false,
+    "start_moi": 48,
+    "end_moi": 60,
+    "start_post_moi": 60.210000000000036,
+    "end_post_moi": 70.31799999999998,
+    "post_overlap": false,
+    "annotation": "Participant was calm and curious",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1359",
+    "annotated_participant": "P2033",
+    "start_pre_moi": 122.0,
+    "end_pre_moi": 137,
+    "start_moi": 137,
+    "end_moi": 146,
+    "start_post_moi": 146,
+    "end_post_moi": 161.0,
+    "annotation": "Participant is amused",
+    "relationship": "familiar",
+    "relationship_detail": "coworkers"
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2333",
+    "annotated_participant": "P2333",
+    "start_pre_moi": 63.0,
+    "end_pre_moi": 78,
+    "start_moi": 78,
+    "end_moi": 86,
+    "start_post_moi": 86,
+    "end_post_moi": 101.0,
+    "annotation": "The participant feels comfortable",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

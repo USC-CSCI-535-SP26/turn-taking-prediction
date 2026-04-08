@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1293",
+    "annotated_participant": "P1293",
+    "non_annotated_participant": "P1288",
+    "start_pre_moi": 18.881999999999948,
+    "end_pre_moi": 151.61400000000003,
+    "pre_overlap": false,
+    "start_moi": 223,
+    "end_moi": 227,
+    "start_post_moi": 240.8019999999999,
+    "end_post_moi": 241.18200000000002,
+    "post_overlap": false,
+    "annotation": "The participant was attentive and empathetic.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3750",
+    "annotated_participant": "P3750",
+    "non_annotated_participant": "P3782",
+    "start_pre_moi": 51.153999999999996,
+    "end_pre_moi": 51.91800000000012,
+    "pre_overlap": false,
+    "start_moi": 66,
+    "end_moi": 73,
+    "start_post_moi": 85.45800000000008,
+    "end_post_moi": 85.9659999999999,
+    "post_overlap": false,
+    "annotation": "The Participant is cordial.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

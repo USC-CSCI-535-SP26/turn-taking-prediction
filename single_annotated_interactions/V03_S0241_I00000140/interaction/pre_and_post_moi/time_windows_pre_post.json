@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1576",
+    "annotated_participant": "P1259",
+    "start_pre_moi": 94.0,
+    "end_pre_moi": 109,
+    "start_moi": 109,
+    "end_moi": 111,
+    "start_post_moi": 111,
+    "end_post_moi": 126.0,
+    "annotation": "They were wondering.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

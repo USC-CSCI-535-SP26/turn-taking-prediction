@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3746",
+    "annotated_participant": "P3746",
+    "non_annotated_participant": "P1208",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 1,
+    "end_moi": 5,
+    "start_post_moi": 10.242000000000019,
+    "end_post_moi": 10.622000000000014,
+    "post_overlap": false,
+    "annotation": "The participant is engaging to the conversation.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

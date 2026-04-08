@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1567",
+    "annotated_participant": "P2610",
+    "start_pre_moi": 16.0,
+    "end_pre_moi": 31,
+    "start_moi": 31,
+    "end_moi": 33,
+    "start_post_moi": 33,
+    "end_post_moi": 48.0,
+    "annotation": "The participant is frustrated and exasperated",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2610",
+    "annotated_participant": "P2610",
+    "start_pre_moi": 87.0,
+    "end_pre_moi": 102,
+    "start_moi": 102,
+    "end_moi": 104,
+    "start_post_moi": 104,
+    "end_post_moi": 119.0,
+    "annotation": "The participant is precise and descriptive",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "": "80",
+  "prompt_hash": "00000085",
+  "prompt_id_unique": "P0099_v3.6.str_ANCM_XXXX",
+  "participant_a_prompt_text": "Your partner will discuss a social issue or injustice that they believe is cruel or unfair. Listen to their perspective and share your own thoughts on the issue. Discuss potential solutions and challenges.",
+  "participant_b_prompt_text": "Tell your partner about a social issue or injustice that you believe is particularly cruel or unfair. Explain why you feel strongly about it and what you think should be done to address it. Ask for their thoughts on the matter.",
+  "ipc_a": "ANCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 170.0028
+}

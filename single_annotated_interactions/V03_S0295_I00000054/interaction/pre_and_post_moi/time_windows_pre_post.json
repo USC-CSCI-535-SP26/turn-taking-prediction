@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1375",
+    "annotated_participant": "P1375",
+    "start_pre_moi": -7.0,
+    "end_pre_moi": 8,
+    "start_moi": 8,
+    "end_moi": 12,
+    "start_post_moi": 12,
+    "end_post_moi": 27.0,
+    "annotation": "The participant felt disgusted",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

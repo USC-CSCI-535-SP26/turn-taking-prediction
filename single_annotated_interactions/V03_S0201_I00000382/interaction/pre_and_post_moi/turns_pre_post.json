@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1432",
+    "annotated_participant": "P1432",
+    "non_annotated_participant": "P1433",
+    "start_pre_moi": 8.050000000000182,
+    "end_pre_moi": 17.389999999999873,
+    "pre_overlap": false,
+    "start_moi": 20,
+    "end_moi": 28,
+    "start_post_moi": 32.94599999999991,
+    "end_post_moi": 50.57400000000007,
+    "post_overlap": false,
+    "annotation": "He felt excited and enthusiastic.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

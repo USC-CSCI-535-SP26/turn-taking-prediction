@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1332",
+    "annotated_participant": "P1332",
+    "start_pre_moi": 64.0,
+    "end_pre_moi": 79,
+    "start_moi": 79,
+    "end_moi": 93,
+    "start_post_moi": 93,
+    "end_post_moi": 108.0,
+    "annotation": "The participant appeared overwhelmed while carefully reading the pamphlet.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

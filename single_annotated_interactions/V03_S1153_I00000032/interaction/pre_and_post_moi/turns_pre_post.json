@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3641",
+    "annotated_participant": "P3622",
+    "non_annotated_participant": "P3641",
+    "start_pre_moi": 383.2660000000001,
+    "end_pre_moi": 387.26200000000017,
+    "pre_overlap": true,
+    "start_moi": 387,
+    "end_moi": 391,
+    "start_post_moi": 388.00199999999995,
+    "end_post_moi": 420.7660000000001,
+    "post_overlap": true,
+    "annotation": "The participant is relaxed and joyful",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

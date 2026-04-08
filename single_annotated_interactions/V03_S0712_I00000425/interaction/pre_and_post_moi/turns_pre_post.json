@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P2333",
+    "annotated_participant": "P2333",
+    "non_annotated_participant": "P1718",
+    "start_pre_moi": 29.48999999999978,
+    "end_pre_moi": 29.80600000000004,
+    "pre_overlap": false,
+    "start_moi": 49,
+    "end_moi": 55,
+    "start_post_moi": 68.4659999999999,
+    "end_post_moi": 69.86999999999989,
+    "post_overlap": false,
+    "annotation": "The participant is energized",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

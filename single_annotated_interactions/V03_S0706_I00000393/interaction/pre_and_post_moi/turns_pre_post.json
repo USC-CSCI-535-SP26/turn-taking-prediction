@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1636",
+    "annotated_participant": "P1636",
+    "non_annotated_participant": "P2157",
+    "start_pre_moi": 179.45800000000008,
+    "end_pre_moi": 181.1500000000001,
+    "pre_overlap": true,
+    "start_moi": 181,
+    "end_moi": 184,
+    "start_post_moi": 184.2260000000001,
+    "end_post_moi": 185.37400000000002,
+    "post_overlap": false,
+    "annotation": "The participant felt perplexed or curious.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

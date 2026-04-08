@@ -1,0 +1,11 @@
+{
+  "": "150",
+  "prompt_hash": "00000146",
+  "prompt_id_unique": "P0072_v3.4.str_AMCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they wished they had received more help. Listen actively and offer suggestions on how someone could have been more supportive in that situation.",
+  "participant_b_prompt_text": "Describe a situation where you wished someone had offered you more guidance or support. Explain to your partner what kind of help you needed and how it would have made a difference. Ask for their thoughts on how someone could have been more helpful in that situation.",
+  "ipc_a": "AMCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 216.0
+}

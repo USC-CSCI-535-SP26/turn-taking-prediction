@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P1293",
+    "annotated_participant": "P1288",
+    "non_annotated_participant": "P1293",
+    "start_pre_moi": 89.106,
+    "end_pre_moi": 155.9179999999999,
+    "pre_overlap": true,
+    "start_moi": 98,
+    "end_moi": 105,
+    "start_post_moi": 89.106,
+    "end_post_moi": 155.9179999999999,
+    "post_overlap": true,
+    "annotation": "The participant is feeling conflicted.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1293",
+    "annotated_participant": "P1288",
+    "non_annotated_participant": "P1293",
+    "start_pre_moi": 89.106,
+    "end_pre_moi": 155.9179999999999,
+    "pre_overlap": true,
+    "start_moi": 124,
+    "end_moi": 130,
+    "start_post_moi": 89.106,
+    "end_post_moi": 155.9179999999999,
+    "post_overlap": true,
+    "annotation": "The participant is feeling overwhelmed.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

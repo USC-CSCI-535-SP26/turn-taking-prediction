@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S0193_I00000377",
+    "annotated_participant": "P1288",
+    "non_annotated_participant": "P1425",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is deep in thought ",
+    "start_ts": 0,
+    "end_ts": 5,
+    "start_idx": 0,
+    "end_idx": 150,
+    "n_frames": 150,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S0193_I00000377",
+    "annotated_participant": "P1425",
+    "non_annotated_participant": "P1288",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is genuine about her sentiments ",
+    "start_ts": 44,
+    "end_ts": 48,
+    "start_idx": 1320,
+    "end_idx": 1440,
+    "n_frames": 120,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "": "482",
+  "prompt_hash": "00000483",
+  "prompt_id_unique": "P0015_DP_APCN_XXXX",
+  "participant_a_prompt_text": "Recall a time in which you needed to stand-up for yourself. What was the context of the situation and what did you do?",
+  "participant_b_prompt_text": "Your partner will tell you a story from their past. Listen to them and engage with the story.",
+  "ipc_a": "APCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 272.005067
+}

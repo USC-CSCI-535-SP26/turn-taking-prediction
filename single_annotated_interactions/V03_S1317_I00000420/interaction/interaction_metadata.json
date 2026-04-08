@@ -1,0 +1,11 @@
+{
+  "": "411",
+  "prompt_hash": "00000420",
+  "prompt_id_unique": "P0034_v3.2.str_ANCM_XXXX",
+  "participant_a_prompt_text": "Your partner will share a story about a time they made an incorrect assumption about someone. Ask them to elaborate on what they learned from the experience and discuss strategies for gathering more accurate information before making judgments.",
+  "participant_b_prompt_text": "Tell your partner about a time when you made an assumption about someone based on limited information, and it turned out to be incorrect. What did you learn from the experience, and how do you try to avoid making similar assumptions now?",
+  "ipc_a": "ANCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 154.020533
+}

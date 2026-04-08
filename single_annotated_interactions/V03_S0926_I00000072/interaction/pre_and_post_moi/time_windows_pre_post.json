@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P3173",
+    "annotated_participant": "P3173",
+    "start_pre_moi": 115.0,
+    "end_pre_moi": 130,
+    "start_moi": 130,
+    "end_moi": 133,
+    "start_post_moi": 133,
+    "end_post_moi": 148.0,
+    "annotation": "The participant is appreciative",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3173",
+    "annotated_participant": "P3173",
+    "start_pre_moi": 213.0,
+    "end_pre_moi": 228,
+    "start_moi": 228,
+    "end_moi": 234,
+    "start_post_moi": 234,
+    "end_post_moi": 249.0,
+    "annotation": "The participant is in agreement",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

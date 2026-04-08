@@ -1,0 +1,11 @@
+{
+  "": "306",
+  "prompt_hash": "00000319",
+  "prompt_id_unique": "P0115_v3.7.str_APCM_XXXX",
+  "participant_a_prompt_text": "Your partner will present a strong argument on a topic they care about. Engage with their argument and respond with your own thoughts and opinions, even if you disagree.",
+  "participant_b_prompt_text": "Discuss a topic you feel strongly about and are willing to argue for, such as a social justice issue or a controversial policy. Make your case to your partner and be prepared to defend your position.",
+  "ipc_a": "APCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 196.0288
+}

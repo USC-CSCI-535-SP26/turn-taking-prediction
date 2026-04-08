@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1489",
+    "annotated_participant": "P1489",
+    "start_pre_moi": 26.0,
+    "end_pre_moi": 41,
+    "start_moi": 41,
+    "end_moi": 64,
+    "start_post_moi": 64,
+    "end_post_moi": 79.0,
+    "annotation": "The participant  is very engaged and in thought",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

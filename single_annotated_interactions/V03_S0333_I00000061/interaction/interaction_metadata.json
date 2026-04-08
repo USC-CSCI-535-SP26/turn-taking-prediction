@@ -1,0 +1,11 @@
+{
+  "": "57",
+  "prompt_hash": "00000061",
+  "prompt_id_unique": "P0007_v3.0.str_AMCM_XXXX",
+  "participant_a_prompt_text": "Your partner will share a time when they felt the need to withdraw from social interactions. Ask them questions to understand their perspective and share a time when you may have felt similarly.",
+  "participant_b_prompt_text": "Describe a time when you felt the need to withdraw from social interactions or situations. What led you to feel that way, and how did you cope with the desire for solitude?",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 220.0198
+}

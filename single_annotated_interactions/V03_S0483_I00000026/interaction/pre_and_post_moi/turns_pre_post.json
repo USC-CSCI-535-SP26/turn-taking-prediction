@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P2154",
+    "annotated_participant": "P2154",
+    "non_annotated_participant": "P2060",
+    "start_pre_moi": 170.38600000000002,
+    "end_pre_moi": 178.606,
+    "pre_overlap": false,
+    "start_moi": 184,
+    "end_moi": 187,
+    "start_post_moi": 205.45800000000003,
+    "end_post_moi": 210.574,
+    "post_overlap": false,
+    "annotation": "Participant is interested",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

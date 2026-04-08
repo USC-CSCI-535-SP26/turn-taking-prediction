@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P0737",
+    "annotated_participant": "P1093",
+    "start_pre_moi": 23.0,
+    "end_pre_moi": 38,
+    "start_moi": 38,
+    "end_moi": 42,
+    "start_post_moi": 42,
+    "end_post_moi": 57.0,
+    "annotation": "The participant was cracked up",
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  }
+]

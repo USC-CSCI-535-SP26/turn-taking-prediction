@@ -1,0 +1,11 @@
+{
+  "": "144",
+  "prompt_hash": "00000154",
+  "prompt_id_unique": "P0077_v3.4.str_APCP_XXXX",
+  "participant_a_prompt_text": "Your partner will share something they enjoy doing in their free time. Ask them questions about it and try to find common ground or shared interests.",
+  "participant_b_prompt_text": "Discuss a hobby or activity that brings you joy and makes you feel carefree. Tell your partner what you like about it and how it helps you relax.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 200.0
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1313",
+    "annotated_participant": "P1313",
+    "non_annotated_participant": "P1480",
+    "start_pre_moi": 156.89800000000014,
+    "end_pre_moi": 169.4380000000001,
+    "pre_overlap": false,
+    "start_moi": 176,
+    "end_moi": 182,
+    "start_post_moi": null,
+    "end_post_moi": null,
+    "post_overlap": false,
+    "annotation": "The participant was a bit unfocused",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

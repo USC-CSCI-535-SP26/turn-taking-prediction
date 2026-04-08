@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S0941_I00000184",
+    "annotated_participant": "P1207",
+    "non_annotated_participant": "P2154",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant was impressed",
+    "start_ts": 8,
+    "end_ts": 10,
+    "start_idx": 240,
+    "end_idx": 300,
+    "n_frames": 60,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S0941_I00000184",
+    "annotated_participant": "P2154",
+    "non_annotated_participant": "P1207",
+    "imitator_emotion_features_present": false,
+    "annotation": "Participant felt hilarious with some sarcasm",
+    "start_ts": 261,
+    "end_ts": 276,
+    "start_idx": 7830,
+    "end_idx": 8280,
+    "n_frames": 450,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

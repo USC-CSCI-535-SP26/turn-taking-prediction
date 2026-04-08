@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1288",
+    "non_annotated_participant": "P1293",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 80,
+    "end_moi": 85,
+    "start_post_moi": null,
+    "end_post_moi": null,
+    "post_overlap": false,
+    "annotation": "The participant is feeling stressed.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]
