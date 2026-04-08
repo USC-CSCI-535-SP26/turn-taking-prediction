@@ -696,8 +696,14 @@ def generate_video_viewer(interaction_id, interactions_dir="./annotated_interact
     Create an HTML file with side-by-side video players for both participants
     in an interaction, streaming from Meta's S3 bucket.
 
-    Assumes filelist_entries.json already exists in the interaction's
-    interaction/ directory (created by download_all_interactions).
+    Assumes filelist_entries.json and interaction_metadata.json already exist
+    in the interaction's interaction/ directory (created by
+    download_all_interactions).
+
+    Both prompts from interaction_metadata.json are displayed above the videos.
+    The dataset's participant_a/participant_b prompt roles do NOT map to our
+    alphabetically-assigned participant_a/participant_b directories, so both
+    prompts are shown without attempting to assign them to specific participants.
 
     Args:
         interaction_id: e.g. "V00_S1132_I00000333"
@@ -706,11 +712,21 @@ def generate_video_viewer(interaction_id, interactions_dir="./annotated_interact
     Returns:
         Path to the generated HTML file.
     """
-    entries_path = os.path.join(
-        interactions_dir, interaction_id, "interaction", "filelist_entries.json"
-    )
+    interaction_dir = os.path.join(interactions_dir, interaction_id, "interaction")
+
+    entries_path = os.path.join(interaction_dir, "filelist_entries.json")
     with open(entries_path) as f:
         entries = json.load(f)
+
+    # Load prompts from interaction_metadata.json
+    metadata_path = os.path.join(interaction_dir, "interaction_metadata.json")
+    prompt_a = ""
+    prompt_b = ""
+    if os.path.exists(metadata_path):
+        with open(metadata_path) as f:
+            metadata = json.load(f)
+        prompt_a = metadata.get("participant_a_prompt_text", "")
+        prompt_b = metadata.get("participant_b_prompt_text", "")
 
     # Sort alphabetically by participant ID (same convention as directory naming)
     entries.sort(key=lambda e: e["file_id"].rsplit("_", 1)[1])
@@ -722,6 +738,54 @@ def generate_video_viewer(interaction_id, interactions_dir="./annotated_interact
         url = f"{S3_BASE_URL}/naturalistic/{entry['split']}/video/{entry['file_id']}.mp4"
         participants.append((pid, letter, url))
 
+    # Build prompts HTML — show both if they differ, single block if identical
+    if prompt_a and prompt_b:
+        if prompt_a == prompt_b:
+            prompts_html = f"""<div class="prompts">
+  <div class="prompt"><span class="prompt-label">Prompt (same for both):</span> {prompt_a}</div>
+</div>"""
+        else:
+            prompts_html = f"""<div class="prompts">
+  <div class="prompt"><span class="prompt-label">Prompt 1:</span> {prompt_a}</div>
+  <div class="prompt"><span class="prompt-label">Prompt 2:</span> {prompt_b}</div>
+  <div class="prompt-note">One prompt was given to each participant; the prompt-to-participant mapping was not found in the released metadata.</div>
+</div>"""
+    else:
+        prompts_html = ""
+
+    # Load 3P-IS, 3P-R, and 3P-V annotations for each participant.
+    # All three share the same time windows; we merge them by (start_ts, end_ts).
+    mois_by_pid = {}
+    for pid, letter, url in participants:
+        pdir = os.path.join(interactions_dir, interaction_id, f"participant_{letter}_{pid}")
+        # Keyed by (start_ts, end_ts) → {"is": ..., "r": ..., "v": ...}
+        merged = {}
+        if os.path.isdir(pdir):
+            for prefix, field in [("3P-IS_", "is"), ("3P-R_", "r"), ("3P-V_", "v")]:
+                for fname in sorted(os.listdir(pdir)):
+                    if fname.startswith(prefix) and fname.endswith(".json"):
+                        fpath = os.path.join(pdir, fname)
+                        with open(fpath) as f:
+                            for line in f:
+                                line = line.strip()
+                                if not line:
+                                    continue
+                                ann = json.loads(line)
+                                key = (ann.get("start_ts"), ann.get("end_ts"))
+                                if key not in merged:
+                                    merged[key] = {"start_ts": key[0], "end_ts": key[1]}
+                                merged[key][field] = ann.get("annotation", "")
+        mois = sorted(merged.values(), key=lambda m: m.get("start_ts", 0))
+        mois_by_pid[pid] = mois
+
+    def _fmt_time(seconds):
+        """Format seconds as M:SS.s"""
+        if seconds is None:
+            return "?"
+        m = int(seconds) // 60
+        s = seconds - m * 60
+        return f"{m}:{s:04.1f}"
+
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -730,25 +794,98 @@ def generate_video_viewer(interaction_id, interactions_dir="./annotated_interact
 <style>
   body {{ font-family: -apple-system, sans-serif; background: #111; color: #eee; margin: 0; padding: 24px; }}
   h1 {{ font-size: 18px; font-weight: 500; margin-bottom: 16px; }}
+  .prompts {{ margin-bottom: 18px; }}
+  .prompt {{ font-size: 13px; color: #ccc; line-height: 1.5; margin-bottom: 8px; }}
+  .prompt-label {{ color: #888; font-weight: 600; }}
+  .prompt-note {{ font-size: 12px; color: #666; font-style: italic; }}
+  .controls {{ text-align: center; margin-bottom: 16px; }}
+  .sync-btn {{ background: #2d5f8a; color: #eee; border: none; border-radius: 6px; padding: 10px 28px; font-size: 14px; cursor: pointer; font-family: inherit; }}
+  .sync-btn:hover {{ background: #3a7ab5; }}
   .videos {{ display: flex; gap: 16px; }}
   .vid-container {{ flex: 1; }}
   .vid-container label {{ display: block; font-size: 14px; color: #aaa; margin-bottom: 6px; }}
   video {{ width: 100%; border-radius: 6px; background: #000; }}
+  .moi-list {{ margin-top: 12px; }}
+  .moi-list h3 {{ font-size: 13px; color: #888; margin: 0 0 6px 0; font-weight: 600; }}
+  .moi-item {{ font-size: 12px; color: #bbb; padding: 8px; border-bottom: 1px solid #222; }}
+  .moi-header {{ display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }}
+  .moi-time {{ color: #6a9fcf; font-family: monospace; white-space: nowrap; font-weight: 600; }}
+  .moi-detail {{ line-height: 1.5; margin-left: 4px; }}
+  .moi-label {{ color: #888; font-weight: 600; font-size: 11px; text-transform: uppercase; }}
+  .moi-text {{ color: #ccc; }}
+  .jump-btn {{ background: none; border: 1px solid #445; color: #6a9fcf; border-radius: 4px; padding: 1px 7px; font-size: 11px; cursor: pointer; font-family: monospace; white-space: nowrap; }}
+  .jump-btn:hover {{ background: #1a3350; border-color: #6a9fcf; }}
+  .no-moi {{ font-size: 12px; color: #555; font-style: italic; }}
 </style>
 </head>
 <body>
 <h1>{interaction_id}</h1>
+{prompts_html}
+<div class="controls">
+  <button class="sync-btn" onclick="syncPlay()">&#9654; Play Both</button>
+</div>
 <div class="videos">
 """
     for pid, letter, url in participants:
+        mois = mois_by_pid.get(pid, [])
+        moi_html = ""
+        if mois:
+            moi_html = '<div class="moi-list"><h3>Moments of Interest</h3>\n'
+            for m in mois:
+                start = _fmt_time(m.get("start_ts"))
+                end = _fmt_time(m.get("end_ts"))
+                start_ts = m.get("start_ts", 0)
+                details = ""
+                for key, label in [("is", "Internal State"), ("r", "Rationale"), ("v", "Visual Element")]:
+                    text = m.get(key, "")
+                    if text:
+                        details += f'      <div class="moi-detail"><span class="moi-label">{label}:</span> <span class="moi-text">{text}</span></div>\n'
+                moi_html += f'    <div class="moi-item"><div class="moi-header"><button class="jump-btn" onclick="jumpTo({start_ts})">&#9654;</button><span class="moi-time">{start}\u2013{end}</span></div>\n{details}    </div>\n'
+            moi_html += "</div>"
+        else:
+            moi_html = '<div class="no-moi">No annotated MOIs</div>'
+
         html += f"""  <div class="vid-container">
     <label>{pid} (participant_{letter})</label>
     <video controls preload="metadata">
       <source src="{url}" type="video/mp4">
     </video>
+    {moi_html}
   </div>
 """
     html += """</div>
+<script>
+function syncPlay() {
+  const videos = document.querySelectorAll('video');
+  const btn = document.querySelector('.sync-btn');
+  const allPaused = Array.from(videos).every(v => v.paused);
+  if (allPaused) {
+    const anyEnded = Array.from(videos).some(v => v.ended);
+    if (anyEnded) videos.forEach(v => { v.currentTime = 0; });
+    videos.forEach(v => { v.currentTime = videos[0].currentTime; v.play(); });
+    btn.textContent = '\\u275A\\u275A Pause Both';
+  } else {
+    videos.forEach(v => v.pause());
+    btn.textContent = '\\u25B6 Play Both';
+  }
+}
+function jumpTo(t) {
+  const videos = document.querySelectorAll('video');
+  const btn = document.querySelector('.sync-btn');
+  videos.forEach(v => { v.currentTime = t; v.play(); });
+  btn.textContent = '\\u275A\\u275A Pause Both';
+}
+document.querySelectorAll('video').forEach(v => {
+  v.addEventListener('ended', () => {
+    const allEnded = Array.from(document.querySelectorAll('video')).every(v => v.paused || v.ended);
+    if (allEnded) document.querySelector('.sync-btn').textContent = '\\u25B6 Play Both';
+  });
+  v.addEventListener('pause', () => {
+    const allPaused = Array.from(document.querySelectorAll('video')).every(v => v.paused);
+    if (allPaused) document.querySelector('.sync-btn').textContent = '\\u25B6 Play Both';
+  });
+});
+</script>
 </body>
 </html>"""
 
