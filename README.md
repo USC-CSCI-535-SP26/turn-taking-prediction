@@ -1,9 +1,9 @@
 # CSCI 535 Project — Seamless Interaction Dataset Analysis
 
-## Directory Structure of `annotated_interactions`
+## Directory Structure of `both_annotated_interactions`
 
 ```
-annotated_interactions/                        ◁── 100 interaction directories
+both_annotated_interactions/                   ◁── 100 interaction directories
 ├── V00_S1288_I00000099/                       ◁── one interaction (V=vendor, S=session, I=prompt hash)
 │   ├── interaction/                           ◁── interaction-level metadata + derived files
 │   │   ├── interaction_metadata.json          ← from dataset CSVs (download_annotated_interactions.py)
@@ -200,32 +200,53 @@ python download_annotated_interactions.py --repo-path /path/to/seamless_interact
 ```
 
 - `--repo-path` (required): path to the cloned [seamless_interaction](https://github.com/facebookresearch/seamless_interaction) GitHub repository. Must contain the `assets/` directory with `filelist.csv`, `interactions.csv`, `participants.csv`, and `relationships.csv`.
-- `--output-dir` (optional, default `.`): directory in which to create the `annotated_interactions/` folder.
+- `--output-dir` (optional, default `.`): directory in which to create the `both_annotated_interactions/` folder.
 - `--include-wav` (optional): also download per-participant audio files. Excluded by default to keep the download lightweight.
 - `--num-workers` (optional, default 4): number of parallel download threads.
 - `--dry-run` (optional): print what would be downloaded without actually downloading.
 
 The script identifies the 100 interactions by filtering `filelist.csv`: keep only `label == "naturalistic"` (93,620 of 129,370 entries) → keep only `has_annotation_3p == "1"` (543 entries) → group by interaction ID → keep only interactions with exactly 2 entries (both participants annotated) → **100 interactions** (200 file entries). Without `--include-wav`, the total download is under 100 MB. With `--include-wav`, roughly **5–15 GB**. Common issues: `"filelist.csv not found"` means `--repo-path` should point to the repo root (not `assets/`); HTTP 403 errors are normal for files that don't exist on S3; re-running is safe (existing files are overwritten).
 
+### `download_single_annotated_interactions.py`
+
+Downloads the 343 naturalistic interactions where exactly one of the two participants has 3P annotations. Creates the same directory structure as `both_annotated_interactions/` — interaction-level metadata, per-participant annotation files (3P-IS, 3P-R, 3P-V for the annotated participant only), and VAD for both participants. Also generates all derived files in a single pass: `timestamps_by_turn.json`, `time_windows_pre_post.json`, `turns_pre_post.json`, and `video_viewer.html`. Does **not** download `emotion_features.npz` or generate `moi_emotion_summaries.json`.
+
+```bash
+# Download and generate all derived files
+python scripts/download_single_annotated_interactions.py --repo-path /path/to/seamless_interaction --output-dir .
+
+# Preview what would be downloaded without actually downloading
+python scripts/download_single_annotated_interactions.py --repo-path /path/to/seamless_interaction --output-dir . --dry-run
+```
+
+- `--repo-path` (required): path to the cloned [seamless_interaction](https://github.com/facebookresearch/seamless_interaction) GitHub repository.
+- `--output-dir` (optional, default `..`): directory in which to create the `single_annotated_interactions/` folder.
+- `--include-wav` (optional): also download per-participant audio files. Excluded by default.
+- `--num-workers` (optional, default 4): number of parallel download threads.
+- `--window` (optional, default 15): seconds before/after each MOI for pre/post time windows.
+- `--dry-run` (optional): print what would be downloaded without actually downloading.
+
+The script identifies the 343 interactions by filtering `filelist.csv`: keep only naturalistic entries → group by interaction ID → keep interactions where exactly 1 of 2 participants has `has_annotation_3p == "1"`. Imports and reuses functions from `download_annotated_interactions.py`, `generate_timestamps_by_turn.py`, `generate_moi_time_windows.py`, and `generate_moi_turns.py`.
+
 ### `generate_timestamps_by_turn.py`
 
 Generates `timestamps_by_turn.json` for each interaction. Must be run before the two MOI scripts below.
 
 ```bash
-python generate_timestamps_by_turn.py annotated_interactions
+python generate_timestamps_by_turn.py both_annotated_interactions
 ```
 
-- Takes a single positional argument: path to the `annotated_interactions/` directory.
+- Takes a single positional argument: path to the `both_annotated_interactions/` directory.
 
 ### `generate_moi_time_windows.py`
 
 Generates `time_windows_pre_post.json` for each interaction.
 
 ```bash
-python generate_moi_time_windows.py --input-dir annotated_interactions --window 15
+python generate_moi_time_windows.py --input-dir both_annotated_interactions --window 15
 ```
 
-- `--input-dir` (required): path to the `annotated_interactions/` directory.
+- `--input-dir` (required): path to the `both_annotated_interactions/` directory.
 - `--window` (optional, default 15): seconds before and after each MOI.
 
 ### `generate_moi_turns.py`
@@ -233,14 +254,14 @@ python generate_moi_time_windows.py --input-dir annotated_interactions --window 
 Generates `turns_pre_post.json` for each interaction.
 
 ```bash
-python generate_moi_turns.py --input-dir annotated_interactions
+python generate_moi_turns.py --input-dir both_annotated_interactions
 ```
 
-- `--input-dir` (required): path to the `annotated_interactions/` directory.
+- `--input-dir` (required): path to the `both_annotated_interactions/` directory.
 
 ### `valence_arousal/download_emotion_features.py`
 
-Downloads 5 emotion features from Meta's S3 bucket for each participant and saves them as `emotion_features.npz` in each participant's directory. Requires `annotated_interactions/` to already exist (created by `download_annotated_interactions.py`). Skips participants whose `has_imitator_movement` flag is `0`.
+Downloads 5 emotion features from Meta's S3 bucket for each participant and saves them as `emotion_features.npz` in each participant's directory. Requires `both_annotated_interactions/` to already exist (created by `download_annotated_interactions.py`). Skips participants whose `has_imitator_movement` flag is `0`.
 
 ```bash
 # Download emotion features for all participants
@@ -254,7 +275,7 @@ python download_emotion_features.py --repo-path /path/to/seamless_interaction --
 ```
 
 - `--repo-path` (required): path to the cloned [seamless_interaction](https://github.com/facebookresearch/seamless_interaction) GitHub repository.
-- `--interactions-dir` (optional, default `./annotated_interactions`): path to the `annotated_interactions/` directory.
+- `--interactions-dir` (optional, default `./both_annotated_interactions`): path to the `both_annotated_interactions/` directory.
 - `--num-workers` (optional, default 4): number of parallel download threads.
 - `--dry-run` (optional): print what would be downloaded without actually downloading.
 - `--overwrite` (optional): re-download even if `emotion_features.npz` already exists.
@@ -266,16 +287,16 @@ For each interaction, reads the 3P-IS annotation files (which define Moments of 
 
 ```bash
 # Extract summaries for all interactions
-python scripts/valence_arousal/extract_moi_summaries.py --interactions-dir ./annotated_interactions
+python scripts/valence_arousal/extract_moi_summaries.py --interactions-dir ./both_annotated_interactions
 
 # Only process interactions where both participants have emotion features (54 of 100)
-python scripts/valence_arousal/extract_moi_summaries.py --interactions-dir ./annotated_interactions --both-required
+python scripts/valence_arousal/extract_moi_summaries.py --interactions-dir ./both_annotated_interactions --both-required
 
 # Preview without writing
-python scripts/valence_arousal/extract_moi_summaries.py --interactions-dir ./annotated_interactions --dry-run
+python scripts/valence_arousal/extract_moi_summaries.py --interactions-dir ./both_annotated_interactions --dry-run
 ```
 
-- `--interactions-dir` (optional, default `./annotated_interactions`): path to the `annotated_interactions/` directory.
+- `--interactions-dir` (optional, default `./both_annotated_interactions`): path to the `both_annotated_interactions/` directory.
 - `--both-required` (optional): only process interactions where both participants have `emotion_features.npz` (54 of 100). Default: process all.
 - `--overwrite` (optional): overwrite existing `moi_emotion_summaries.json` files.
 - `--dry-run` (optional): print what would be processed without writing files.
@@ -286,12 +307,12 @@ Aggregates all per-interaction `moi_emotion_summaries.json` files into a single 
 
 ```bash
 # Build the table (default output: ./moi_valence_arousal_table.csv)
-python scripts/valence_arousal/build_moi_valence_arousal_table.py --interactions-dir ./annotated_interactions
+python scripts/valence_arousal/build_moi_valence_arousal_table.py --interactions-dir ./both_annotated_interactions
 
 # Specify a custom output path
-python scripts/valence_arousal/build_moi_valence_arousal_table.py --interactions-dir ./annotated_interactions --output ./custom_path.csv
+python scripts/valence_arousal/build_moi_valence_arousal_table.py --interactions-dir ./both_annotated_interactions --output ./custom_path.csv
 ```
 
-- `--interactions-dir` (optional, default `./annotated_interactions`): path to the `annotated_interactions/` directory.
+- `--interactions-dir` (optional, default `./both_annotated_interactions`): path to the `both_annotated_interactions/` directory.
 - `--output` (optional, default `./moi_valence_arousal_table.csv`): output CSV file path.
 
