@@ -37,7 +37,7 @@ Each interaction directory is named **`V{vendor}_S{session}_I{prompt_hash}`**: `
 
 #### `interaction/` — Metadata (from dataset CSVs)
 
-**`interaction_metadata.json`** — Prompt text for both participants, IPC octant codes (Agency/Communion), and interaction type (always "naturalistic" for our 100-interaction subset). Assembled from the dataset's `interactions.csv`.
+**`interaction_metadata.json`** — Prompt text for both participants, IPC octant codes (Agency/Communion), interaction type (always "naturalistic" for our 100-interaction subset), and video duration in seconds (obtained by probing the MP4 on S3 via `get_interaction_duration()` in `download_annotated_interactions.py`). Assembled from the dataset's `interactions.csv`; the `duration` field is added separately.
 
 **`session_relationship.json`** — Whether the dyad members are strangers or familiar, plus detail (e.g., friends, coworkers). Assembled from `relationships.csv`.
 
@@ -189,7 +189,7 @@ Everything below is reference for running and maintaining the download/generatio
 
 ### `download_annotated_interactions.py`
 
-Downloads the 100 both-annotated naturalistic interactions from Meta's S3 bucket. For each interaction, it creates the directory structure (`interaction/`, `participant_a_{id}/`, `participant_b_{id}/`), assembles interaction-level metadata JSON files from the dataset's CSVs, and downloads per-participant annotation files (3P-IS, 3P-R, 3P-V) and VAD files. Audio (.wav) files are excluded by default. Also provides the `generate_video_viewer()` function (imported by other scripts) that creates `video_viewer.html` for any interaction.
+Downloads the 100 both-annotated naturalistic interactions from Meta's S3 bucket. For each interaction, it creates the directory structure (`interaction/`, `participant_a_{id}/`, `participant_b_{id}/`), assembles interaction-level metadata JSON files from the dataset's CSVs, and downloads per-participant annotation files (3P-IS, 3P-R, 3P-V) and VAD files. Audio (.wav) files are excluded by default. Also provides `generate_video_viewer()` (creates `video_viewer.html` for any interaction) and `get_interaction_duration()` (probes the MP4 on S3 via ffprobe to get the exact video duration; requires ffprobe), both imported by other scripts.
 
 ```bash
 # Download annotations, VAD, and metadata only (no audio)
