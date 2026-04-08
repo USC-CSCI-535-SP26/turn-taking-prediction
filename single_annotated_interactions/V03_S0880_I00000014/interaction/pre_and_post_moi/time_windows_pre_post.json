@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P3067",
+    "annotated_participant": "P3067",
+    "start_pre_moi": 26.0,
+    "end_pre_moi": 41,
+    "start_moi": 41,
+    "end_moi": 52,
+    "start_post_moi": 52,
+    "end_post_moi": 67.0,
+    "annotation": "The speaker is amiable",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

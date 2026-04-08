@@ -1,0 +1,10 @@
+{
+  "": "186",
+  "prompt_hash": "00000196",
+  "prompt_id_unique": "P0028_v3.1.fam_ANCP_XXXX",
+  "participant_a_prompt_text": "Describe a time when you had to work with someone who was difficult to get along with. Explain how you managed to build a positive relationship with them, and ask your partner if they've ever had a similar experience.",
+  "participant_b_prompt_text": "Your partner will tell you about a challenging person they've worked with. Discuss with them the strategies they used to build a positive relationship, and share any advice you might have based on your own experiences.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

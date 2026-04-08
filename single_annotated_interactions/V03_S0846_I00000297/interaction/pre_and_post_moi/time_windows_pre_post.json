@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1789",
+    "annotated_participant": "P1502",
+    "start_pre_moi": 81.0,
+    "end_pre_moi": 96,
+    "start_moi": 96,
+    "end_moi": 98,
+    "start_post_moi": 98,
+    "end_post_moi": 113.0,
+    "annotation": "He is agreeable",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

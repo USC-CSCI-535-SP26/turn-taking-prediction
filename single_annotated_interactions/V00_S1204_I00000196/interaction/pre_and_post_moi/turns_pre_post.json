@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1109",
+    "non_annotated_participant": "P1110",
+    "start_pre_moi": 1.0740000000000123,
+    "end_pre_moi": 6,
+    "pre_overlap": false,
+    "start_moi": 6,
+    "end_moi": 6,
+    "start_post_moi": null,
+    "end_post_moi": null,
+    "post_overlap": false,
+    "annotation": "The participant was surprised",
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
+  }
+]

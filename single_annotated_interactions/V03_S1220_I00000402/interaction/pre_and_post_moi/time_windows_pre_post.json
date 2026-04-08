@@ -1,0 +1,41 @@
+[
+  {
+    "event_speaker": "P3777",
+    "annotated_participant": "P3777",
+    "start_pre_moi": 165.0,
+    "end_pre_moi": 180,
+    "start_moi": 180,
+    "end_moi": 186,
+    "start_post_moi": 186,
+    "end_post_moi": 201.0,
+    "annotation": "The participant is perplexed and surprised",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3777",
+    "annotated_participant": "P3777",
+    "start_pre_moi": 354.0,
+    "end_pre_moi": 369,
+    "start_moi": 369,
+    "end_moi": 373,
+    "start_post_moi": 373,
+    "end_post_moi": 388.0,
+    "annotation": "The participant is disapproving and judgmental",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3777",
+    "annotated_participant": "P3777",
+    "start_pre_moi": 421.0,
+    "end_pre_moi": 436,
+    "start_moi": 436,
+    "end_moi": 446,
+    "start_post_moi": 446,
+    "end_post_moi": 461.0,
+    "annotation": "The participant is perplexed and disapproving",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

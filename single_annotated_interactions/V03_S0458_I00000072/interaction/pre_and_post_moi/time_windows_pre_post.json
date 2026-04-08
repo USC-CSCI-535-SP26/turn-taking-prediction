@@ -1,0 +1,54 @@
+[
+  {
+    "event_speaker": "P1209",
+    "annotated_participant": "P2199",
+    "start_pre_moi": 49.0,
+    "end_pre_moi": 64,
+    "start_moi": 64,
+    "end_moi": 71,
+    "start_post_moi": 71,
+    "end_post_moi": 86.0,
+    "annotation": "the speaker is certain ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1209",
+    "annotated_participant": "P2199",
+    "start_pre_moi": 49.0,
+    "end_pre_moi": 64,
+    "start_moi": 64,
+    "end_moi": 71,
+    "start_post_moi": 71,
+    "end_post_moi": 86.0,
+    "annotation": "Participant was helpful",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1209",
+    "annotated_participant": "P2199",
+    "start_pre_moi": 63.0,
+    "end_pre_moi": 78,
+    "start_moi": 78,
+    "end_moi": 87,
+    "start_post_moi": 87,
+    "end_post_moi": 102.0,
+    "annotation": "the speaker feel passion",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1209",
+    "annotated_participant": "P2199",
+    "start_pre_moi": 63.0,
+    "end_pre_moi": 78,
+    "start_moi": 78,
+    "end_moi": 87,
+    "start_post_moi": 87,
+    "end_post_moi": 102.0,
+    "annotation": "Participant was interested",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

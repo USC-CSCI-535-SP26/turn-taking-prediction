@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P3173",
+    "annotated_participant": "P3173",
+    "non_annotated_participant": "P3147",
+    "start_pre_moi": 127.506,
+    "end_pre_moi": 127.918,
+    "pre_overlap": false,
+    "start_moi": 130,
+    "end_moi": 133,
+    "start_post_moi": 143.89,
+    "end_post_moi": 228.11,
+    "post_overlap": false,
+    "annotation": "The participant is appreciative",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3173",
+    "annotated_participant": "P3173",
+    "non_annotated_participant": "P3147",
+    "start_pre_moi": 143.89,
+    "end_pre_moi": 228.11,
+    "pre_overlap": true,
+    "start_moi": 228,
+    "end_moi": 234,
+    "start_post_moi": 234.802,
+    "end_post_moi": 236.174,
+    "post_overlap": false,
+    "annotation": "The participant is in agreement",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

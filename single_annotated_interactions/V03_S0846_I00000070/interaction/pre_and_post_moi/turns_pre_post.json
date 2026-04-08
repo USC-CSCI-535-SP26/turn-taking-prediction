@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1789",
+    "annotated_participant": "P1502",
+    "non_annotated_participant": "P1789",
+    "start_pre_moi": 49.77799999999979,
+    "end_pre_moi": 60.55799999999999,
+    "pre_overlap": true,
+    "start_moi": 53,
+    "end_moi": 67,
+    "start_post_moi": 80.08199999999988,
+    "end_post_moi": 93.64600000000019,
+    "post_overlap": false,
+    "annotation": "He is amused",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

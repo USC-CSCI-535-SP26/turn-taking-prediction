@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1209",
+    "annotated_participant": "P1209",
+    "start_pre_moi": 362.0,
+    "end_pre_moi": 377,
+    "start_moi": 377,
+    "end_moi": 382,
+    "start_post_moi": 382,
+    "end_post_moi": 397.0,
+    "annotation": "The participant is experiencing resonance or longing.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1209",
+    "annotated_participant": "P1209",
+    "start_pre_moi": 433.0,
+    "end_pre_moi": 448,
+    "start_moi": 448,
+    "end_moi": 453,
+    "start_post_moi": 453,
+    "end_post_moi": 468.0,
+    "annotation": "The participant is experiencing yearning and aspiration.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

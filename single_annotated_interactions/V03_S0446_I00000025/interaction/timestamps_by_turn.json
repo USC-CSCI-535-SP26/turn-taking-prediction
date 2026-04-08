@@ -1,0 +1,122 @@
+[
+  {
+    "participant_id": "P2069",
+    "start": 0,
+    "end": 8.686,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2114",
+    "start": 6.257999999999999,
+    "end": 8.43,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2114",
+    "start": 9.297999999999998,
+    "end": 17.742,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P2069",
+    "start": 17.746,
+    "end": 18.061999999999998,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P2114",
+    "start": 18.194000000000003,
+    "end": 25.677999999999997,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P2069",
+    "start": 25.874000000000002,
+    "end": 26.222,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P2114",
+    "start": 26.354,
+    "end": 28.75,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P2069",
+    "start": 28.786,
+    "end": 29.485999999999997,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P2114",
+    "start": 29.682000000000002,
+    "end": 42.158,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2069",
+    "start": 30.61,
+    "end": 30.990000000000002,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2069",
+    "start": 38.258,
+    "end": 38.638,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2069",
+    "start": 42.258,
+    "end": 64.206,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2114",
+    "start": 60.402,
+    "end": 60.846000000000004,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2114",
+    "start": 61.394000000000005,
+    "end": 61.709999999999994,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2114",
+    "start": 64.21,
+    "end": 64.654,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2069",
+    "start": 64.594,
+    "end": 66.318,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2114",
+    "start": 66.354,
+    "end": 66.702,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2069",
+    "start": 66.482,
+    "end": 83.31,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2114",
+    "start": 84.05,
+    "end": 111.886,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P2069",
+    "start": 112.402,
+    "end": 136,
+    "overlapping": false
+  }
+]

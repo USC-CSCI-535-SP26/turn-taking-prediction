@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1488",
+    "annotated_participant": "P1422",
+    "non_annotated_participant": "P1488",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 0,
+    "end_moi": 16,
+    "start_post_moi": 0.0340000000001055,
+    "end_post_moi": 19.166000000000167,
+    "post_overlap": true,
+    "annotation": "The participant expresses her selectiveness",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

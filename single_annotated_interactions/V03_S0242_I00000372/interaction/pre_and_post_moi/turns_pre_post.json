@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1477",
+    "annotated_participant": "P1477",
+    "non_annotated_participant": "P1209",
+    "start_pre_moi": 115.31400000000002,
+    "end_pre_moi": 120.238,
+    "pre_overlap": false,
+    "start_moi": 134,
+    "end_moi": 142,
+    "start_post_moi": 183.058,
+    "end_post_moi": 186.478,
+    "post_overlap": false,
+    "annotation": "The participant does so by speaking",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P5178",
+    "annotated_participant": "P5178",
+    "non_annotated_participant": "P5169",
+    "start_pre_moi": 23.298000000000002,
+    "end_pre_moi": 24.733999999999924,
+    "pre_overlap": false,
+    "start_moi": 46,
+    "end_moi": 49,
+    "start_post_moi": 62.43399999999997,
+    "end_post_moi": 62.781999999999925,
+    "post_overlap": false,
+    "annotation": "The participant was calculative",
+    "relationship": "familiar",
+    "relationship_detail": "coworkers"
+  }
+]

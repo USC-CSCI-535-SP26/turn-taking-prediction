@@ -1,0 +1,10 @@
+{
+  "": "136",
+  "prompt_hash": "00000145",
+  "prompt_id_unique": "P0078_v3.4.str_AMCN_XXXX",
+  "participant_a_prompt_text": "Your partner will describe a situation where they took the easy way out. Ask them to consider alternative scenarios where they might have taken a more challenging route, and discuss the potential outcomes.",
+  "participant_b_prompt_text": "Tell your partner about a time when you took the easy way out or avoided a challenge because it seemed too difficult or time-consuming. What was the situation, and do you think you would make the same choice again?",
+  "ipc_a": "AMCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

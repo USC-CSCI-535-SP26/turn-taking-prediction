@@ -1,0 +1,32 @@
+[
+  {
+    "participant_id": "P3746",
+    "start": 0,
+    "end": 61.29399999999987,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1208",
+    "start": 63.31399999999985,
+    "end": 117.80600000000004,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P3746",
+    "start": 67.53800000000001,
+    "end": 68.654,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P3746",
+    "start": 123.79399999999987,
+    "end": 124.75,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1208",
+    "start": 129.36200000000008,
+    "end": 130.86200000000008,
+    "overlapping": false
+  }
+]

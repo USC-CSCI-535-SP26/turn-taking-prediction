@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1600",
+    "annotated_participant": "P1600",
+    "non_annotated_participant": "P1989",
+    "start_pre_moi": 11.986,
+    "end_pre_moi": 13.038,
+    "pre_overlap": false,
+    "start_moi": 20,
+    "end_moi": 22,
+    "start_post_moi": 39.602,
+    "end_post_moi": 40.142,
+    "post_overlap": false,
+    "annotation": "She is confident about her answer",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

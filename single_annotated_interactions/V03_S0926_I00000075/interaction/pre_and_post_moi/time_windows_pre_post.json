@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P3173",
+    "annotated_participant": "P3173",
+    "start_pre_moi": 28.0,
+    "end_pre_moi": 43,
+    "start_moi": 43,
+    "end_moi": 48,
+    "start_post_moi": 48,
+    "end_post_moi": 63.0,
+    "annotation": "The participant is serious",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3173",
+    "annotated_participant": "P3173",
+    "start_pre_moi": 106.0,
+    "end_pre_moi": 121,
+    "start_moi": 121,
+    "end_moi": 124,
+    "start_post_moi": 124,
+    "end_post_moi": 139.0,
+    "annotation": "The participant is in agreement",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

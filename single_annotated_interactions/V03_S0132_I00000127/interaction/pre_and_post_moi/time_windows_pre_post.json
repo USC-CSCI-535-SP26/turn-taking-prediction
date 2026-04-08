@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1274",
+    "annotated_participant": "P1288",
+    "start_pre_moi": 45.0,
+    "end_pre_moi": 60,
+    "start_moi": 60,
+    "end_moi": 63,
+    "start_post_moi": 63,
+    "end_post_moi": 78.0,
+    "annotation": "The participant is eager to get feedback from the other participant ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1288",
+    "start_pre_moi": 287.0,
+    "end_pre_moi": 302,
+    "start_moi": 302,
+    "end_moi": 310,
+    "start_post_moi": 310,
+    "end_post_moi": 325.0,
+    "annotation": "The participant appears casual and calm",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

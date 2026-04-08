@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1446",
+    "annotated_participant": "P1446",
+    "non_annotated_participant": "P1447",
+    "start_pre_moi": 59.506000000000085,
+    "end_pre_moi": 105.35799999999995,
+    "pre_overlap": false,
+    "start_moi": 136,
+    "end_moi": 144,
+    "start_post_moi": null,
+    "end_post_moi": null,
+    "post_overlap": false,
+    "annotation": "The participant is elaborating on what scares them in a sensitive way",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

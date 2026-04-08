@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1502",
+    "annotated_participant": "P1502",
+    "start_pre_moi": 110.0,
+    "end_pre_moi": 125,
+    "start_moi": 125,
+    "end_moi": 130,
+    "start_post_moi": 130,
+    "end_post_moi": 145.0,
+    "annotation": "He feels stressed",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P2067",
+    "annotated_participant": "P2066",
+    "non_annotated_participant": "P2067",
+    "start_pre_moi": 62.721999999999994,
+    "end_pre_moi": 75.39,
+    "pre_overlap": true,
+    "start_moi": 70,
+    "end_moi": 74,
+    "start_post_moi": 62.721999999999994,
+    "end_post_moi": 75.39,
+    "post_overlap": true,
+    "annotation": "The participant was empathetic and agreeable.",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

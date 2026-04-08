@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1288",
+    "non_annotated_participant": "P1639",
+    "start_pre_moi": 35.21799999999985,
+    "end_pre_moi": 50.92599999999993,
+    "pre_overlap": false,
+    "start_moi": 51,
+    "end_moi": 55,
+    "start_post_moi": 68.11400000000003,
+    "end_post_moi": 73.32600000000002,
+    "post_overlap": false,
+    "annotation": "Participant appears relaxed and focused while adjusting her standing posture.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

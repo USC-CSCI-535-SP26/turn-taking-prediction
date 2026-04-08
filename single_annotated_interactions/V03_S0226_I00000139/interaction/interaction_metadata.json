@@ -1,0 +1,10 @@
+{
+  "": "131",
+  "prompt_hash": "00000139",
+  "prompt_id_unique": "P0003_EO_ANCP_XXXX",
+  "participant_a_prompt_text": "You're going to play a game with your partner. Together you will take turns weaving a fictional tale.\nIt can be about whatever you like.",
+  "participant_b_prompt_text": "You're going to play a game with your partner. Together you will take turns weaving a fictional\ntale. It can be about whatever you like.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

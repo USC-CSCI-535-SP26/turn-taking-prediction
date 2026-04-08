@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1427",
+    "annotated_participant": "P1427",
+    "non_annotated_participant": "P1259",
+    "start_pre_moi": 0,
+    "end_pre_moi": 17.822000000000003,
+    "pre_overlap": false,
+    "start_moi": 18,
+    "end_moi": 22,
+    "start_post_moi": 42.306,
+    "end_post_moi": 47.646,
+    "post_overlap": false,
+    "annotation": "Speaker is inquisitive and judgmental",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1629",
+    "annotated_participant": "P1629",
+    "non_annotated_participant": "P2500",
+    "start_pre_moi": 245.39399999999978,
+    "end_pre_moi": 253.48599999999988,
+    "pre_overlap": false,
+    "start_moi": 259,
+    "end_moi": 263,
+    "start_post_moi": 285.8739999999998,
+    "end_post_moi": 290.8299999999999,
+    "post_overlap": false,
+    "annotation": "The participant is very comfortable.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "": "76",
+  "prompt_hash": "00000081",
+  "prompt_id_unique": "P0102_v3.6.str_AMCP_XXXX",
+  "participant_a_prompt_text": "Your partner will share a story about receiving praise they didn't feel they deserved. Discuss how they handled the situation and what you think they could have done differently.",
+  "participant_b_prompt_text": "Tell your partner about a time when you received praise or recognition for something, but felt like it wasn't entirely deserved. How did you respond, and what did you learn from the experience?",
+  "ipc_a": "AMCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

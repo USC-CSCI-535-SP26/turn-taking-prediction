@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P4030",
+    "annotated_participant": "P4030",
+    "start_pre_moi": 89.0,
+    "end_pre_moi": 104,
+    "start_moi": 104,
+    "end_moi": 107,
+    "start_post_moi": 107,
+    "end_post_moi": 122.0,
+    "annotation": "The participant is bold and assertive.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

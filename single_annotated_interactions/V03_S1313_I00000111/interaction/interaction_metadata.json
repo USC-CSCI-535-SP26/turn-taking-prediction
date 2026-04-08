@@ -1,0 +1,10 @@
+{
+  "": "106",
+  "prompt_hash": "00000111",
+  "prompt_id_unique": "P0057_v3.3.str_APCN_XXXX",
+  "participant_a_prompt_text": "Your partner will describe a nuanced issue they've been thinking about. Listen to their thoughts and respond with your own insights, asking questions to clarify their perspective and exploring potential solutions together.",
+  "participant_b_prompt_text": "Tell your partner about a complex issue you've been grappling with, such as a social or environmental problem. Explain the different perspectives you've considered and how you're thinking about addressing it.",
+  "ipc_a": "APCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

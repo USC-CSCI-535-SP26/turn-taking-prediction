@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P4030",
+    "annotated_participant": "P4030",
+    "non_annotated_participant": "P3083",
+    "start_pre_moi": 131.92200000000003,
+    "end_pre_moi": 132.33399999999995,
+    "pre_overlap": true,
+    "start_moi": 132,
+    "end_moi": 135,
+    "start_post_moi": 134.80200000000002,
+    "end_post_moi": 135.21400000000006,
+    "post_overlap": true,
+    "annotation": "The participant is engaging and interesting.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P4030",
+    "annotated_participant": "P4030",
+    "non_annotated_participant": "P3083",
+    "start_pre_moi": 138.226,
+    "end_pre_moi": 138.57399999999996,
+    "pre_overlap": false,
+    "start_moi": 168,
+    "end_moi": 174,
+    "start_post_moi": 176.97799999999995,
+    "end_post_moi": 191.14999999999998,
+    "post_overlap": false,
+    "annotation": "The participant is warm and agreeable.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

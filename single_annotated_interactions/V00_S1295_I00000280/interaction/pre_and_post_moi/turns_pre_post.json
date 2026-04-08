@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1122",
+    "annotated_participant": "P1122",
+    "non_annotated_participant": "P0518",
+    "start_pre_moi": 67.69800000000001,
+    "end_pre_moi": 68.142,
+    "pre_overlap": false,
+    "start_moi": 71,
+    "end_moi": 73,
+    "start_post_moi": 75.666,
+    "end_post_moi": 76.87799999999999,
+    "post_overlap": false,
+    "annotation": "The participant was proud of themselves",
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  }
+]

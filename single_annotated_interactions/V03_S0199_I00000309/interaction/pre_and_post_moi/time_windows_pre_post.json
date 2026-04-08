@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1427",
+    "start_pre_moi": 130.0,
+    "end_pre_moi": 145,
+    "start_moi": 145,
+    "end_moi": 150,
+    "start_post_moi": 150,
+    "end_post_moi": 165.0,
+    "annotation": "The participant thought he could train people better",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

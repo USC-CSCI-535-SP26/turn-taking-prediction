@@ -1,0 +1,10 @@
+{
+  "": "325",
+  "prompt_hash": "00000338",
+  "prompt_id_unique": "P0110_v3.6.fam_AMCM_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a news article or current event that they think is significant. Listen to their perspective and discuss the potential consequences of the event.",
+  "participant_b_prompt_text": "Discuss a recent news article or current event that you think has significant implications, but doesn't directly affect you or your partner. Explain why you think it's important and how you think it will impact others.",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

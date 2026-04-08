@@ -1,0 +1,10 @@
+{
+  "": "407",
+  "prompt_hash": "00000416",
+  "prompt_id_unique": "P0037_v3.2.str_APCP_XXXX",
+  "participant_a_prompt_text": "Your partner will describe a time they attended a large gathering. Ask them about their favorite part of the event and how they navigated the social aspects of it.",
+  "participant_b_prompt_text": "Tell your partner about a time when you attended a large gathering or event, such as a wedding, festival, or party. What did you enjoy most about the experience, and how did you interact with others who were there?",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

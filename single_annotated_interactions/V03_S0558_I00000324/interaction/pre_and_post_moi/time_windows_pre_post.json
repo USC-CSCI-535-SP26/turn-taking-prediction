@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P2518",
+    "annotated_participant": "P2518",
+    "start_pre_moi": 44.0,
+    "end_pre_moi": 59,
+    "start_moi": 59,
+    "end_moi": 65,
+    "start_post_moi": 65,
+    "end_post_moi": 80.0,
+    "annotation": "Participant was calm and open",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2519",
+    "annotated_participant": "P2518",
+    "start_pre_moi": 92.0,
+    "end_pre_moi": 107,
+    "start_moi": 107,
+    "end_moi": 117,
+    "start_post_moi": 117,
+    "end_post_moi": 132.0,
+    "annotation": "Participant was calm and happy",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

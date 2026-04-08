@@ -1,0 +1,10 @@
+{
+  "": "26",
+  "prompt_hash": "00000028",
+  "prompt_id_unique": "P0024_v3.1.str_AMCM_XXXX",
+  "participant_a_prompt_text": "Share a personal experience where you chose to\ndistance yourself from others, either physically or emotionally. What motivated this decision, and do you think it was the right choice?",
+  "participant_b_prompt_text": "Your partner will discuss a time they distanced themselves from others.\nExplore the reasons behind their decision and consider sharing a similar experience from your own life.",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

@@ -1,0 +1,10 @@
+{
+  "": "177",
+  "prompt_hash": "00000189",
+  "prompt_id_unique": "P0043_v3.2.fam_ANCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they helped someone in need. Ask them questions about the experience and discuss what you think makes someone more likely to act with kindness in such situations.",
+  "participant_b_prompt_text": "Think about a time when you went out of your way to help someone in need. Share the story with your partner and explain what motivated you to act with kindness.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

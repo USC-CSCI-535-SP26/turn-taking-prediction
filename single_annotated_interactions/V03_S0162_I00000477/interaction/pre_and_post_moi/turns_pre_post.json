@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1343",
+    "annotated_participant": "P1293",
+    "non_annotated_participant": "P1343",
+    "start_pre_moi": 22.818,
+    "end_pre_moi": 44.094,
+    "pre_overlap": true,
+    "start_moi": 37,
+    "end_moi": 42,
+    "start_post_moi": 22.818,
+    "end_post_moi": 44.094,
+    "post_overlap": true,
+    "annotation": "The participant is in agreement with  the other participant's opinion",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

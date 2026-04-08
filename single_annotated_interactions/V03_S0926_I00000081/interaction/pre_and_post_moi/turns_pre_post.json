@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3173",
+    "annotated_participant": "P3173",
+    "non_annotated_participant": "P3147",
+    "start_pre_moi": 0,
+    "end_pre_moi": 57.837999999999965,
+    "pre_overlap": false,
+    "start_moi": 99,
+    "end_moi": 103,
+    "start_post_moi": 110.32199999999989,
+    "end_post_moi": 124.58999999999992,
+    "post_overlap": false,
+    "annotation": "The participant is curious and interested",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

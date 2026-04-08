@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1332",
+    "annotated_participant": "P1332",
+    "non_annotated_participant": "P1274",
+    "start_pre_moi": 146.4179999999999,
+    "end_pre_moi": 151.21399999999994,
+    "pre_overlap": false,
+    "start_moi": 173,
+    "end_moi": 176,
+    "start_post_moi": null,
+    "end_post_moi": null,
+    "post_overlap": false,
+    "annotation": "The participant felt amused and fully engaged in the humorous interaction.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

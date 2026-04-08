@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P3173",
+    "annotated_participant": "P3173",
+    "start_pre_moi": 156.0,
+    "end_pre_moi": 171,
+    "start_moi": 171,
+    "end_moi": 176,
+    "start_post_moi": 176,
+    "end_post_moi": 191.0,
+    "annotation": "The participant is deep in thought",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

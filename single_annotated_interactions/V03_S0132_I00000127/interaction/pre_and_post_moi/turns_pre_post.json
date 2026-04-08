@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P1274",
+    "annotated_participant": "P1288",
+    "non_annotated_participant": "P1274",
+    "start_pre_moi": 58.25800000000004,
+    "end_pre_moi": 104.62199999999996,
+    "pre_overlap": true,
+    "start_moi": 60,
+    "end_moi": 63,
+    "start_post_moi": 58.25800000000004,
+    "end_post_moi": 104.62199999999996,
+    "post_overlap": true,
+    "annotation": "The participant is eager to get feedback from the other participant ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1288",
+    "non_annotated_participant": "P1274",
+    "start_pre_moi": 274.3219999999999,
+    "end_pre_moi": 276.0139999999999,
+    "pre_overlap": false,
+    "start_moi": 302,
+    "end_moi": 310,
+    "start_post_moi": 319.4100000000001,
+    "end_post_moi": 355.5340000000001,
+    "post_overlap": false,
+    "annotation": "The participant appears casual and calm",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

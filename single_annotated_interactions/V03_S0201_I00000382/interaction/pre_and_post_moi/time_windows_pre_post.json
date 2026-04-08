@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1432",
+    "annotated_participant": "P1432",
+    "start_pre_moi": 5.0,
+    "end_pre_moi": 20,
+    "start_moi": 20,
+    "end_moi": 28,
+    "start_post_moi": 28,
+    "end_post_moi": 43.0,
+    "annotation": "He felt excited and enthusiastic.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

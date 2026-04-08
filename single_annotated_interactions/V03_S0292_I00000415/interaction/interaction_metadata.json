@@ -1,0 +1,10 @@
+{
+  "": "406",
+  "prompt_hash": "00000415",
+  "prompt_id_unique": "P0047_v3.2.str_APCN_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they worked towards a challenging goal. Ask them about the specific obstacles they faced and how they overcame them.",
+  "participant_b_prompt_text": "Describe a time when you worked towards a long-term goal, facing obstacles and setbacks along the way. What motivated you to keep going, and how did you ultimately achieve your goal?",
+  "ipc_a": "APCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1633",
+    "annotated_participant": "P1633",
+    "start_pre_moi": 142.0,
+    "end_pre_moi": 157,
+    "start_moi": 157,
+    "end_moi": 162,
+    "start_post_moi": 162,
+    "end_post_moi": 177.0,
+    "annotation": "He was zealous on this sharing",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

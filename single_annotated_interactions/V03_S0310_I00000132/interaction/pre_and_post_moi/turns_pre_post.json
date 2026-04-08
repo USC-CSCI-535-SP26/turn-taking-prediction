@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1626",
+    "annotated_participant": "P1626",
+    "non_annotated_participant": "P1765",
+    "start_pre_moi": 19.698000000000093,
+    "end_pre_moi": 26.253999999999905,
+    "pre_overlap": false,
+    "start_moi": 44,
+    "end_moi": 47,
+    "start_post_moi": 64.08200000000011,
+    "end_post_moi": 69.23000000000002,
+    "post_overlap": false,
+    "annotation": "Surprised, intrigued and interested",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

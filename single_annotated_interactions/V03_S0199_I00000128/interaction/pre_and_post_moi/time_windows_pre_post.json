@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1427",
+    "annotated_participant": "P1427",
+    "start_pre_moi": 93.0,
+    "end_pre_moi": 108,
+    "start_moi": 108,
+    "end_moi": 115,
+    "start_post_moi": 115,
+    "end_post_moi": 130.0,
+    "annotation": "Speaker is nervous",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  },
+  {
+    "event_speaker": "P1427",
+    "annotated_participant": "P1427",
+    "start_pre_moi": 123.0,
+    "end_pre_moi": 138,
+    "start_moi": 138,
+    "end_moi": 142,
+    "start_post_moi": 142,
+    "end_post_moi": 157.0,
+    "annotation": "The participant felt hopeful",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

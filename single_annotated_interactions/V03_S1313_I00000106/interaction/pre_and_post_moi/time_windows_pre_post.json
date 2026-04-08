@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P3978",
+    "annotated_participant": "P3978",
+    "start_pre_moi": 64.0,
+    "end_pre_moi": 79,
+    "start_moi": 79,
+    "end_moi": 83,
+    "start_post_moi": 83,
+    "end_post_moi": 98.0,
+    "annotation": "The participant is agreeable and attentive.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3978",
+    "annotated_participant": "P3978",
+    "start_pre_moi": 75.0,
+    "end_pre_moi": 90,
+    "start_moi": 90,
+    "end_moi": 94,
+    "start_post_moi": 94,
+    "end_post_moi": 109.0,
+    "annotation": "The participant is active and responsive.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

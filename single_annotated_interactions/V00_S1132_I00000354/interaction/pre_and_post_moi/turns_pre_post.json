@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P0737",
+    "annotated_participant": "P1093",
+    "non_annotated_participant": "P0737",
+    "start_pre_moi": 0,
+    "end_pre_moi": 109.69399999999996,
+    "pre_overlap": true,
+    "start_moi": 6,
+    "end_moi": 9,
+    "start_post_moi": 0,
+    "end_post_moi": 109.69399999999996,
+    "post_overlap": true,
+    "annotation": "The participant was serene",
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  }
+]

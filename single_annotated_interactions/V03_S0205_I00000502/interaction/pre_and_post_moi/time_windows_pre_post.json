@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1211",
+    "annotated_participant": "P1211",
+    "start_pre_moi": 162.0,
+    "end_pre_moi": 177,
+    "start_moi": 177,
+    "end_moi": 180,
+    "start_post_moi": 180,
+    "end_post_moi": 195.0,
+    "annotation": "The participant appeared amused and reflective while commenting on the safety.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

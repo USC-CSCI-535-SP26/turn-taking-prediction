@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1892",
+    "annotated_participant": "P1892",
+    "start_pre_moi": 21.0,
+    "end_pre_moi": 36,
+    "start_moi": 36,
+    "end_moi": 40,
+    "start_post_moi": 40,
+    "end_post_moi": 55.0,
+    "annotation": "He is factual ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "": "154",
+  "prompt_hash": "00000164",
+  "prompt_id_unique": "P0140_v3.8.str_APCN_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they had to make a thoughtful purchasing decision. Engage in a discussion about the importance of considering different factors and how to prioritize them.",
+  "participant_b_prompt_text": "Describe a time when you had to weigh the pros and cons of a significant purchase, such as a car or a house. What factors did you consider, and how did you ultimately make your decision?",
+  "ipc_a": "APCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

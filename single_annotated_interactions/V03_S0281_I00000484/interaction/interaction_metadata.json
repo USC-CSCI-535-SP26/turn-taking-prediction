@@ -1,0 +1,10 @@
+{
+  "": "483",
+  "prompt_hash": "00000484",
+  "prompt_id_unique": "P0036_DN_APCM_XXXX",
+  "participant_a_prompt_text": "Think of something that\u2019s been bothering you - maybe it\u2019s causing you to worry or\r\nmakes you feel anxious. Tell your partner what this is and discuss the topic with them.",
+  "participant_b_prompt_text": "Your partner will bring up a topic of their choice. Discuss it with them.",
+  "ipc_a": "APCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

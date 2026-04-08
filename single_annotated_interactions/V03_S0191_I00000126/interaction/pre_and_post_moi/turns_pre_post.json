@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1388",
+    "annotated_participant": "P1388",
+    "non_annotated_participant": "P1407",
+    "start_pre_moi": 310.33799999999997,
+    "end_pre_moi": 311.07000000000005,
+    "pre_overlap": false,
+    "start_moi": 315,
+    "end_moi": 321,
+    "start_post_moi": 321.21799999999996,
+    "end_post_moi": 323.51800000000003,
+    "post_overlap": false,
+    "annotation": "The participant s confident about her decision",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

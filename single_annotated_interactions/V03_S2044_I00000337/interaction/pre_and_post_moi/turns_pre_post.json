@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P4070",
+    "annotated_participant": "P4070",
+    "non_annotated_participant": "P5336",
+    "start_pre_moi": 111.85800000000017,
+    "end_pre_moi": 114.1579999999999,
+    "pre_overlap": false,
+    "start_moi": 116,
+    "end_moi": 123,
+    "start_post_moi": 129.52199999999993,
+    "end_post_moi": 129.8699999999999,
+    "post_overlap": false,
+    "annotation": "Participant was serious",
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  }
+]

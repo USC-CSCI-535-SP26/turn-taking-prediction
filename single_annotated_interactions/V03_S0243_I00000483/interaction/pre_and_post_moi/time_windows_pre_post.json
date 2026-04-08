@@ -1,0 +1,41 @@
+[
+  {
+    "event_speaker": "P1306",
+    "annotated_participant": "P1306",
+    "start_pre_moi": 49.0,
+    "end_pre_moi": 64,
+    "start_moi": 64,
+    "end_moi": 66,
+    "start_post_moi": 66,
+    "end_post_moi": 81.0,
+    "annotation": "He is amused by story",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1306",
+    "annotated_participant": "P1306",
+    "start_pre_moi": 60.0,
+    "end_pre_moi": 75,
+    "start_moi": 75,
+    "end_moi": 80,
+    "start_post_moi": 80,
+    "end_post_moi": 95.0,
+    "annotation": "He is entertained ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1306",
+    "annotated_participant": "P1306",
+    "start_pre_moi": 85.0,
+    "end_pre_moi": 100,
+    "start_moi": 100,
+    "end_moi": 106,
+    "start_post_moi": 106,
+    "end_post_moi": 121.0,
+    "annotation": "He is entertained ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

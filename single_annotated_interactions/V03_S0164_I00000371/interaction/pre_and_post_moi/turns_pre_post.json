@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P1354",
+    "annotated_participant": "P1354",
+    "non_annotated_participant": "P1322",
+    "start_pre_moi": 121.858,
+    "end_pre_moi": 122.174,
+    "pre_overlap": false,
+    "start_moi": 126,
+    "end_moi": 130,
+    "start_post_moi": 136.674,
+    "end_post_moi": 154.654,
+    "post_overlap": false,
+    "annotation": "Speaker is focused and engaged",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1354",
+    "annotated_participant": "P1354",
+    "non_annotated_participant": "P1322",
+    "start_pre_moi": 155.426,
+    "end_pre_moi": 156.254,
+    "pre_overlap": false,
+    "start_moi": 159,
+    "end_moi": 162,
+    "start_post_moi": 164.994,
+    "end_post_moi": 165.374,
+    "post_overlap": false,
+    "annotation": "Speaker is activated",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

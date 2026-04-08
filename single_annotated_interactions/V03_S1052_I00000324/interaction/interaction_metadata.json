@@ -1,0 +1,10 @@
+{
+  "": "309",
+  "prompt_hash": "00000324",
+  "prompt_id_unique": "P0116_v3.7.str_AMCN_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they struggled with making a decision. Ask follow-up questions to understand their thought process and offer your own insights on how you handle similar situations.",
+  "participant_b_prompt_text": "Describe a time when you had trouble making a decision, and it took you longer than usual to come to a conclusion. What were the factors that contributed to your indecisiveness, and how did you ultimately decide?",
+  "ipc_a": "AMCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

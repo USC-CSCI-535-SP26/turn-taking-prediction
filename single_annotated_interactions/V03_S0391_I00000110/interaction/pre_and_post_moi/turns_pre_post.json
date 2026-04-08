@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P2069",
+    "annotated_participant": "P1990",
+    "non_annotated_participant": "P2069",
+    "start_pre_moi": 246.3219999999999,
+    "end_pre_moi": 246.86200000000008,
+    "pre_overlap": false,
+    "start_moi": 249,
+    "end_moi": 260,
+    "start_post_moi": 260.1780000000001,
+    "end_post_moi": 260.558,
+    "post_overlap": false,
+    "annotation": "Participant was relaxed and entertained",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

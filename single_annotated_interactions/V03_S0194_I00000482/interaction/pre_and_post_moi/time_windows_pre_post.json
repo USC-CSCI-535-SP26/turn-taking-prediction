@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1411",
+    "annotated_participant": "P1411",
+    "start_pre_moi": 120.0,
+    "end_pre_moi": 135,
+    "start_moi": 135,
+    "end_moi": 140,
+    "start_post_moi": 140,
+    "end_post_moi": 155.0,
+    "annotation": "he is amused by his memory",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1411",
+    "annotated_participant": "P1411",
+    "start_pre_moi": 173.0,
+    "end_pre_moi": 188,
+    "start_moi": 188,
+    "end_moi": 192,
+    "start_post_moi": 192,
+    "end_post_moi": 207.0,
+    "annotation": "he feels embarrassed and amused, self-mockery",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

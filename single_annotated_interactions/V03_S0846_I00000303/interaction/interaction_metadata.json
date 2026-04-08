@@ -1,0 +1,10 @@
+{
+  "": "290",
+  "prompt_hash": "00000303",
+  "prompt_id_unique": "P0011_v3.0.fam_AMCP_XXXX",
+  "participant_a_prompt_text": "Describe a situation where you had to deliver bad news to your partner, such as canceling plans or telling them about a problem. Explain how you approached the conversation and what you did to soften the blow.",
+  "participant_b_prompt_text": "Your partner will tell you about a time they had to deliver bad news to you. Discuss with them how they handled it and whether there's anything they could have done differently.",
+  "ipc_a": "AMCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

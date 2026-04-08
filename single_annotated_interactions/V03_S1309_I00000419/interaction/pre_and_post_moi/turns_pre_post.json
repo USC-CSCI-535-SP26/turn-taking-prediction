@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3971",
+    "annotated_participant": "P3971",
+    "non_annotated_participant": "P2406",
+    "start_pre_moi": 6.594000000000051,
+    "end_pre_moi": 6.9099999999998545,
+    "pre_overlap": false,
+    "start_moi": 17,
+    "end_moi": 22,
+    "start_post_moi": 32.96199999999999,
+    "end_post_moi": 34.49400000000014,
+    "post_overlap": false,
+    "annotation": "The participant is feeling relaxed, in good moods, calm and also collected",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

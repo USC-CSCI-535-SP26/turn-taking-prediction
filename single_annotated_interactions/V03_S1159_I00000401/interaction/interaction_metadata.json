@@ -1,0 +1,10 @@
+{
+  "": "392",
+  "prompt_hash": "00000401",
+  "prompt_id_unique": "P0084_v3.5.str_ANCP_XXXX",
+  "participant_a_prompt_text": "Discuss a social issue that you feel strongly about and would like to see more people supporting. Explain why this issue is important to you and how others can get involved.",
+  "participant_b_prompt_text": "Your partner will share a social issue they care about. Listen to their perspective and offer suggestions for how they could make a positive impact.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

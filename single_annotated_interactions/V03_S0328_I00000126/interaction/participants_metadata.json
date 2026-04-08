@@ -1,0 +1,20 @@
+{
+  "P1880": {
+    "extraversion_raw": "3.8333333333333335",
+    "agreeableness_raw": "4.083333333333333",
+    "conscientiousness_raw": "3.5833333333333335",
+    "neuroticism_raw": "2.0",
+    "openness_raw": "4.083333333333333",
+    "vendor_id": "03",
+    "participant_id": "1880"
+  },
+  "P1881": {
+    "extraversion_raw": "Undisclosed",
+    "agreeableness_raw": "Undisclosed",
+    "conscientiousness_raw": "Undisclosed",
+    "neuroticism_raw": "Undisclosed",
+    "openness_raw": "Undisclosed",
+    "vendor_id": "03",
+    "participant_id": "1881"
+  }
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P2268",
+    "annotated_participant": "P2269",
+    "non_annotated_participant": "P2268",
+    "start_pre_moi": 201.37799999999993,
+    "end_pre_moi": 211.45399999999995,
+    "pre_overlap": true,
+    "start_moi": 207,
+    "end_moi": 212,
+    "start_post_moi": 213.21800000000007,
+    "end_post_moi": 235.9659999999999,
+    "post_overlap": false,
+    "annotation": "He is fondly remembering",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

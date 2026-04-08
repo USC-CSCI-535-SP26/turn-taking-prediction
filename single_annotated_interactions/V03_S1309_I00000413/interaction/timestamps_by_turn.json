@@ -1,0 +1,98 @@
+[
+  {
+    "participant_id": "P2406",
+    "start": 0,
+    "end": 34.398000000000025,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P3971",
+    "start": 40.38599999999997,
+    "end": 111.29399999999998,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2406",
+    "start": 98.14599999999996,
+    "end": 98.49400000000003,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2406",
+    "start": 112.19399999999996,
+    "end": 112.50999999999999,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P3971",
+    "start": 112.83399999999995,
+    "end": 129.30999999999995,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2406",
+    "start": 129.12199999999996,
+    "end": 130.23800000000006,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P3971",
+    "start": 130.04999999999995,
+    "end": 134.30200000000002,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2406",
+    "start": 132.76999999999998,
+    "end": 133.14999999999998,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2406",
+    "start": 136.16200000000003,
+    "end": 145.086,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P3971",
+    "start": 145.63400000000001,
+    "end": 218.558,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P2406",
+    "start": 220.00199999999995,
+    "end": 221.88599999999997,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P3971",
+    "start": 220.034,
+    "end": 220.66999999999996,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P3971",
+    "start": 221.76199999999994,
+    "end": 222.23800000000006,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P2406",
+    "start": 222.21000000000004,
+    "end": 237.59799999999996,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P3971",
+    "start": 238.49800000000005,
+    "end": 247.80600000000004,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P2406",
+    "start": 258.53,
+    "end": 264,
+    "overlapping": false
+  }
+]

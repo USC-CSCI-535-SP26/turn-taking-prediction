@@ -1,0 +1,10 @@
+{
+  "": "110",
+  "prompt_hash": "00000115",
+  "prompt_id_unique": "P0053_v3.3.str_AMCM_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they felt uncomfortable sharing their opinion. Ask them questions to help you understand their perspective and see if you can relate to their experience.",
+  "participant_b_prompt_text": "Think of a situation where you felt uncomfortable sharing your opinion or speaking up. Describe the situation to your partner and explain why you held back.",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

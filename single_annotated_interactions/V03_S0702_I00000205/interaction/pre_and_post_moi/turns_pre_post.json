@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1359",
+    "annotated_participant": "P2033",
+    "non_annotated_participant": "P1359",
+    "start_pre_moi": 132.3699999999999,
+    "end_pre_moi": 143.6300000000001,
+    "pre_overlap": true,
+    "start_moi": 137,
+    "end_moi": 146,
+    "start_post_moi": 150.35399999999981,
+    "end_post_moi": 150.98999999999978,
+    "post_overlap": false,
+    "annotation": "Participant is amused",
+    "relationship": "familiar",
+    "relationship_detail": "coworkers"
+  }
+]

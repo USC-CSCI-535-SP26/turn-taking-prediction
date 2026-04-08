@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1306",
+    "annotated_participant": "P1306",
+    "start_pre_moi": 55.0,
+    "end_pre_moi": 70,
+    "start_moi": 70,
+    "end_moi": 76,
+    "start_post_moi": 76,
+    "end_post_moi": 91.0,
+    "annotation": "Participant is frustrated and sad",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1306",
+    "annotated_participant": "P1306",
+    "start_pre_moi": 131.0,
+    "end_pre_moi": 146,
+    "start_moi": 146,
+    "end_moi": 147,
+    "start_post_moi": 147,
+    "end_post_moi": 162.0,
+    "annotation": "Participant is traumatized",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

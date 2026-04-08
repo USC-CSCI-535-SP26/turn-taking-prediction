@@ -1,0 +1,10 @@
+{
+  "": "197",
+  "prompt_hash": "00000207",
+  "prompt_id_unique": "P0022_v3.1.fam_AMCP_XXXX",
+  "participant_a_prompt_text": "Discuss a time when you had to navigate a sensitive topic with your partner. What was the issue, and how did you work together to find a resolution? What did you learn from the experience?",
+  "participant_b_prompt_text": "Your partner will share a story about navigating a sensitive topic with you. Share your perspective on the situation and how you think it was handled.",
+  "ipc_a": "AMCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

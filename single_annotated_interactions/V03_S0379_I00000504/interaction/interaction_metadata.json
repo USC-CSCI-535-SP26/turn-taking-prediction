@@ -1,0 +1,10 @@
+{
+  "": "503",
+  "prompt_hash": "00000504",
+  "prompt_id_unique": "P0057_MP_APCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you a personal story. Listen to them and engage with the story.",
+  "participant_b_prompt_text": "Think about the last time you felt a positive feeling deeply. Could be deep contentment, joy, excitement, or pride for yourself or someone else. Tell the story of the event / reason behind the feeling. Try to be descriptive so your partner can share in the feeling with you.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}

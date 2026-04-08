@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1291",
+    "annotated_participant": "P1313",
+    "start_pre_moi": -13.0,
+    "end_pre_moi": 2,
+    "start_moi": 2,
+    "end_moi": 6,
+    "start_post_moi": 6,
+    "end_post_moi": 21.0,
+    "annotation": "The speaker is aloof and cold",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

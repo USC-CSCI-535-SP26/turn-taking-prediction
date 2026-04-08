@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1125",
+    "start_pre_moi": 84.0,
+    "end_pre_moi": 99,
+    "start_moi": 99,
+    "end_moi": 106,
+    "start_post_moi": 106,
+    "end_post_moi": 121.0,
+    "annotation": "The participant feels slightly self-conscious but focused while speaking.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

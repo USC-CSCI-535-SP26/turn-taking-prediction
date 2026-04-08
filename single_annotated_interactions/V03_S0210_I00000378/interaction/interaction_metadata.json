@@ -1,0 +1,10 @@
+{
+  "": "372",
+  "prompt_hash": "00000378",
+  "prompt_id_unique": "P0021_DP_AMCP_XXXX",
+  "participant_a_prompt_text": "Take a moment to think about something you like or enjoy about your partner. Compliment",
+  "participant_b_prompt_text": "Your partner will say something about you. Respond however you like.",
+  "ipc_a": "AMCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation"
+}
