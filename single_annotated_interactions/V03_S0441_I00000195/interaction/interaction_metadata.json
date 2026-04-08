@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell your partner about a situation where you wish you had been more empathetic or understanding towards someone. Describe what happened and how you think you could have responded in a more sensitive way.",
   "ipc_a": "ANCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 168.001167
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a point of view on something, discuss it with them.",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 256.022067
 }

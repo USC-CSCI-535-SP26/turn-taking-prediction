@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a project they're working on. Ask them questions about their workflow and offer suggestions for how they might stay organized and focused.",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 336.002333
 }

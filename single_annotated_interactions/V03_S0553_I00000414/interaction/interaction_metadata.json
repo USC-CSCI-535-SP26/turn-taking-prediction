@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Describe a time when someone showed you kindness or generosity that had a significant impact on your life. What did they do, and how did it make you feel?",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 118.017533
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Describe a situation where you had to interact with someone who was difficult or challenging. How did you handle the situation, and what did you learn from it?",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 272.0047
 }

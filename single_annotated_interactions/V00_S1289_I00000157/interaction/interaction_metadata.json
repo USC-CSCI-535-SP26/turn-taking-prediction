@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they received great hospitality. Ask them to elaborate on the experience and explore how it has impacted their relationships with others.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 156.0
 }

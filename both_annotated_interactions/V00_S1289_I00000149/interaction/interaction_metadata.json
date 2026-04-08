@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share their thoughts on a social issue that they think deserves more sympathy. Listen to their perspective and share your own thoughts on the issue.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 258.0
 }

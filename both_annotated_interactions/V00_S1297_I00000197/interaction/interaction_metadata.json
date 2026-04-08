@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they helped someone. Listen to their story and discuss how it made them feel, and whether you've ever been in a similar situation.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 248.0
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a topic you feel strongly about and are willing to argue for, such as a social justice issue or a controversial policy. Make your case to your partner and be prepared to defend your position.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 288.021067
 }

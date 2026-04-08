@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time when someone's silence impacted them. Ask them how they think the situation could have been improved with more open communication.",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 100.0
 }

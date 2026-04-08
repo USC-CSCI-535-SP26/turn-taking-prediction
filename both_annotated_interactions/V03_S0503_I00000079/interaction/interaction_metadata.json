@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a story about a time they showed kindness to someone. Listen attentively and explore how their actions may have impacted the other person.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 166.032167
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will describe an association they have with you. Respond however you like.",
   "ipc_a": "AMCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 448.014233
 }

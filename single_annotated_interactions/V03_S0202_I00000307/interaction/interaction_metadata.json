@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will pose a question to you. Have fun answering it.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 184.0168
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Describe a time when you had to weigh the pros and cons of a significant purchase, such as a car or a house. What factors did you consider, and how did you ultimately make your decision?",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 128.0279
 }

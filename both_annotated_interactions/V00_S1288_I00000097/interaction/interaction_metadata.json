@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Talk to your partner about a task or chore that you consistently put off or do at the last minute. What is it about this task that makes you want to procrastinate, and how do you think you could change your approach to get it done more efficiently?",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 240.0
 }

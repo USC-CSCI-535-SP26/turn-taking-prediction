@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "You will each see the same prompt:\n\nThink about something in the world you and your partner both care about. Could be a \"big\" thing like climate change or a \"small thing\" like filling potholes on your local road. Bring up the topic and discuss how you might improve it together.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 176.009167
 }

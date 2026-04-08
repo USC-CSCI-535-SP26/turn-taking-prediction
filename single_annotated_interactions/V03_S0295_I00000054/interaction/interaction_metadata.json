@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell your partner about a time when you took charge of a situation and led others to achieve a common goal. What was the situation, and how did you assert your leadership?",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 342.007967
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will discuss a time they distanced themselves from others.\nExplore the reasons behind their decision and consider sharing a similar experience from your own life.",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 612.011033
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a story about kindness or generosity they received. Reflect on how this story makes you think about your own relationships and interactions with others.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 312.011333
 }

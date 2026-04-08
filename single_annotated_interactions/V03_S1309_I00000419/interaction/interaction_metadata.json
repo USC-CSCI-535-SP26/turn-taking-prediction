@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a hobby or activity that you're passionate about and enjoy sharing with others. How do you like to introduce others to this activity and what do you hope they get out of it?",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 290.023067
 }

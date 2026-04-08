@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "If you could go back in time and give advice to your younger self, what would it be and why? Describe this process to your partner.",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 176.009167
 }

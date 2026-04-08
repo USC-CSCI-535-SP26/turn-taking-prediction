@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you a story from their childhood. Listen to them and engage with the",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 190.023167
 }

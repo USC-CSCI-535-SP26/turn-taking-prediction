@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a topic or issue that you and your partner generally see eye-to-eye on. Explain why you think you're in agreement and what values or experiences you share that contribute to your similar views.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 262.0
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they felt like an outsider. Ask them questions about the situation and discuss how you've both navigated similar feelings in the past.",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 606.0
 }

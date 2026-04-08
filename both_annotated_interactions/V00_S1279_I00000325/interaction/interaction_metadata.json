@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about something they enjoy doing. Show genuine interest and ask questions to learn more about their passion.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 302.0
 }

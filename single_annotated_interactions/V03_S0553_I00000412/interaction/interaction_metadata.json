@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will describe a situation where someone's personality or opinions overpowered others. Share a time when you felt similarly, or offer a different perspective on how to navigate such situations.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 120.0199
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a task or project that you've been putting off for a while. What's holding you back from tackling it, and what strategies do you think might help you regain momentum?",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 480.012867
 }

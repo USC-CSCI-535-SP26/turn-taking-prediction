@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Recall a time that you were stuck in life or on a project and someone helped you to get\r\nthrough it. Tell the story about this time, describe how the person helped you, and what you learned from the experience.",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 202.001433
 }

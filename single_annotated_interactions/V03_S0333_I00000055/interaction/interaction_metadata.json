@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a story about avoiding conflict. Discuss with them whether they think avoiding the conflict was the right decision, and what they might do differently in a similar situation in the future.",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 144.010167
 }

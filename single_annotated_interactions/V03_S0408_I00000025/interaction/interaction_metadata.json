@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a success story about achieving a challenging goal. Discuss what you think contributed to their success and how you might apply those strategies to your own goals.",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 206.0058
 }

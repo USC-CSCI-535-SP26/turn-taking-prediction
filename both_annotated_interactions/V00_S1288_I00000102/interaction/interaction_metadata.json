@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a story about a time they received kindness from someone. Listen to their story and discuss how it impacted their life and relationships.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 212.0
 }

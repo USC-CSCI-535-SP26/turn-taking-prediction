@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Share a time when you stood up for yourself or someone else in a difficult situation. Describe the circumstances and how you handled it. What did you learn from the experience?",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 208.0078
 }

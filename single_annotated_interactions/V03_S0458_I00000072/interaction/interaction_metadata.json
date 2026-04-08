@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a topic you're passionate about, but also acknowledge potential counterarguments. Share your thoughts with your partner and be open to their perspective.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 176.0088
 }

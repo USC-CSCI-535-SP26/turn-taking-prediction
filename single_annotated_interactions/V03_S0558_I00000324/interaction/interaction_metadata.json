@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Describe a time when you had trouble making a decision, and it took you longer than usual to come to a conclusion. What were the factors that contributed to your indecisiveness, and how did you ultimately decide?",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 172.0048
 }

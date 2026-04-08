@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they had to think on their feet. Ask\nthem follow-up questions to understand their thought process and discuss whether their solution was effective.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 190.0228
 }

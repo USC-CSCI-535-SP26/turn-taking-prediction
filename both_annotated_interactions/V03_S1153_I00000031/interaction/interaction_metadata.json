@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will describe a frustrating interaction with someone who\nwasn't being cooperative. Offer suggestions on how they could have handled the situation differently and share a similar experience where you found a resolution.",
   "ipc_a": "ANCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 666.032033
 }

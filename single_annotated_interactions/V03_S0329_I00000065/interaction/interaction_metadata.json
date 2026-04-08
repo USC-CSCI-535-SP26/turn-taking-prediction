@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Share an example of a clever or resourceful thing you've done to save time, money, or effort. What inspired your idea, and has it become a habit or a one-time trick?",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 278.0107
 }

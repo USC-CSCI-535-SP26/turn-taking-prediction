@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Talk to your partner about a challenging experience you're currently going through, and how you're feeling vulnerable. Ask for their support and guidance.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 462.0
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they received steady support from you. Share your perspective on how their support helped you and discuss what made their efforts effective.",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 300.0
 }

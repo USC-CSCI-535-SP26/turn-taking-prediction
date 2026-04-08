@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will bring up a news event or issue that doesn't directly affect either of you. Listen to their thoughts and engage in a discussion, exploring the broader implications of the topic.",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 320.0197
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time someone's overbearing behavior impacted them. Share a time when you felt similarly and discuss how you both handled the situations.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 252.018067
 }

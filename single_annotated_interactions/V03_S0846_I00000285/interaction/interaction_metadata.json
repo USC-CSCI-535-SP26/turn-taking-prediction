@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Share with your partner a clever shortcut or hack you've discovered that makes a task or process easier. Explain how you came across it and why it's useful.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 146.012167
 }

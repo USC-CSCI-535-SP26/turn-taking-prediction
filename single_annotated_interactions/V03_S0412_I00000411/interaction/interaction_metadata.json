@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell your partner about a time when you went out of your way to help someone without expecting anything in return. What motivated you to do so, and how did the other person react?",
   "ipc_a": "AMCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 220.0198
 }

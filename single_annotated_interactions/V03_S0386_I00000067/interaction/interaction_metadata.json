@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they received an unexpected act of kindness. Ask them questions to learn more about the experience and show genuine interest.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 200.0328
 }

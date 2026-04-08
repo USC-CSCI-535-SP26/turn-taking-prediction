@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they overcame a difficult challenge. Ask them questions about what they learned and how they think it has prepared them for future obstacles.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 226.0258
 }

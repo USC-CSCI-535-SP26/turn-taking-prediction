@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Recall a time when you witnessed or were involved in a situation where someone was being bullied or mistreated. Describe what happened and how you think the situation could have been handled differently.",
   "ipc_a": "ANCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 350.0
 }

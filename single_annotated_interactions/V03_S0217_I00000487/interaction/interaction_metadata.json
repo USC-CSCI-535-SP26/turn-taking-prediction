@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Describe a time that you failed at something or weren't able to achieve the outcome you had hoped for. Discuss the feelings you had and what you learned with your\r\npartner.",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 182.0148
 }

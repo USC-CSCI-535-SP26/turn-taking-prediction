@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell your partner about a decision you made that required you to be resolute and unwavering, even in the face of uncertainty or criticism. What was the decision and how did you stick to it?",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 402.001233
 }

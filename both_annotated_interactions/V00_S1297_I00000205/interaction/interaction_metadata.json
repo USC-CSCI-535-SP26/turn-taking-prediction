@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Describe a situation where you found a creative solution to a problem that had been stumping you. Explain how you came up with the solution and what made it effective.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 220.0
 }

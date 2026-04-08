@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a hobby or activity they think you'd enjoy doing together. Discuss the pros and cons of trying it out and whether you'd be interested in joining them.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 160.0
 }

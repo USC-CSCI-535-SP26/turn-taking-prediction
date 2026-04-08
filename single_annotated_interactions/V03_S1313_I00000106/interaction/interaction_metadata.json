@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will describe a time when they felt lethargic. Listen actively and try to identify any patterns or common themes that might be contributing to their lethargy, and offer words of encouragement to help them move forward.",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 206.005433
 }

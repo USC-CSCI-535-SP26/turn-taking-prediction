@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Describe a time when you worked towards a long-term goal, facing obstacles and setbacks along the way. What motivated you to keep going, and how did you ultimately achieve your goal?",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 196.029167
 }

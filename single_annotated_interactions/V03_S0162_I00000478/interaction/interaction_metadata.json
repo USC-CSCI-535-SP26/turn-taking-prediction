@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "You will each see the same prompt:\r\nDiscuss with your partner - \"if we were to start a company or business together what",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 228.027433
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "What is one word you can use to describe how you and your partner are most different? For",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "collaborative_storytelling"
+  "interaction_type": "collaborative_storytelling",
+  "duration": 230.0298
 }

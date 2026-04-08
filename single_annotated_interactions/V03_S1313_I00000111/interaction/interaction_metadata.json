@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell your partner about a complex issue you've been grappling with, such as a social or environmental problem. Explain the different perspectives you've considered and how you're thinking about addressing it.",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 412.011233
 }

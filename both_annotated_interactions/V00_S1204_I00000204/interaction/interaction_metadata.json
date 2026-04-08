@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Think about a time when you successfully achieved a difficult goal. Tell your partner about the goal, the challenges you faced, and what you did to overcome them.",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 420.0
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they helped you. Express your gratitude and discuss how their actions made you feel.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 128.027533
 }

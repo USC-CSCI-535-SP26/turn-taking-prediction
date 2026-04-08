@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell your partner about a time when someone in your life was being too controlling or dominant. How did you handle the situation and what did you learn from it?",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 52.018267
 }

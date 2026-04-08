@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Think about a time when you went out of your way to help someone in need. Share the story with your partner and explain what motivated you to act with kindness.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 310.0097
 }

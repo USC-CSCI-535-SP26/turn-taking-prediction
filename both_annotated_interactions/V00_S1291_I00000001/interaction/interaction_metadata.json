@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Recall a conversation or situation where you felt like you didn't speak up or assert yourself as much as you should have. Describe what happened and what you would do differently if faced with a similar situation in the future.",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 448.0
 }

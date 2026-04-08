@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a hobby or activity that brings you joy and makes you feel carefree. Tell your partner what you like about it and how it helps you relax.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 200.0
 }

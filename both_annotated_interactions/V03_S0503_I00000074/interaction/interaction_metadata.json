@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell your partner about a time when you changed your mind or reversed a decision. What led you to reevaluate your stance, and do you think the change was for the better?",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 170.0028
 }

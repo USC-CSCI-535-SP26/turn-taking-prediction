@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a time when you felt a lack of enthusiasm or energy for an activity or hobby that you normally enjoy. What was going on that made you feel that way, and how did you eventually regain your motivation?",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 124.0
 }

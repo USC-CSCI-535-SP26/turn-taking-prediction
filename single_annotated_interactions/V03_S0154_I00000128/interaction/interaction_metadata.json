@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will bring up a topic of their choice. Discuss with them.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 218.017433
 }

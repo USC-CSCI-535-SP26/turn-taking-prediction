@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a story about a time they helped someone. Explore the reasons behind their actions and discuss whether you think people are generally willing to go out of their way for others.",
   "ipc_a": "AMCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 191.397
 }

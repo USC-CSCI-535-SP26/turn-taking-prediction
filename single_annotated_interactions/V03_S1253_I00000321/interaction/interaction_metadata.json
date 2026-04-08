@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a topic that you feel strongly about and believe you have a unique insight into. Explain to your partner why your perspective is the most informed and why others are misinformed.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 186.019167
 }

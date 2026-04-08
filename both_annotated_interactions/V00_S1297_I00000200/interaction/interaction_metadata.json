@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they felt like you made a decision without considering their thoughts or opinions. Discuss the decision and how you can work together to make more collaborative choices in the future.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 122.0
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a situation where you had to navigate a tricky or awkward social situation by being tactful or manipulative. Describe what happened and how you handled it.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 498.0
 }

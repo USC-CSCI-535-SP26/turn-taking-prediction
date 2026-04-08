@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a situation where you had to be brutally honest with someone, even if it was hard to do so. What was the outcome, and do you think it was worth it?",
   "ipc_a": "ANCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 202.0
 }

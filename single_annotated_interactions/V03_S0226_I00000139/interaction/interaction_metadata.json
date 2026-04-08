@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "You're going to play a game with your partner. Together you will take turns weaving a fictional\ntale. It can be about whatever you like.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 222.0218
 }

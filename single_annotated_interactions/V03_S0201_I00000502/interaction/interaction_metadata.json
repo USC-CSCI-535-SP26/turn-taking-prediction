@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will describe an event from their past. Discuss it with them.",
   "ipc_a": "ANCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 280.0127
 }

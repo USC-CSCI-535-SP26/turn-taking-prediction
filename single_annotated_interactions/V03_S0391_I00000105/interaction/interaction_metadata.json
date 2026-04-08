@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Describe a competitive situation where you had to push yourself or others to succeed, even if it meant being cutthroat. Was it worth it, and would you do it again?",
   "ipc_a": "ANCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 402.0016
 }

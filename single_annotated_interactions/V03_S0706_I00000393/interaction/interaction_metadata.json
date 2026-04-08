@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Recall a situation where you wanted to speak up or contribute to a conversation, but felt too shy or intimidated to do so. Describe the situation to your partner and explain what you wish you had said or done differently.",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 232.031433
 }

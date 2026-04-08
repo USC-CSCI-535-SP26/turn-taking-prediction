@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "You're going to play a game with your partner. It is intended to be silly and fun.",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 134.000533
 }

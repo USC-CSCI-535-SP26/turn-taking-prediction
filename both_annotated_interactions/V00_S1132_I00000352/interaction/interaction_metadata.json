@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a decision or stance you've taken in the past that you've since reconsidered or changed your mind about. What new information or perspectives led you to reevaluate, and how did you come to a new conclusion?",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 204.0
 }

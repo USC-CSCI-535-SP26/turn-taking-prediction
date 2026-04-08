@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a story about managing multiple tasks. Discuss with them how they handled the situation and what you might have done differently.",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 132.0
 }

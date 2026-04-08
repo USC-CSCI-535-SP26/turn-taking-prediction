@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a story about a frustrating experience with a policy or rule. Ask them to elaborate on how it made them feel and discuss potential alternatives that might have been more considerate.",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 538.004133
 }

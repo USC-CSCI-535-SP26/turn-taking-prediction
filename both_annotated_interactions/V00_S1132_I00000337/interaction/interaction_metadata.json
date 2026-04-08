@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Pose a hypothetical scenario to your partner that involves a tricky moral dilemma. Explain the situation and your thoughts on how to approach it, and ask for their opinion on what they would do.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 122.0
 }

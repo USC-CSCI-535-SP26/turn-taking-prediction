@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Describe a situation in which others' incompetence or poor behavior made your life harder.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 224.023433
 }

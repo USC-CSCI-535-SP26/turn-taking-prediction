@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a hobby or activity that you enjoy doing together with your partner. Explain why you think it's a good way for you to spend time together and what you get out of it.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 324.0
 }

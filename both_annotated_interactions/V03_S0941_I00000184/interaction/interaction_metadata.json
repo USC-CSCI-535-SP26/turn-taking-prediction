@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a hobby or activity that you're particularly enthusiastic about, and explain why you enjoy it so much. Encourage your partner to join you or try it out.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 310.0097
 }

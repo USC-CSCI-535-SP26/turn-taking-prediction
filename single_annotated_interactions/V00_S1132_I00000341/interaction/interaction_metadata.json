@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a memory of when they felt cared for by you. Listen to their story and discuss how you can continue to show care and support for each other.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 82.0
 }

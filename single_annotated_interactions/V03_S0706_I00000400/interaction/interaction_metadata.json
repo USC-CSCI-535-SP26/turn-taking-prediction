@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a situation where you had to navigate a complex web of rules or bureaucracy to achieve your goal. Describe the obstacles you faced and how you managed to work around them.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 158.024533
 }

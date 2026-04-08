@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Think of a situation where you felt uncomfortable sharing your opinion or speaking up. Describe the situation to your partner and explain why you held back.",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 220.019433
 }

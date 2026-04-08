@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about one of their accomplishments. Listen to what they say and ask follow-up questions to get more information, but also feel free to share a similar experience of your own.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 236.002067
 }

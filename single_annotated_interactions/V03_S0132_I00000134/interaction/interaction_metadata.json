@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell a story about a success or challenge you've overcome in life. Take your time telling your partner, providing context around the event and describe your feelings surrounding it.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 198.0308
 }

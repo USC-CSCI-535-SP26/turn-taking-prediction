@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell your partner about a time when you attended a large gathering or event, such as a wedding, festival, or party. What did you enjoy most about the experience, and how did you interact with others who were there?",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 204.003433
 }

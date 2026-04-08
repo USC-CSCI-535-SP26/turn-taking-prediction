@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Share with your partner a memorable experience you had at a concert, festival, or sporting event that was particularly energetic and exciting. What made it so lively, and how did you feel during and after the event?",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 128.0279
 }

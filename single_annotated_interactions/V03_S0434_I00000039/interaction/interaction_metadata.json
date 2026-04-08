@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will describe a situation where they wished they had more resources to help someone. Offer suggestions or ideas for how they might have been able to make a greater impact.",
   "ipc_a": "AMCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 295.1278
 }

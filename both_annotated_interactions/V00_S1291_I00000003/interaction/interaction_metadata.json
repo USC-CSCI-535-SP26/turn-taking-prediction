@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a topic or issue that you feel strongly about and have been advocating for over time. What is it about this issue that motivates you to keep fighting for it, and what progress have you seen?",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 376.0
 }

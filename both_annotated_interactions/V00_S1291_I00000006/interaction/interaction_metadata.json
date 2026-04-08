@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they felt like you were being too controlling. Share your perspective on the situation and discuss how you could have handled it differently.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 246.0
 }

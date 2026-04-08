@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they made an effort to include someone. Discuss with them the challenges and rewards of being hospitable in social situations, and explore ways to create a more inclusive environment for others.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 262.0
 }

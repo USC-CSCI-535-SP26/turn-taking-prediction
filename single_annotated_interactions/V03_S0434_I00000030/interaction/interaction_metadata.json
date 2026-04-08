@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they met someone new and clicked with them. Discuss what you think makes for a great first impression and how you can tell when someone is genuinely interested in getting to know you.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 272.0047
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about something they're passionate about but hesitant to share. Listen attentively and try to understand their perspective.",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 164.030167
 }

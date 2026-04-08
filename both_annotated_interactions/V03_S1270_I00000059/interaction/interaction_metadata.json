@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will express a view on a topic that they think is overhyped. Listen to their perspective and discuss why you agree or disagree.",
   "ipc_a": "ANCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 170.003167
 }

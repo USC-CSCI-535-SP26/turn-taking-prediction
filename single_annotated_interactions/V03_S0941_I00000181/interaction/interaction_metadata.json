@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell your partner about a time when you helped facilitate a social connection between two people, such as introducing friends or organizing a group outing. Describe the situation and how it turned out.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 358.024333
 }

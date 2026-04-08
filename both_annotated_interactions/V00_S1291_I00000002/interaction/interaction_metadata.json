@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Describe a period in your life when you felt the need to withdraw from social interactions or isolate yourself from others. What led to this feeling, and how did you cope with it?",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 402.0
 }

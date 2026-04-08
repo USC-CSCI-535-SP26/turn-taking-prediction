@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a challenging project they undertook. Ask them about the obstacles they faced and how they overcame them.",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 406.005233
 }

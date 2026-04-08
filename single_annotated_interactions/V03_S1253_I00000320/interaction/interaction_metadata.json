@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Share with your partner a hobby or activity that you're extremely passionate about. Explain what draws you to it and what you enjoy most about it.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 214.0138
 }

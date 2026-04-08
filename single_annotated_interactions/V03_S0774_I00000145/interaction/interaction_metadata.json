@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell your partner about a time when you took the easy way out or avoided a challenge because it seemed too difficult or time-consuming. What was the situation, and do you think you would make the same choice again?",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 320.019333
 }

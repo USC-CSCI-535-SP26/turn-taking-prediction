@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time when someone's good manners impressed them. Share a similar experience, and discuss what you think makes good manners so effective.",
   "ipc_a": "ANCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 398.0306
 }

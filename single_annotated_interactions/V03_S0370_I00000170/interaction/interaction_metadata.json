@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a habit or routine that helps them stay organized. Discuss with them how this habit has impacted their daily life and whether you have any similar habits.",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 282.015067
 }

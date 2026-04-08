@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Think of a time you needed to defend yourself or someone else. It can be literally defending them in the physical sense, or a time that you defended something more abstract, like an idea. Tell the story to your partner.",
   "ipc_a": "ANCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 127.229
 }

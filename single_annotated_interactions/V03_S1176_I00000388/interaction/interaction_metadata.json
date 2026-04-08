@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they felt energized in a crowded place. Ask them follow-up questions to get more details and share a similar experience of your own.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 200.033167
 }

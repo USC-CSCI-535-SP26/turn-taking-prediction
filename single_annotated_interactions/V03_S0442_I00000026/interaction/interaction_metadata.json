@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they had to maintain a consistent\nroutine. Ask them about the challenges they faced and how they overcame them.",
   "ipc_a": "APCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 262.028433
 }

@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Discuss a period in your life when you felt like you were pulling away from your partner or others. Explain what was causing you to feel withdrawn and how it affected your relationships.",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 348.0
 }

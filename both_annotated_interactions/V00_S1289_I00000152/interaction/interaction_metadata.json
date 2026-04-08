@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they took charge of a situation. Ask them to elaborate on their thought process and decision-making.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 160.0
 }

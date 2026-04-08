@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share their thoughts on a social or cultural norm they think is insensitive. Listen to their perspective and share your own thoughts on the topic, considering multiple viewpoints.",
   "ipc_a": "ANCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 266.032433
 }

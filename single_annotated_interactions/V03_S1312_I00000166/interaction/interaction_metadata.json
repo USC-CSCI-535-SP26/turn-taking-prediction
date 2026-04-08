@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Tell your partner about a person in your life who has a calming presence, someone who makes you feel at ease. What is it about this person that has this effect on you?",
   "ipc_a": "AMCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 512.011133
 }

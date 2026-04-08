@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a time they felt taken advantage of. Listen to their story and offer suggestions on how they might have handled it differently.",
   "ipc_a": "AMCN",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 246.012067
 }

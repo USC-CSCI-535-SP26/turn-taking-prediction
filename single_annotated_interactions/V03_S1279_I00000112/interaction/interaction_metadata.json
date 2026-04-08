@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will share a story about overcoming a difficult situation. Ask them to elaborate on what they learned and how it has influenced their approach to challenges since then.",
   "ipc_a": "APCP",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 192.0248
 }

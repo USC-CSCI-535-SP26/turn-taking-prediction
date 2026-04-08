@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Share with your partner a time when you felt like you were being too quiet or reserved in a social situation. What were you thinking, but not saying?",
   "ipc_a": "AMCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 188.0
 }

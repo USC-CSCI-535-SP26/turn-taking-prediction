@@ -6,5 +6,6 @@
   "participant_b_prompt_text": "Your partner will tell you about a situation where they took credit for someone else's work or idea. Explore the reasons behind their actions and discuss whether you think it's ever acceptable to take credit for someone else's accomplishments.",
   "ipc_a": "APCM",
   "ipc_b": "",
-  "interaction_type": "ipc_conversation"
+  "interaction_type": "ipc_conversation",
+  "duration": 130.0299
 }
