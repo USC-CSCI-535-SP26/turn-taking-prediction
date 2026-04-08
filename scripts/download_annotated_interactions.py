@@ -688,6 +688,64 @@ def download_all_interactions(
 
 
 # =============================================================================
+# Interaction duration
+# =============================================================================
+
+
+def get_interaction_duration(interaction_id, interactions_dir="./annotated_interactions"):
+    """
+    Return the duration (in seconds) of an interaction's video by probing
+    the actual MP4 file on Meta's S3 bucket via ffprobe.
+
+    Reads the first participant's video URL from filelist_entries.json
+    (both participants share the same video duration) and uses ffprobe to
+    extract the duration without downloading the full file.
+
+    Requires ffprobe to be installed (part of the ffmpeg package).
+
+    Args:
+        interaction_id: e.g. "V00_S1132_I00000333"
+        interactions_dir: path to the interactions directory
+
+    Returns:
+        Duration in seconds (float).
+
+    Raises:
+        FileNotFoundError: if filelist_entries.json doesn't exist.
+        RuntimeError: if ffprobe fails.
+    """
+    import subprocess
+
+    entries_path = os.path.join(
+        interactions_dir, interaction_id, "interaction", "filelist_entries.json"
+    )
+    with open(entries_path) as f:
+        entries = json.load(f)
+
+    entry = entries[0]
+    url = (
+        f"{S3_BASE_URL}/{entry.get('label', 'naturalistic')}"
+        f"/{entry['split']}/video/{entry['file_id']}.mp4"
+    )
+
+    result = subprocess.run(
+        [
+            "ffprobe", "-v", "error",
+            "-show_entries", "format=duration",
+            "-of", "default=noprint_wrappers=1:nokey=1",
+            url,
+        ],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"ffprobe failed for {interaction_id}: {result.stderr.strip()}"
+        )
+
+    return float(result.stdout.strip())
+
+
+# =============================================================================
 # Video viewer generation
 # =============================================================================
 
