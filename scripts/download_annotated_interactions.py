@@ -639,6 +639,12 @@ def download_all_interactions(
                 with open(filepath, "w") as f:
                     json.dump(data, f, indent=2)
             print(f"  interaction/{filename}: written")
+        if not dry_run:
+            try:
+                viewer_path = generate_video_viewer(interaction_id, root_dir)
+                print(f"  interaction/video_viewer.html: written")
+            except Exception as e:
+                print(f"  interaction/video_viewer.html: ERROR — {e}")
 
         # --- Queue participant downloads ---
         # Look up the split for each file (needed to construct S3 URL)
