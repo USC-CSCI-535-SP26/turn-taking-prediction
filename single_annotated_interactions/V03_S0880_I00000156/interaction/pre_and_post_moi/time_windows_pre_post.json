@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P3067",
+    "annotated_participant": "P3067",
+    "start_pre_moi": -1.0,
+    "end_pre_moi": 14,
+    "start_moi": 14,
+    "end_moi": 18,
+    "start_post_moi": 18,
+    "end_post_moi": 33.0,
+    "annotation": "The speaker is in agreement",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

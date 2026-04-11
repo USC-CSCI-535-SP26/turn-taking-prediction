@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1315",
+    "annotated_participant": "P1315",
+    "start_pre_moi": 116.0,
+    "end_pre_moi": 131,
+    "start_moi": 131,
+    "end_moi": 135,
+    "start_post_moi": 135,
+    "end_post_moi": 150.0,
+    "annotation": "The participant was contemplative and focused",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

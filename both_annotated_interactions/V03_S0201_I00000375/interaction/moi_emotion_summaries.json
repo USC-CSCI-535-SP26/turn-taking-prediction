@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S0201_I00000375",
+    "annotated_participant": "P1432",
+    "non_annotated_participant": "P1433",
+    "imitator_emotion_features_present": false,
+    "annotation": "He appeared concerned and slightly frustrated.",
+    "start_ts": 83,
+    "end_ts": 87,
+    "start_idx": 2490,
+    "end_idx": 2610,
+    "n_frames": 120,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S0201_I00000375",
+    "annotated_participant": "P1433",
+    "non_annotated_participant": "P1432",
+    "imitator_emotion_features_present": false,
+    "annotation": "He felt frustrated and annoyed",
+    "start_ts": 217,
+    "end_ts": 220,
+    "start_idx": 6510,
+    "end_idx": 6600,
+    "n_frames": 90,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

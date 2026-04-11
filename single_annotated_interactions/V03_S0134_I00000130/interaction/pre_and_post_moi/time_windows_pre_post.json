@@ -1,0 +1,41 @@
+[
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1293",
+    "start_pre_moi": 120.0,
+    "end_pre_moi": 135,
+    "start_moi": 135,
+    "end_moi": 139,
+    "start_post_moi": 139,
+    "end_post_moi": 154.0,
+    "annotation": "The participant was a bit embarrassed.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1293",
+    "start_pre_moi": 129.0,
+    "end_pre_moi": 144,
+    "start_moi": 144,
+    "end_moi": 148,
+    "start_post_moi": 148,
+    "end_post_moi": 163.0,
+    "annotation": "The participant was absorbed in the story.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1293",
+    "start_pre_moi": 147.0,
+    "end_pre_moi": 162,
+    "start_moi": 162,
+    "end_moi": 167,
+    "start_post_moi": 167,
+    "end_post_moi": 182.0,
+    "annotation": "The participant was immersed.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

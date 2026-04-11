@@ -1,0 +1,11 @@
+{
+  "": "152",
+  "prompt_hash": "00000162",
+  "prompt_id_unique": "P0132_v3.8.str_APCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a lively experience they had at an event. Ask follow-up questions to get more details and share a similar experience you've had.",
+  "participant_b_prompt_text": "Share with your partner a memorable experience you had at a concert, festival, or sporting event that was particularly energetic and exciting. What made it so lively, and how did you feel during and after the event?",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 184.017167
+}

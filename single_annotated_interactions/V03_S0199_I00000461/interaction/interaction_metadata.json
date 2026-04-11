@@ -1,0 +1,11 @@
+{
+  "": "461",
+  "prompt_hash": "00000461",
+  "prompt_id_unique": "P0034_DN_AMCN_XXXX",
+  "participant_a_prompt_text": "Think of a time you've hurt your partner, or made a mistake that affected them adversely. Apologize to them now and acknowledge that you accept the blame.",
+  "participant_b_prompt_text": "Your partner will bring up a time in which the affected you in some way. Discuss the event with them.",
+  "ipc_a": "AMCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 166.032533
+}

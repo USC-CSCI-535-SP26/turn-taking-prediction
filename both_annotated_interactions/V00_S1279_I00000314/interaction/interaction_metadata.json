@@ -1,0 +1,11 @@
+{
+  "": "434",
+  "prompt_hash": "00000314",
+  "prompt_id_unique": "P0127_v3.7.str_ANCM_XXXX",
+  "participant_a_prompt_text": "Describe a situation where you witnessed or experienced bullying or harassment. How did it affect you and what do you think could have been done to prevent it?",
+  "participant_b_prompt_text": "Your partner will share a story about bullying or harassment. Listen to their perspective and discuss ways to create a more supportive environment.",
+  "ipc_a": "ANCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 300.0
+}

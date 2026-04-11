@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1477",
+    "annotated_participant": "P1477",
+    "non_annotated_participant": "P2180",
+    "start_pre_moi": 122.97800000000001,
+    "end_pre_moi": 124.446,
+    "pre_overlap": false,
+    "start_moi": 127,
+    "end_moi": 135,
+    "start_post_moi": 135.394,
+    "end_post_moi": 135.774,
+    "post_overlap": false,
+    "annotation": "They are proud of the other participant",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

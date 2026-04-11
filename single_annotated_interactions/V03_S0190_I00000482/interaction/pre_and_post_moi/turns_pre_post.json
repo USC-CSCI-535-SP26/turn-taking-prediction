@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1404",
+    "annotated_participant": "P1125",
+    "non_annotated_participant": "P1404",
+    "start_pre_moi": 99.05799999999999,
+    "end_pre_moi": 125.80600000000004,
+    "pre_overlap": true,
+    "start_moi": 109,
+    "end_moi": 115,
+    "start_post_moi": 99.05799999999999,
+    "end_post_moi": 125.80600000000004,
+    "post_overlap": true,
+    "annotation": "The participant feels attentive but slightly anxious while listening.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

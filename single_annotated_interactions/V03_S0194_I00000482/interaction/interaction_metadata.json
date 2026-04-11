@@ -1,0 +1,11 @@
+{
+  "": "481",
+  "prompt_hash": "00000482",
+  "prompt_id_unique": "P0018_MN_AMCP_XXXX",
+  "participant_a_prompt_text": "Share an embarrassing story about yourself with your partner. Without revealing personal details like names or dates, describe what happened, why it was embarrassing, and how it made you feel.",
+  "participant_b_prompt_text": "Your partner will tell you a story from their past. Listen to them and engage with the story.",
+  "ipc_a": "AMCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 220.019433
+}

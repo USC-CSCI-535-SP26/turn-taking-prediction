@@ -1,0 +1,104 @@
+[
+  {
+    "participant_id": "P1576",
+    "start": 0,
+    "end": 7.710000000000036,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1259",
+    "start": 9.730000000000018,
+    "end": 47.549999999999955,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1576",
+    "start": 50.402000000000044,
+    "end": 115.16600000000005,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1259",
+    "start": 115.106,
+    "end": 115.51800000000003,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1576",
+    "start": 115.68200000000002,
+    "end": 116.15800000000002,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1259",
+    "start": 118.88199999999995,
+    "end": 151.32600000000002,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1576",
+    "start": 153.09000000000003,
+    "end": 266.366,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1259",
+    "start": 253.47400000000005,
+    "end": 253.78999999999996,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1259",
+    "start": 256.514,
+    "end": 257.63,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1259",
+    "start": 265.826,
+    "end": 266.62199999999996,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1576",
+    "start": 266.626,
+    "end": 272.414,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1259",
+    "start": 266.946,
+    "end": 267.35799999999995,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1259",
+    "start": 272.674,
+    "end": 273.054,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1576",
+    "start": 272.706,
+    "end": 274.11,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1259",
+    "start": 275.01,
+    "end": 275.39,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1576",
+    "start": 275.04200000000003,
+    "end": 275.966,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1259",
+    "start": 276.19399999999996,
+    "end": 288,
+    "overlapping": false
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2173",
+    "annotated_participant": "P2173",
+    "start_pre_moi": -15.0,
+    "end_pre_moi": 0,
+    "start_moi": 0,
+    "end_moi": 2,
+    "start_post_moi": 2,
+    "end_post_moi": 17.0,
+    "annotation": "The participant was feeling in awe and perplexed.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

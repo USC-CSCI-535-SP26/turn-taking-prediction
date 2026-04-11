@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1633",
+    "annotated_participant": "P1633",
+    "non_annotated_participant": "P2231",
+    "start_pre_moi": 156.51400000000012,
+    "end_pre_moi": 157.50199999999995,
+    "pre_overlap": true,
+    "start_moi": 157,
+    "end_moi": 162,
+    "start_post_moi": 162.5619999999999,
+    "end_post_moi": 163.10199999999986,
+    "post_overlap": false,
+    "annotation": "He was zealous on this sharing",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

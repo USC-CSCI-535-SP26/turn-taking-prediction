@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2061",
+    "annotated_participant": "P2072",
+    "start_pre_moi": 67.0,
+    "end_pre_moi": 82,
+    "start_moi": 82,
+    "end_moi": 88,
+    "start_post_moi": 88,
+    "end_post_moi": 103.0,
+    "annotation": "He felt concerned and uneasy.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

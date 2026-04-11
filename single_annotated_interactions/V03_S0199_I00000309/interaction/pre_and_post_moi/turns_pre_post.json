@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1427",
+    "non_annotated_participant": "P1259",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 145,
+    "end_moi": 150,
+    "start_post_moi": 193.02599999999984,
+    "end_post_moi": 193.50199999999995,
+    "post_overlap": false,
+    "annotation": "The participant thought he could train people better",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

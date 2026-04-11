@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P3498",
+    "annotated_participant": "P3498",
+    "start_pre_moi": 114.0,
+    "end_pre_moi": 129,
+    "start_moi": 129,
+    "end_moi": 135,
+    "start_post_moi": 135,
+    "end_post_moi": 150.0,
+    "annotation": "Participant conveys curiosity and focused attention.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

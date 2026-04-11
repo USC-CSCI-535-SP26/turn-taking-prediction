@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1313",
+    "annotated_participant": "P1313",
+    "non_annotated_participant": "P1340",
+    "start_pre_moi": 22.24200000000019,
+    "end_pre_moi": 22.68600000000015,
+    "pre_overlap": false,
+    "start_moi": 57,
+    "end_moi": 72,
+    "start_post_moi": 73.57000000000016,
+    "end_post_moi": 74.01400000000012,
+    "post_overlap": false,
+    "annotation": "She is proud of her partner and his change ",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

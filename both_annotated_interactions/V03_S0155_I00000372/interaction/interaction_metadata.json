@@ -1,0 +1,11 @@
+{
+  "": "366",
+  "prompt_hash": "00000372",
+  "prompt_id_unique": "P0040_MP_APCP_XXXX",
+  "participant_a_prompt_text": "Try to recall someone important from your childhood - could be a best friend or grandparent",
+  "participant_b_prompt_text": "Your partner will tell you a story from their childhood. Listen to them and engage with the",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 188.0208
+}

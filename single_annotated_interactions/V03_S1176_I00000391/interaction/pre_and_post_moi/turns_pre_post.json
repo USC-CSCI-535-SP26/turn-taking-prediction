@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3746",
+    "annotated_participant": "P3746",
+    "non_annotated_participant": "P1208",
+    "start_pre_moi": 213.7460000000001,
+    "end_pre_moi": 215.27800000000002,
+    "pre_overlap": false,
+    "start_moi": 224,
+    "end_moi": 229,
+    "start_post_moi": 250.5139999999999,
+    "end_post_moi": 250.95800000000008,
+    "post_overlap": false,
+    "annotation": "The participant is euphoric.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

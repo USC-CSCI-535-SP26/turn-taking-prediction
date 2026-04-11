@@ -1,0 +1,11 @@
+{
+  "": "137",
+  "prompt_hash": "00000147",
+  "prompt_id_unique": "P0064_v3.4.str_AMCN_XXXX",
+  "participant_a_prompt_text": "Describe a situation where you felt like you were going along with someone else's plans or ideas, even though you didn't entirely agree with them. What were the circumstances and how did you feel about it?",
+  "participant_b_prompt_text": "Your partner will tell you about a time they went along with someone else's plans. Ask them to elaborate on why they didn't speak up and how they think the situation could have been handled differently.",
+  "ipc_a": "AMCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 234.0
+}

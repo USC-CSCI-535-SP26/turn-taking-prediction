@@ -1,0 +1,11 @@
+{
+  "": "0",
+  "prompt_hash": "00000000",
+  "prompt_id_unique": "P0070_v3.4.fam_ANCP_XXXX",
+  "participant_a_prompt_text": "Tell your partner about a time when you went out of your way to make someone feel included or welcome in a social situation. What did you do, and how did the person respond? What did you learn from the experience?",
+  "participant_b_prompt_text": "Your partner will tell you about a time they made an effort to include someone. Discuss with them the challenges and rewards of being hospitable in social situations, and explore ways to create a more inclusive environment for others.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 262.0
+}

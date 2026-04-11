@@ -1,0 +1,50 @@
+[
+  {
+    "event_speaker": "P1306",
+    "annotated_participant": "P1306",
+    "non_annotated_participant": "P1550",
+    "start_pre_moi": 38.5619999999999,
+    "end_pre_moi": 58.87799999999993,
+    "pre_overlap": false,
+    "start_moi": 64,
+    "end_moi": 66,
+    "start_post_moi": 232.93000000000006,
+    "end_post_moi": 235.5820000000001,
+    "post_overlap": false,
+    "annotation": "He is amused by story",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1306",
+    "annotated_participant": "P1306",
+    "non_annotated_participant": "P1550",
+    "start_pre_moi": 38.5619999999999,
+    "end_pre_moi": 58.87799999999993,
+    "pre_overlap": false,
+    "start_moi": 75,
+    "end_moi": 80,
+    "start_post_moi": 232.93000000000006,
+    "end_post_moi": 235.5820000000001,
+    "post_overlap": false,
+    "annotation": "He is entertained ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1306",
+    "annotated_participant": "P1306",
+    "non_annotated_participant": "P1550",
+    "start_pre_moi": 38.5619999999999,
+    "end_pre_moi": 58.87799999999993,
+    "pre_overlap": false,
+    "start_moi": 100,
+    "end_moi": 106,
+    "start_post_moi": 232.93000000000006,
+    "end_post_moi": 235.5820000000001,
+    "post_overlap": false,
+    "annotation": "He is entertained ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

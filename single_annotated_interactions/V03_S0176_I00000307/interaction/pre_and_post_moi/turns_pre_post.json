@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1259",
+    "annotated_participant": "P1378",
+    "non_annotated_participant": "P1259",
+    "start_pre_moi": 39.873999999999995,
+    "end_pre_moi": 68.22200000000001,
+    "pre_overlap": true,
+    "start_moi": 56,
+    "end_moi": 62,
+    "start_post_moi": 39.873999999999995,
+    "end_post_moi": 68.22200000000001,
+    "post_overlap": true,
+    "annotation": "Feels awkward and uninterested",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

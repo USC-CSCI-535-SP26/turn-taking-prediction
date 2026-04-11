@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1288",
+    "non_annotated_participant": "P1639",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 67,
+    "end_moi": 69,
+    "start_post_moi": 125.90599999999995,
+    "end_post_moi": 200.43000000000006,
+    "post_overlap": false,
+    "annotation": "Participant appears thoughtful and focused while trying to recall a specific memory.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

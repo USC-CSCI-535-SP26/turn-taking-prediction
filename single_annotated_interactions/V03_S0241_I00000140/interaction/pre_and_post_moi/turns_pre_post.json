@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1576",
+    "annotated_participant": "P1259",
+    "non_annotated_participant": "P1576",
+    "start_pre_moi": 99.34599999999955,
+    "end_pre_moi": 117.35800000000017,
+    "pre_overlap": true,
+    "start_moi": 109,
+    "end_moi": 111,
+    "start_post_moi": 99.34599999999955,
+    "end_post_moi": 117.35800000000017,
+    "post_overlap": true,
+    "annotation": "They were wondering.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

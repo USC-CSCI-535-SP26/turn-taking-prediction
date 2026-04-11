@@ -1,0 +1,11 @@
+{
+  "": "404",
+  "prompt_hash": "00000413",
+  "prompt_id_unique": "P0032_v3.2.str_AMCM_XXXX",
+  "participant_a_prompt_text": "Describe a time when you had to interact with a large group of people, such as a crowd or a long line. How did you feel about the experience, and did you try to connect with anyone individually?",
+  "participant_b_prompt_text": "Your partner will tell you about a time they interacted with a large group of people. Ask them if they think it's possible to form meaningful connections in such situations.",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 264.030067
+}

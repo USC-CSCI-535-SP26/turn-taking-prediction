@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1291",
+    "annotated_participant": "P1291",
+    "non_annotated_participant": "P1529",
+    "start_pre_moi": 94.52999999999997,
+    "end_pre_moi": 95.54999999999995,
+    "pre_overlap": false,
+    "start_moi": 125,
+    "end_moi": 130,
+    "start_post_moi": 130.69000000000005,
+    "end_post_moi": 131.10199999999998,
+    "post_overlap": false,
+    "annotation": "Participant is satisfied and enthusiastic",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "": "412",
+  "prompt_hash": "00000421",
+  "prompt_id_unique": "P0035_v3.2.str_AMCM_XXXX",
+  "participant_a_prompt_text": "Discuss a topic or activity that you're passionate about, but feel hesitant to share with others. Explain to your partner why you're shy about sharing this interest.",
+  "participant_b_prompt_text": "Your partner will tell you about something they're passionate about but hesitant to share. Listen attentively and try to understand their perspective.",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 164.030167
+}

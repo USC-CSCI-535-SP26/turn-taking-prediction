@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1880",
+    "annotated_participant": "P1880",
+    "non_annotated_participant": "P1881",
+    "start_pre_moi": 52.353999999999814,
+    "end_pre_moi": 53.085999999999785,
+    "pre_overlap": false,
+    "start_moi": 57,
+    "end_moi": 61,
+    "start_post_moi": 87.9380000000001,
+    "end_post_moi": 88.31800000000021,
+    "post_overlap": false,
+    "annotation": "Participant was calm but skeptical",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P2059",
+    "annotated_participant": "P2059",
+    "non_annotated_participant": "P1984",
+    "start_pre_moi": 38.85,
+    "end_pre_moi": 39.166,
+    "pre_overlap": false,
+    "start_moi": 41,
+    "end_moi": 45,
+    "start_post_moi": 57.698,
+    "end_post_moi": 89.182,
+    "post_overlap": false,
+    "annotation": "He is proud of himself ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

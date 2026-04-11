@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P2342",
+    "annotated_participant": "P1496",
+    "non_annotated_participant": "P2342",
+    "start_pre_moi": 218.62599999999998,
+    "end_pre_moi": 229.14999999999998,
+    "pre_overlap": true,
+    "start_moi": 227,
+    "end_moi": 231,
+    "start_post_moi": 229.37800000000004,
+    "end_post_moi": 245.086,
+    "post_overlap": true,
+    "annotation": "Participant agrees with the speaker",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  },
+  {
+    "event_speaker": "P2342",
+    "annotated_participant": "P1496",
+    "non_annotated_participant": "P2342",
+    "start_pre_moi": 315.874,
+    "end_pre_moi": 348.92600000000004,
+    "pre_overlap": true,
+    "start_moi": 334,
+    "end_moi": 343,
+    "start_post_moi": 315.874,
+    "end_post_moi": 348.92600000000004,
+    "post_overlap": true,
+    "annotation": "Participant agrees with the speaker and is amused",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

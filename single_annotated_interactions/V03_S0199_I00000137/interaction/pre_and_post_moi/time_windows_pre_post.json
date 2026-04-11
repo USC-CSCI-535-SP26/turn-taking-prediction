@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1427",
+    "annotated_participant": "P1427",
+    "start_pre_moi": 138.0,
+    "end_pre_moi": 153,
+    "start_moi": 153,
+    "end_moi": 159,
+    "start_post_moi": 159,
+    "end_post_moi": 174.0,
+    "annotation": "The participant felt scared",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

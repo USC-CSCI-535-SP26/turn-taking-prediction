@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1378",
+    "annotated_participant": "P1259",
+    "non_annotated_participant": "P1378",
+    "start_pre_moi": 0,
+    "end_pre_moi": 109.88599999999997,
+    "pre_overlap": true,
+    "start_moi": 60,
+    "end_moi": 66,
+    "start_post_moi": 0,
+    "end_post_moi": 109.88599999999997,
+    "post_overlap": true,
+    "annotation": "The speaker is anxious about the other speaker's argument.",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

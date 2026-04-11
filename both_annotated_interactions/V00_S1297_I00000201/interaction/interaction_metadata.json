@@ -1,0 +1,11 @@
+{
+  "": "191",
+  "prompt_hash": "00000201",
+  "prompt_id_unique": "P0021_v3.1.fam_APCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they took a risk. Listen to their story and discuss what you think they learned from the experience, and whether you would have done the same thing.",
+  "participant_b_prompt_text": "Share a story about a time when you took a risk and stepped out of your comfort zone. Tell your partner what happened and how it turned out.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 158.0
+}

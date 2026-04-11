@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1629",
+    "annotated_participant": "P1629",
+    "non_annotated_participant": "P2500",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 41,
+    "end_moi": 44,
+    "start_post_moi": 57.60200000000009,
+    "end_post_moi": 57.950000000000045,
+    "post_overlap": false,
+    "annotation": "The participant is not telling the truth but managing to control it.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

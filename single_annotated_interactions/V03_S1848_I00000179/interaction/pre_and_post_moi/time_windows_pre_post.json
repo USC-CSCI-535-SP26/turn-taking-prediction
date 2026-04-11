@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P5178",
+    "annotated_participant": "P5178",
+    "start_pre_moi": -14.0,
+    "end_pre_moi": 1,
+    "start_moi": 1,
+    "end_moi": 5,
+    "start_post_moi": 5,
+    "end_post_moi": 20.0,
+    "annotation": "The participant was energetic",
+    "relationship": "familiar",
+    "relationship_detail": "coworkers"
+  },
+  {
+    "event_speaker": "P5178",
+    "annotated_participant": "P5178",
+    "start_pre_moi": 71.0,
+    "end_pre_moi": 86,
+    "start_moi": 86,
+    "end_moi": 89,
+    "start_post_moi": 89,
+    "end_post_moi": 104.0,
+    "annotation": "The participant was calm",
+    "relationship": "familiar",
+    "relationship_detail": "coworkers"
+  }
+]

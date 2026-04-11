@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1291",
+    "annotated_participant": "P1313",
+    "non_annotated_participant": "P1291",
+    "start_pre_moi": 1.13799999999992,
+    "end_pre_moi": 5.742000000000189,
+    "pre_overlap": true,
+    "start_moi": 2,
+    "end_moi": 6,
+    "start_post_moi": 11.793999999999869,
+    "end_post_moi": 12.110000000000127,
+    "post_overlap": false,
+    "annotation": "The speaker is aloof and cold",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

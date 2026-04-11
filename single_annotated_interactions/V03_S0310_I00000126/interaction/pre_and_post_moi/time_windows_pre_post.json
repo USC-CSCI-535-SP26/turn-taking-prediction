@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1765",
+    "annotated_participant": "P1626",
+    "start_pre_moi": 28.0,
+    "end_pre_moi": 43,
+    "start_moi": 43,
+    "end_moi": 45,
+    "start_post_moi": 45,
+    "end_post_moi": 60.0,
+    "annotation": "Feels engaged and silly",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

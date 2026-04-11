@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P2197",
+    "annotated_participant": "P2196",
+    "start_pre_moi": -11.0,
+    "end_pre_moi": 4,
+    "start_moi": 4,
+    "end_moi": 8,
+    "start_post_moi": 8,
+    "end_post_moi": 23.0,
+    "annotation": "He was curious ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2197",
+    "annotated_participant": "P2196",
+    "start_pre_moi": 114.0,
+    "end_pre_moi": 129,
+    "start_moi": 129,
+    "end_moi": 133,
+    "start_post_moi": 133,
+    "end_post_moi": 148.0,
+    "annotation": "He was surprised to know the specific topic she was fond of",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

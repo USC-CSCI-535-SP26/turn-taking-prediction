@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S0941_I00000182",
+    "annotated_participant": "P1207",
+    "non_annotated_participant": "P2154",
+    "imitator_emotion_features_present": false,
+    "annotation": "Participant found it hilarious",
+    "start_ts": 128,
+    "end_ts": 131,
+    "start_idx": 3840,
+    "end_idx": 3930,
+    "n_frames": 90,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S0941_I00000182",
+    "annotated_participant": "P2154",
+    "non_annotated_participant": "P1207",
+    "imitator_emotion_features_present": false,
+    "annotation": "Participant was slightly proud with some caution",
+    "start_ts": 262,
+    "end_ts": 267,
+    "start_idx": 7860,
+    "end_idx": 8010,
+    "n_frames": 150,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

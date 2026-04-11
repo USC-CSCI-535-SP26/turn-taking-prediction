@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1502",
+    "annotated_participant": "P1502",
+    "non_annotated_participant": "P1789",
+    "start_pre_moi": 34.51400000000001,
+    "end_pre_moi": 34.83000000000004,
+    "pre_overlap": false,
+    "start_moi": 38,
+    "end_moi": 43,
+    "start_post_moi": 52.658000000000015,
+    "end_post_moi": 53.00599999999997,
+    "post_overlap": false,
+    "annotation": "He is assertive",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

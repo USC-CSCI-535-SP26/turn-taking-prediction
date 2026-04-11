@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1209",
+    "non_annotated_participant": "P1477",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 60,
+    "end_moi": 64,
+    "start_post_moi": null,
+    "end_post_moi": null,
+    "post_overlap": false,
+    "annotation": "The participant was assertive",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1209",
+    "non_annotated_participant": "P1477",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 191,
+    "end_moi": 196,
+    "start_post_moi": null,
+    "end_post_moi": null,
+    "post_overlap": false,
+    "annotation": "The participant was very composed and placid",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

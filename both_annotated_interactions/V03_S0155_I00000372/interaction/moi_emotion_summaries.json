@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S0155_I00000372",
+    "annotated_participant": "P1332",
+    "non_annotated_participant": "P1274",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant seemed puzzled or uncertain about the pamphlet content.",
+    "start_ts": 6,
+    "end_ts": 10,
+    "start_idx": 180,
+    "end_idx": 300,
+    "n_frames": 120,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S0155_I00000372",
+    "annotated_participant": "P1274",
+    "non_annotated_participant": "P1332",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is sure",
+    "start_ts": 104,
+    "end_ts": 105,
+    "start_idx": 3120,
+    "end_idx": 3150,
+    "n_frames": 30,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

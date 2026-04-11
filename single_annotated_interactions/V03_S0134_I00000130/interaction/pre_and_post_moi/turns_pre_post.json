@@ -1,0 +1,50 @@
+[
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1293",
+    "non_annotated_participant": "P1288",
+    "start_pre_moi": 127.346,
+    "end_pre_moi": 187.0540000000001,
+    "pre_overlap": true,
+    "start_moi": 135,
+    "end_moi": 139,
+    "start_post_moi": 127.346,
+    "end_post_moi": 187.0540000000001,
+    "post_overlap": true,
+    "annotation": "The participant was a bit embarrassed.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1293",
+    "non_annotated_participant": "P1288",
+    "start_pre_moi": 127.346,
+    "end_pre_moi": 187.0540000000001,
+    "pre_overlap": true,
+    "start_moi": 144,
+    "end_moi": 148,
+    "start_post_moi": 127.346,
+    "end_post_moi": 187.0540000000001,
+    "post_overlap": true,
+    "annotation": "The participant was absorbed in the story.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1293",
+    "non_annotated_participant": "P1288",
+    "start_pre_moi": 127.346,
+    "end_pre_moi": 187.0540000000001,
+    "pre_overlap": true,
+    "start_moi": 162,
+    "end_moi": 167,
+    "start_post_moi": 127.346,
+    "end_post_moi": 187.0540000000001,
+    "post_overlap": true,
+    "annotation": "The participant was immersed.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "event_speaker": "P1892",
+    "annotated_participant": "P1892",
+    "start_pre_moi": -14.0,
+    "end_pre_moi": 1,
+    "start_moi": 1,
+    "end_moi": 9,
+    "start_post_moi": 9,
+    "end_post_moi": 24.0,
+    "annotation": "He is sharing a time when he was phony",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1892",
+    "annotated_participant": "P1892",
+    "start_pre_moi": -10.0,
+    "end_pre_moi": 5,
+    "start_moi": 5,
+    "end_moi": 10,
+    "start_post_moi": 10,
+    "end_post_moi": 25.0,
+    "annotation": "He is sharing a time when he was phony",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1892",
+    "annotated_participant": "P1892",
+    "start_pre_moi": 10.0,
+    "end_pre_moi": 25,
+    "start_moi": 25,
+    "end_moi": 29,
+    "start_post_moi": 29,
+    "end_post_moi": 44.0,
+    "annotation": "He is delighted about this story",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1892",
+    "annotated_participant": "P1892",
+    "start_pre_moi": 21.0,
+    "end_pre_moi": 36,
+    "start_moi": 36,
+    "end_moi": 38,
+    "start_post_moi": 38,
+    "end_post_moi": 53.0,
+    "annotation": "he is amused",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1892",
+    "annotated_participant": "P1892",
+    "start_pre_moi": 49.0,
+    "end_pre_moi": 64,
+    "start_moi": 64,
+    "end_moi": 70,
+    "start_post_moi": 70,
+    "end_post_moi": 85.0,
+    "annotation": "He is sharing the lesson",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

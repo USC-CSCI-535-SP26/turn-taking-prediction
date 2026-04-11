@@ -1,0 +1,11 @@
+{
+  "": "67",
+  "prompt_hash": "00000072",
+  "prompt_id_unique": "P0104_v3.6.str_ANCP_XXXX",
+  "participant_a_prompt_text": "Your partner will discuss a topic they're passionate about, but also acknowledge potential counterarguments. Listen to their points and respond thoughtfully, considering their perspective.",
+  "participant_b_prompt_text": "Discuss a topic you're passionate about, but also acknowledge potential counterarguments. Share your thoughts with your partner and be open to their perspective.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 250.016067
+}

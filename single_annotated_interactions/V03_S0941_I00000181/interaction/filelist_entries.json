@@ -1,0 +1,22 @@
+[
+  {
+    "file_id": "V03_S0941_I00000181_P1207",
+    "label": "naturalistic",
+    "split": "train",
+    "batch_idx": "130",
+    "archive_idx": "7",
+    "has_imitator_movement": "0",
+    "has_annotation_1p": "1",
+    "has_annotation_3p": "1"
+  },
+  {
+    "file_id": "V03_S0941_I00000181_P2154",
+    "label": "naturalistic",
+    "split": "train",
+    "batch_idx": "130",
+    "archive_idx": "3",
+    "has_imitator_movement": "0",
+    "has_annotation_1p": "0",
+    "has_annotation_3p": "0"
+  }
+]

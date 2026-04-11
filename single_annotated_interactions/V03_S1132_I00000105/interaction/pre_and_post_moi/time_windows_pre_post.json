@@ -1,0 +1,41 @@
+[
+  {
+    "event_speaker": "P3596",
+    "annotated_participant": "P3596",
+    "start_pre_moi": -15.0,
+    "end_pre_moi": 0,
+    "start_moi": 0,
+    "end_moi": 4,
+    "start_post_moi": 4,
+    "end_post_moi": 19.0,
+    "annotation": "The participant feeling unassuming",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3596",
+    "annotated_participant": "P3596",
+    "start_pre_moi": 59.0,
+    "end_pre_moi": 74,
+    "start_moi": 74,
+    "end_moi": 78,
+    "start_post_moi": 78,
+    "end_post_moi": 93.0,
+    "annotation": "The participant feeling pleased",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3596",
+    "annotated_participant": "P3596",
+    "start_pre_moi": 187.0,
+    "end_pre_moi": 202,
+    "start_moi": 202,
+    "end_moi": 213,
+    "start_post_moi": 213,
+    "end_post_moi": 228.0,
+    "annotation": "The participant feeling uncertain",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

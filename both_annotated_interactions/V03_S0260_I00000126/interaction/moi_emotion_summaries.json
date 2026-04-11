@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S0260_I00000126",
+    "annotated_participant": "P1628",
+    "non_annotated_participant": "P1629",
+    "imitator_emotion_features_present": false,
+    "annotation": "He is trying to please everyone",
+    "start_ts": 2,
+    "end_ts": 5,
+    "start_idx": 60,
+    "end_idx": 150,
+    "n_frames": 90,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S0260_I00000126",
+    "annotated_participant": "P1629",
+    "non_annotated_participant": "P1628",
+    "imitator_emotion_features_present": false,
+    "annotation": "He is confident about answer",
+    "start_ts": 17,
+    "end_ts": 24,
+    "start_idx": 510,
+    "end_idx": 720,
+    "n_frames": 210,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

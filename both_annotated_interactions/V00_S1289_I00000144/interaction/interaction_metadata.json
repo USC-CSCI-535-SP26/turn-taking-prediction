@@ -1,0 +1,11 @@
+{
+  "": "149",
+  "prompt_hash": "00000144",
+  "prompt_id_unique": "P0073_v3.4.str_APCN_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they stood up for themselves or someone else. Ask follow-up questions to understand their thought process and decision-making.",
+  "participant_b_prompt_text": "Share a time when you stood up for yourself or someone else in a difficult situation. Describe the circumstances and how you handled it. What did you learn from the experience?",
+  "ipc_a": "APCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 216.0
+}

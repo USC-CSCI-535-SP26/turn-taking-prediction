@@ -1,0 +1,11 @@
+{
+  "": "322",
+  "prompt_hash": "00000333",
+  "prompt_id_unique": "P0104_v3.6.fam_ANCP_XXXX",
+  "participant_a_prompt_text": "Your partner will share a topic where you tend to agree. Explore the reasons behind your shared perspective and see if you can identify any potential areas for further discussion or exploration.",
+  "participant_b_prompt_text": "Discuss a topic or issue that you and your partner generally see eye-to-eye on. Explain why you think you're in agreement and what values or experiences you share that contribute to your similar views.",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 262.0
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "event_speaker": "P2342",
+    "annotated_participant": "P1496",
+    "non_annotated_participant": "P2342",
+    "start_pre_moi": 32.84999999999991,
+    "end_pre_moi": 56.365999999999985,
+    "pre_overlap": true,
+    "start_moi": 50,
+    "end_moi": 55,
+    "start_post_moi": 32.84999999999991,
+    "end_post_moi": 56.365999999999985,
+    "post_overlap": true,
+    "annotation": "Participant is amused",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  },
+  {
+    "event_speaker": "P2342",
+    "annotated_participant": "P1496",
+    "non_annotated_participant": "P2342",
+    "start_pre_moi": 261.1700000000001,
+    "end_pre_moi": 282.6700000000001,
+    "pre_overlap": true,
+    "start_moi": 272,
+    "end_moi": 275,
+    "start_post_moi": 261.1700000000001,
+    "end_post_moi": 282.6700000000001,
+    "post_overlap": true,
+    "annotation": "Speaker is tired and bored",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  },
+  {
+    "event_speaker": "P2342",
+    "annotated_participant": "P1496",
+    "non_annotated_participant": "P2342",
+    "start_pre_moi": 520.8180000000002,
+    "end_pre_moi": 528.0459999999998,
+    "pre_overlap": true,
+    "start_moi": 528,
+    "end_moi": 536,
+    "start_post_moi": 528.8180000000002,
+    "end_post_moi": 543.0540000000001,
+    "post_overlap": true,
+    "annotation": "Participant is bored",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

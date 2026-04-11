@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S1153_I00000031",
+    "annotated_participant": "P3622",
+    "non_annotated_participant": "P3641",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is peaceful and attentive",
+    "start_ts": 7,
+    "end_ts": 11,
+    "start_idx": 210,
+    "end_idx": 330,
+    "n_frames": 120,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S1153_I00000031",
+    "annotated_participant": "P3641",
+    "non_annotated_participant": "P3622",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is anticipating ",
+    "start_ts": 642,
+    "end_ts": 646,
+    "start_idx": 19260,
+    "end_idx": 19380,
+    "n_frames": 120,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

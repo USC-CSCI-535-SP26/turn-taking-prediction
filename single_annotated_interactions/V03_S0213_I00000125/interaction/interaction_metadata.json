@@ -1,0 +1,11 @@
+{
+  "": "118",
+  "prompt_hash": "00000125",
+  "prompt_id_unique": "P0029_MP_APCP_XXXX",
+  "participant_a_prompt_text": "Think about your happiest childhood memory. What's the first thing that comes to mind? Tell the\nstory of this memory to your partner.",
+  "participant_b_prompt_text": "Your partner will tell you a story about their childhood. Listen to them and engage with the story.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 380.0126
+}

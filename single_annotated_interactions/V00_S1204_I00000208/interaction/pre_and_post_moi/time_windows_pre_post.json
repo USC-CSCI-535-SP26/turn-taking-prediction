@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1109",
+    "annotated_participant": "P1110",
+    "start_pre_moi": 200.0,
+    "end_pre_moi": 215,
+    "start_moi": 215,
+    "end_moi": 221,
+    "start_post_moi": 221,
+    "end_post_moi": 236.0,
+    "annotation": "The participant was focused and a little uncomfortable",
+    "relationship": "familiar",
+    "relationship_detail": "family-generic"
+  }
+]

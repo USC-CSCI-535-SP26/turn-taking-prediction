@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P2747",
+    "annotated_participant": "P3749",
+    "non_annotated_participant": "P2747",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 0,
+    "end_moi": 9,
+    "start_post_moi": 1.0100000000002183,
+    "end_post_moi": 12.237999999999829,
+    "post_overlap": true,
+    "annotation": "The speaker is attentive",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2747",
+    "annotated_participant": "P3749",
+    "non_annotated_participant": "P2747",
+    "start_pre_moi": 132.97800000000007,
+    "end_pre_moi": 172.17399999999998,
+    "pre_overlap": true,
+    "start_moi": 158,
+    "end_moi": 161,
+    "start_post_moi": 132.97800000000007,
+    "end_post_moi": 172.17399999999998,
+    "post_overlap": true,
+    "annotation": "The speaker is humorous",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "": "369",
+  "prompt_hash": "00000375",
+  "prompt_id_unique": "P0025_DP_APCN_XXXX",
+  "participant_a_prompt_text": "Tell your partner an opinion you have that you know is right. Explain your point of view to",
+  "participant_b_prompt_text": "Your partner will share a point of view on something, discuss it with them.",
+  "ipc_a": "APCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 256.022067
+}

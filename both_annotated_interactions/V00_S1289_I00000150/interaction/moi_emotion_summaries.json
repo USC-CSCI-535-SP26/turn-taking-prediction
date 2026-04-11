@@ -1,0 +1,74 @@
+[
+  {
+    "interaction_id": "V00_S1289_I00000150",
+    "annotated_participant": "P1120",
+    "non_annotated_participant": "P0709",
+    "imitator_emotion_features_present": true,
+    "annotation": "The participant was very expressive and assertive",
+    "start_ts": 128,
+    "end_ts": 131,
+    "start_idx": 3840,
+    "end_idx": 3930,
+    "n_frames": 90,
+    "annotated_mean_valence": -0.268886,
+    "annotated_mean_arousal": 0.533184,
+    "annotated_mean_emotion_scores": {
+      "neutral": 2.523822,
+      "happy": 0.434223,
+      "sad": 1.885186,
+      "surprise": -0.451838,
+      "fear": -1.255086,
+      "disgust": 0.227657,
+      "anger": 0.419962,
+      "contempt": -1.198744
+    },
+    "non_annotated_mean_valence": -0.162471,
+    "non_annotated_mean_arousal": 0.222549,
+    "non_annotated_mean_emotion_scores": {
+      "neutral": 1.229471,
+      "happy": -0.528216,
+      "sad": -2.382458,
+      "surprise": 1.302129,
+      "fear": -0.259387,
+      "disgust": 2.488907,
+      "anger": 1.202509,
+      "contempt": 1.437377
+    }
+  },
+  {
+    "interaction_id": "V00_S1289_I00000150",
+    "annotated_participant": "P0709",
+    "non_annotated_participant": "P1120",
+    "imitator_emotion_features_present": true,
+    "annotation": "The participant was attentive.",
+    "start_ts": 142,
+    "end_ts": 145,
+    "start_idx": 4260,
+    "end_idx": 4350,
+    "n_frames": 90,
+    "annotated_mean_valence": -0.27072,
+    "annotated_mean_arousal": 0.490377,
+    "annotated_mean_emotion_scores": {
+      "neutral": 3.553351,
+      "happy": 0.753776,
+      "sad": -1.04922,
+      "surprise": -1.144572,
+      "fear": -0.593244,
+      "disgust": 2.186559,
+      "anger": 0.567062,
+      "contempt": -0.579797
+    },
+    "non_annotated_mean_valence": -0.201802,
+    "non_annotated_mean_arousal": 0.299838,
+    "non_annotated_mean_emotion_scores": {
+      "neutral": 1.99706,
+      "happy": 0.666528,
+      "sad": 1.714189,
+      "surprise": -1.506768,
+      "fear": -0.281659,
+      "disgust": 1.325648,
+      "anger": 0.850207,
+      "contempt": -1.15587
+    }
+  }
+]

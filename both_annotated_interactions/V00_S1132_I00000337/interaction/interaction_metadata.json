@@ -1,0 +1,11 @@
+{
+  "": "342",
+  "prompt_hash": "00000337",
+  "prompt_id_unique": "P0109_v3.6.fam_APCM_XXXX",
+  "participant_a_prompt_text": "Your partner will present a complex hypothetical situation to you. Listen to their thoughts on the matter and share your own perspective, considering the potential consequences of different actions.",
+  "participant_b_prompt_text": "Pose a hypothetical scenario to your partner that involves a tricky moral dilemma. Explain the situation and your thoughts on how to approach it, and ask for their opinion on what they would do.",
+  "ipc_a": "APCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 122.0
+}

@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1288",
+    "start_pre_moi": 174.0,
+    "end_pre_moi": 189,
+    "start_moi": 189,
+    "end_moi": 192,
+    "start_post_moi": 192,
+    "end_post_moi": 207.0,
+    "annotation": "The participant is critically thinking of the topic",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

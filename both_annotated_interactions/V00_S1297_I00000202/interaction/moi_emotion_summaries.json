@@ -1,0 +1,74 @@
+[
+  {
+    "interaction_id": "V00_S1297_I00000202",
+    "annotated_participant": "P1019",
+    "non_annotated_participant": "P1123",
+    "imitator_emotion_features_present": true,
+    "annotation": "The participant was interested",
+    "start_ts": 23,
+    "end_ts": 27,
+    "start_idx": 690,
+    "end_idx": 810,
+    "n_frames": 120,
+    "annotated_mean_valence": 0.273241,
+    "annotated_mean_arousal": 0.150974,
+    "annotated_mean_emotion_scores": {
+      "neutral": -1.398482,
+      "happy": 1.60085,
+      "sad": 0.45437,
+      "surprise": -1.847894,
+      "fear": 3.890524,
+      "disgust": -0.516218,
+      "anger": -0.817881,
+      "contempt": -1.309874
+    },
+    "non_annotated_mean_valence": 0.077681,
+    "non_annotated_mean_arousal": 0.381311,
+    "non_annotated_mean_emotion_scores": {
+      "neutral": 0.316225,
+      "happy": -1.066033,
+      "sad": -0.626619,
+      "surprise": 1.74214,
+      "fear": 1.109308,
+      "disgust": 1.587079,
+      "anger": -0.176361,
+      "contempt": 1.357265
+    }
+  },
+  {
+    "interaction_id": "V00_S1297_I00000202",
+    "annotated_participant": "P1123",
+    "non_annotated_participant": "P1019",
+    "imitator_emotion_features_present": true,
+    "annotation": "The participant was content",
+    "start_ts": 93,
+    "end_ts": 96,
+    "start_idx": 2790,
+    "end_idx": 2880,
+    "n_frames": 90,
+    "annotated_mean_valence": 0.016208,
+    "annotated_mean_arousal": 0.454722,
+    "annotated_mean_emotion_scores": {
+      "neutral": 1.380131,
+      "happy": -0.900099,
+      "sad": -0.706116,
+      "surprise": 1.262183,
+      "fear": 0.79055,
+      "disgust": 1.496565,
+      "anger": -0.552284,
+      "contempt": 1.770957
+    },
+    "non_annotated_mean_valence": 0.172971,
+    "non_annotated_mean_arousal": 0.193553,
+    "non_annotated_mean_emotion_scores": {
+      "neutral": -0.682702,
+      "happy": 0.787611,
+      "sad": 1.912942,
+      "surprise": -1.12819,
+      "fear": 2.476803,
+      "disgust": -0.182808,
+      "anger": -0.137298,
+      "contempt": -1.291975
+    }
+  }
+]

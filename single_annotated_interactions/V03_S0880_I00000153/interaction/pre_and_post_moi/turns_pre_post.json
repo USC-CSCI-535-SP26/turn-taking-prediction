@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3067",
+    "annotated_participant": "P3067",
+    "non_annotated_participant": "P3065",
+    "start_pre_moi": 11.938000000000102,
+    "end_pre_moi": 14.685999999999922,
+    "pre_overlap": false,
+    "start_moi": 15,
+    "end_moi": 17,
+    "start_post_moi": 19.42599999999993,
+    "end_post_moi": 22.04600000000005,
+    "post_overlap": false,
+    "annotation": "The speaker is curious and sociable",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "": "192",
+  "prompt_hash": "00000202",
+  "prompt_id_unique": "P0025_v3.1.fam_AMCN_XXXX",
+  "participant_a_prompt_text": "Your partner will share a time when they felt unmotivated about something they usually like doing. Listen to their story and share a similar experience if you have one, or offer a different perspective on what might have caused their lack of motivation.",
+  "participant_b_prompt_text": "Discuss a time when you felt a lack of enthusiasm or energy for an activity or hobby that you normally enjoy. What was going on that made you feel that way, and how did you eventually regain your motivation?",
+  "ipc_a": "AMCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 124.0
+}

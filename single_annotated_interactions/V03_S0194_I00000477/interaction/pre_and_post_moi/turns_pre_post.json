@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1411",
+    "annotated_participant": "P1411",
+    "non_annotated_participant": "P1306",
+    "start_pre_moi": 74.258,
+    "end_pre_moi": 75.342,
+    "pre_overlap": true,
+    "start_moi": 75,
+    "end_moi": 78,
+    "start_post_moi": 89.138,
+    "end_post_moi": 90.574,
+    "post_overlap": false,
+    "annotation": "He is trying to find the right words",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "": "324",
+  "prompt_hash": "00000336",
+  "prompt_id_unique": "P0096_v3.6.fam_AMCP_XXXX",
+  "participant_a_prompt_text": "Think of a time when you had to adjust your plans to accommodate someone else's needs. Describe the situation to your partner and explain why you made the adjustment.",
+  "participant_b_prompt_text": "Your partner will tell you about a time they had to adjust their plans for someone else. Discuss with them how they felt about the adjustment and whether it was worth it.",
+  "ipc_a": "AMCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 354.0
+}

@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2153",
+    "annotated_participant": "P2153",
+    "start_pre_moi": 15.0,
+    "end_pre_moi": 30,
+    "start_moi": 30,
+    "end_moi": 34,
+    "start_post_moi": 34,
+    "end_post_moi": 49.0,
+    "annotation": "The participant is shocked ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

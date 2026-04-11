@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P2085",
+    "annotated_participant": "P2085",
+    "non_annotated_participant": "P2153",
+    "start_pre_moi": 32.418000000000006,
+    "end_pre_moi": 43.23000000000002,
+    "pre_overlap": true,
+    "start_moi": 43,
+    "end_moi": 52,
+    "start_post_moi": 65.154,
+    "end_post_moi": 65.47000000000003,
+    "post_overlap": false,
+    "annotation": "the participant is thoughtful and not in accordance ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

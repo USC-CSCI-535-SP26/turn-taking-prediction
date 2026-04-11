@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P4030",
+    "annotated_participant": "P3083",
+    "start_pre_moi": 117.0,
+    "end_pre_moi": 132,
+    "start_moi": 132,
+    "end_moi": 137,
+    "start_post_moi": 137,
+    "end_post_moi": 152.0,
+    "annotation": "The participant is sluggish and distressed.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1291",
+    "annotated_participant": "P1291",
+    "non_annotated_participant": "P1529",
+    "start_pre_moi": 80.35400000000004,
+    "end_pre_moi": 80.67000000000007,
+    "pre_overlap": false,
+    "start_moi": 106,
+    "end_moi": 110,
+    "start_post_moi": 162.72199999999998,
+    "end_post_moi": 163.038,
+    "post_overlap": false,
+    "annotation": "Participant is engaged to what is saying",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

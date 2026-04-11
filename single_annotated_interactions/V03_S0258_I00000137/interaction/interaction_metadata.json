@@ -1,0 +1,11 @@
+{
+  "": "129",
+  "prompt_hash": "00000137",
+  "prompt_id_unique": "P0039_DN_AMCM_XXXX",
+  "participant_a_prompt_text": "You are each given different lists of sentences below.",
+  "participant_b_prompt_text": "You are each given different lists of sentences below.",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 146.012167
+}

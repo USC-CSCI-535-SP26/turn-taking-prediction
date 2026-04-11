@@ -1,0 +1,11 @@
+{
+  "": "498",
+  "prompt_hash": "00000462",
+  "prompt_id_unique": "P0041_DP_AMCP_XXXX",
+  "participant_a_prompt_text": "What is a positive association you have with your partner. It can be an image, sound, or smell you associate with them? Tell them what it is and why it's meaningful to you.",
+  "participant_b_prompt_text": "Your partner will describe an association they have with you. Respond however you like.",
+  "ipc_a": "AMCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 448.014233
+}

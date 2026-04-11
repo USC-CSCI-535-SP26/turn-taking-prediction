@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P2197",
+    "annotated_participant": "P2196",
+    "non_annotated_participant": "P2197",
+    "start_pre_moi": 0,
+    "end_pre_moi": 7.582000000000001,
+    "pre_overlap": true,
+    "start_moi": 4,
+    "end_moi": 8,
+    "start_post_moi": 8.354,
+    "end_post_moi": 107.64599999999999,
+    "post_overlap": false,
+    "annotation": "He was curious ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2197",
+    "annotated_participant": "P2196",
+    "non_annotated_participant": "P2197",
+    "start_pre_moi": 122.53,
+    "end_pre_moi": 142.59,
+    "pre_overlap": true,
+    "start_moi": 129,
+    "end_moi": 133,
+    "start_post_moi": 122.53,
+    "end_post_moi": 142.59,
+    "post_overlap": true,
+    "annotation": "He was surprised to know the specific topic she was fond of",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P4070",
+    "annotated_participant": "P4070",
+    "start_pre_moi": 369.0,
+    "end_pre_moi": 384,
+    "start_moi": 384,
+    "end_moi": 387,
+    "start_post_moi": 387,
+    "end_post_moi": 402.0,
+    "annotation": "Participant was a bit nervous and introspective",
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  }
+]

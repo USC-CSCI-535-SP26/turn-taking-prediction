@@ -1,0 +1,11 @@
+{
+  "": "203",
+  "prompt_hash": "00000216",
+  "prompt_id_unique": "P0048_v3.3.fam_AMCN_XXXX",
+  "participant_a_prompt_text": "Think about a task or project that you've been putting off for a while. Explain to your partner why you haven't started or made progress on it, and what's holding you back.",
+  "participant_b_prompt_text": "Your partner will tell you about a task they've been procrastinating on. Ask them questions to help you understand their perspective, and offer suggestions or encouragement if you think it might help.",
+  "ipc_a": "AMCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 210.0098
+}

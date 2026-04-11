@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S1313_I00000112",
+    "annotated_participant": "P3979",
+    "non_annotated_participant": "P3978",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is perceptive.",
+    "start_ts": 0,
+    "end_ts": 6,
+    "start_idx": 0,
+    "end_idx": 180,
+    "n_frames": 180,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S1313_I00000112",
+    "annotated_participant": "P3978",
+    "non_annotated_participant": "P3979",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is joyful and happy.",
+    "start_ts": 145,
+    "end_ts": 148,
+    "start_idx": 4350,
+    "end_idx": 4440,
+    "n_frames": 90,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

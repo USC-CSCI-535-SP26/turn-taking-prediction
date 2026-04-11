@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S1153_I00000027",
+    "annotated_participant": "P3641",
+    "non_annotated_participant": "P3622",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is interested",
+    "start_ts": 59,
+    "end_ts": 64,
+    "start_idx": 1770,
+    "end_idx": 1920,
+    "n_frames": 150,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S1153_I00000027",
+    "annotated_participant": "P3622",
+    "non_annotated_participant": "P3641",
+    "imitator_emotion_features_present": false,
+    "annotation": "The participant is joyful and agreeing",
+    "start_ts": 301,
+    "end_ts": 303,
+    "start_idx": 9030,
+    "end_idx": 9090,
+    "n_frames": 60,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

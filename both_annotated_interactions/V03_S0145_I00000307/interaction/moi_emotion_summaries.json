@@ -1,0 +1,38 @@
+[
+  {
+    "interaction_id": "V03_S0145_I00000307",
+    "annotated_participant": "P1313",
+    "non_annotated_participant": "P1291",
+    "imitator_emotion_features_present": false,
+    "annotation": "Participant is confident",
+    "start_ts": 3,
+    "end_ts": 7,
+    "start_idx": 90,
+    "end_idx": 210,
+    "n_frames": 120,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  },
+  {
+    "interaction_id": "V03_S0145_I00000307",
+    "annotated_participant": "P1291",
+    "non_annotated_participant": "P1313",
+    "imitator_emotion_features_present": false,
+    "annotation": "The person is concentrating on listening to the other person",
+    "start_ts": 93,
+    "end_ts": 97,
+    "start_idx": 2790,
+    "end_idx": 2910,
+    "n_frames": 120,
+    "annotated_mean_valence": null,
+    "annotated_mean_arousal": null,
+    "annotated_mean_emotion_scores": null,
+    "non_annotated_mean_valence": null,
+    "non_annotated_mean_arousal": null,
+    "non_annotated_mean_emotion_scores": null
+  }
+]

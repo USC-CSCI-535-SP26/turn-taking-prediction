@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1629",
+    "annotated_participant": "P1629",
+    "non_annotated_participant": "P1628",
+    "start_pre_moi": 5.505999999999858,
+    "end_pre_moi": 32.766000000000076,
+    "pre_overlap": false,
+    "start_moi": 90,
+    "end_moi": 102,
+    "start_post_moi": 119.8420000000001,
+    "end_post_moi": 120.1579999999999,
+    "post_overlap": false,
+    "annotation": "He is talking about something he doesn't get",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]
