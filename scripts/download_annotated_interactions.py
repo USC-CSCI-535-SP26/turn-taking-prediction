@@ -746,6 +746,135 @@ def get_interaction_duration(interaction_id, interactions_dir="./annotated_inter
 
 
 # =============================================================================
+# Audio (.wav) enrichment
+# =============================================================================
+
+
+def enrich_with_wav(
+    interactions_dir: str,
+    num_workers: int = 8,
+    overwrite: bool = False,
+) -> dict:
+    """
+    Enrich every participant subdirectory under ``interactions_dir`` with that
+    participant's raw audio .wav file for the interaction.
+
+    Unlike SMPL-H, audio is a single file per participant on Meta's S3:
+        {S3_BASE_URL}/{label}/{split}/audio/{file_id}.wav
+    Per the paper (§3.4), these wavs are peak-normalized and passed through
+    Beryl AEC speaker-bleed reduction at 48 kHz / 16-bit. This function just
+    downloads them as-is and drops them into each participant's directory.
+
+    The downloaded file is saved at:
+        {interactions_dir}/{interaction_id}/participant_{a|b}_{pid}/{file_id}.wav
+
+    Since ``file_id`` is already ``{interaction_id}_{participant_id}``, the
+    filename naturally matches the SMPL-H bundle's naming convention.
+
+    Works for both ``both_annotated_interactions`` and
+    ``single_annotated_interactions`` — layout and ``filelist_entries.json``
+    format are identical.
+
+    Args:
+        interactions_dir: Path to a directory containing per-interaction
+            subdirectories.
+        num_workers: Number of parallel download threads.
+        overwrite: If False (default), skip participants whose .wav already
+            exists on disk. If True, re-download and overwrite.
+
+    Returns:
+        Dict with keys ``written``, ``skipped``, ``failed``.
+    """
+    try:
+        from tqdm import tqdm
+    except ImportError:
+        def tqdm(it, **kwargs):  # type: ignore
+            return it
+
+    if not os.path.isdir(interactions_dir):
+        raise FileNotFoundError(f"Not a directory: {interactions_dir}")
+
+    # -------------------------------------------------------------------------
+    # Step 1: Enumerate (file_id, label, split, out_path) tasks from
+    # filelist_entries.json in each interaction directory.
+    # -------------------------------------------------------------------------
+    tasks: list[tuple[str, str, str, str]] = []
+    skipped: list[str] = []
+
+    for interaction_id in sorted(os.listdir(interactions_dir)):
+        interaction_dir = os.path.join(interactions_dir, interaction_id)
+        if not os.path.isdir(interaction_dir):
+            continue
+
+        entries_path = os.path.join(
+            interaction_dir, "interaction", "filelist_entries.json"
+        )
+        if not os.path.exists(entries_path):
+            continue
+
+        with open(entries_path) as f:
+            entries = json.load(f)
+
+        # Same alphabetical-by-pid convention used elsewhere in this script.
+        sorted_entries = sorted(
+            entries, key=lambda e: extract_participant_id(e["file_id"])
+        )
+        role_lookup = {
+            sorted_entries[0]["file_id"]: "a",
+            sorted_entries[1]["file_id"]: "b" if len(sorted_entries) > 1 else "a",
+        }
+
+        for entry in entries:
+            file_id = entry["file_id"]
+            label = entry.get("label", "naturalistic")
+            split = entry["split"]
+            pid = extract_participant_id(file_id)
+            role = role_lookup[file_id]
+            participant_dir = os.path.join(interaction_dir, f"participant_{role}_{pid}")
+
+            if not os.path.isdir(participant_dir):
+                continue
+
+            out_path = os.path.join(participant_dir, f"{file_id}.wav")
+            if not overwrite and os.path.exists(out_path):
+                skipped.append(out_path)
+                continue
+
+            tasks.append((file_id, label, split, out_path))
+
+    # -------------------------------------------------------------------------
+    # Step 2: Download wavs in parallel. Each task is a single HTTP GET so
+    # this re-uses the existing download_file() helper (which handles 403
+    # as "file does not exist" and writes bytes directly to disk).
+    # -------------------------------------------------------------------------
+    written: list[str] = []
+    failed: list[str] = []
+
+    def _fetch(task: tuple[str, str, str, str]) -> tuple[str, bool, str]:
+        file_id, label, split, out_path = task
+        url = build_s3_url(label, split, "audio", file_id, "wav")
+        success, msg = download_file(url, out_path)
+        return out_path, success, msg
+
+    if tasks:
+        with ThreadPoolExecutor(max_workers=num_workers) as pool:
+            futures = [pool.submit(_fetch, t) for t in tasks]
+            for fut in tqdm(
+                as_completed(futures),
+                total=len(futures),
+                desc=f"wav {os.path.basename(interactions_dir.rstrip('/'))}",
+                unit="participant",
+            ):
+                out_path, ok, msg = fut.result()
+                if ok:
+                    written.append(out_path)
+                else:
+                    failed.append(f"{out_path} — {msg}")
+
+    return {"written": written, "skipped": skipped, "failed": failed}
+
+
+# =============================================================================
 # Video viewer generation
 # =============================================================================
 
