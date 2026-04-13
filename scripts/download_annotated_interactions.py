@@ -746,6 +746,217 @@ def get_interaction_duration(interaction_id, interactions_dir="./annotated_inter
 
 
 # =============================================================================
+# SMPL-H enrichment
+# =============================================================================
+
+# The six .npy arrays that together define SMPL-H body/hand state for one
+# participant (see seamless_interaction/src/seamless_interaction/constants.py
+# ALL_FEATURES["smplh"]). Each array is shaped (N_frames, …), and on S3 lives
+# at {S3_BASE_URL}/{label}/{split}/smplh/{feature}/{file_id}.npy
+SMPLH_FEATURES = (
+    "body_pose",        # (N, 63)  — 21 body joints × 3 axis-angle
+    "global_orient",    # (N, 3)   — root orientation
+    "is_valid",         # (N,)     — per-frame validity flag
+    "left_hand_pose",   # (N, 45)  — 15 left-hand joints × 3 axis-angle
+    "right_hand_pose",  # (N, 45)  — 15 right-hand joints × 3 axis-angle
+    "translation",      # (N, 3)   — root translation
+)
+
+
+def _download_smplh_npy(url: str) -> "np.ndarray":
+    """Download a single SMPL-H .npy file from S3 and return it as an array.
+
+    Uses urllib + BytesIO so we never touch local disk for the intermediate
+    files; only the combined .npz gets written out per participant.
+
+    Raises urllib.error.HTTPError on 403/other HTTP failures so the caller
+    can decide how to handle missing participants.
+    """
+    import io
+    import numpy as np
+
+    req = urllib.request.Request(url)
+    with urllib.request.urlopen(req, timeout=120) as response:
+        buf = io.BytesIO(response.read())
+    return np.load(buf, allow_pickle=False)
+
+
+def enrich_with_smplh(
+    interactions_dir: str,
+    output_dir: str | None = None,
+    num_workers: int = 8,
+    overwrite: bool = False,
+) -> dict:
+    """
+    Download SMPL-H bundles for every participant found under ``interactions_dir``.
+
+    SMPL-H is not packaged as a single file on Meta's S3 — instead it is split
+    across six per-feature .npy arrays under
+        {S3_BASE_URL}/{label}/{split}/smplh/{feature}/{file_id}.npy
+    where ``feature`` ranges over SMPLH_FEATURES. This function downloads all
+    six arrays for each participant and packs them into a single compressed
+    .npz with the six feature names as keys (``body_pose``, ``global_orient``,
+    ``is_valid``, ``left_hand_pose``, ``right_hand_pose``, ``translation``).
+
+    Output location:
+        - If ``output_dir`` is provided, all .npz files are saved flat into
+          that directory:
+              {output_dir}/{file_id}.npz
+        - If ``output_dir`` is None (default), files are saved into each
+          participant's subdirectory (original behavior):
+              {interactions_dir}/{interaction_id}/participant_{a|b}_{pid}/{file_id}.npz
+
+    Interaction and participant metadata are read from each interaction's
+    ``interaction/filelist_entries.json`` (label, split, file_id), so this
+    function works for both ``both_annotated_interactions`` and
+    ``single_annotated_interactions`` — the directory layout and filelist
+    file are identical across both.
+
+    Args:
+        interactions_dir: Path to a directory containing per-interaction
+            subdirectories (e.g. ``./both_annotated_interactions`` or
+            ``./single_annotated_interactions``).
+        output_dir: Optional destination directory for all .npz files.
+            If provided, every bundle is written here as ``{file_id}.npz``
+            (flat — no interaction/participant subfolders). The directory
+            is created if it does not exist. If None, bundles are written
+            into each participant's existing subdirectory.
+        num_workers: Number of parallel download threads. Each participant
+            requires 6 small downloads (~5 MB total), so a handful of
+            threads is usually sufficient.
+        overwrite: If False (default), skip participants whose bundle file
+            already exists on disk. If True, re-download and overwrite.
+
+    Returns:
+        Dict with keys ``written``, ``skipped``, ``failed`` — each a list
+        of ``{file_id}.npz`` paths.
+
+    Notes:
+        - The paper (§3.1, §4.1) notes that the Seamless Interaction dataset
+          focuses on upper-body gestures and drops the 8 leg joints downstream,
+          but the released ``body_pose`` arrays are the full HMR 2.0 output
+          (21 body joints = 63 dims), not pre-pruned. Pruning of leg joints
+          is a modeling-time decision, not something the release applies.
+        - ``is_valid`` is a per-frame boolean indicating whether tracking
+          succeeded for that frame; downstream code should mask invalid
+          frames before consuming pose data.
+    """
+    import numpy as np
+
+    try:
+        from tqdm import tqdm
+    except ImportError:
+        # Minimal fallback so this function still runs without tqdm installed
+        def tqdm(it, **kwargs):  # type: ignore
+            return it
+
+    if not os.path.isdir(interactions_dir):
+        raise FileNotFoundError(f"Not a directory: {interactions_dir}")
+
+    # Ensure the custom output directory exists (if specified).
+    if output_dir is not None:
+        os.makedirs(output_dir, exist_ok=True)
+
+    # -------------------------------------------------------------------------
+    # Step 1: Build the list of (file_id, label, split, output_path) tasks
+    # by walking interaction dirs and reading filelist_entries.json.
+    # -------------------------------------------------------------------------
+    tasks: list[tuple[str, str, str, str]] = []  # (file_id, label, split, out_path)
+    skipped: list[str] = []
+
+    for interaction_id in sorted(os.listdir(interactions_dir)):
+        interaction_dir = os.path.join(interactions_dir, interaction_id)
+        if not os.path.isdir(interaction_dir):
+            continue
+
+        entries_path = os.path.join(
+            interaction_dir, "interaction", "filelist_entries.json"
+        )
+        if not os.path.exists(entries_path):
+            # Not a properly-populated interaction directory — skip silently.
+            continue
+
+        with open(entries_path) as f:
+            entries = json.load(f)
+
+        # Establish the alphabetical participant_a / participant_b mapping
+        # used elsewhere in this script (sort by participant id).
+        sorted_entries = sorted(entries, key=lambda e: extract_participant_id(e["file_id"]))
+        role_lookup = {
+            sorted_entries[0]["file_id"]: "a",
+            sorted_entries[1]["file_id"]: "b" if len(sorted_entries) > 1 else "a",
+        }
+
+        for entry in entries:
+            file_id = entry["file_id"]
+            label = entry.get("label", "naturalistic")
+            split = entry["split"]
+            pid = extract_participant_id(file_id)
+            role = role_lookup[file_id]
+            participant_dir = os.path.join(interaction_dir, f"participant_{role}_{pid}")
+
+            if not os.path.isdir(participant_dir):
+                # Directory layout doesn't match — skip this participant.
+                continue
+
+            # Determine output path: custom directory (flat) or participant dir.
+            if output_dir is not None:
+                out_path = os.path.join(output_dir, f"{file_id}.npz")
+            else:
+                out_path = os.path.join(participant_dir, f"{file_id}.npz")
+
+            if not overwrite and os.path.exists(out_path):
+                skipped.append(out_path)
+                continue
+
+            tasks.append((file_id, label, split, out_path))
+
+    # -------------------------------------------------------------------------
+    # Step 2: Fetch SMPL-H arrays for every task and write the combined .npz.
+    # Each participant requires 6 downloads; we parallelise at the
+    # participant level (not the feature level) so each worker assembles
+    # and writes a whole .npz end-to-end.
+    # -------------------------------------------------------------------------
+    written: list[str] = []
+    failed: list[str] = []
+
+    def _fetch_and_write(task: tuple[str, str, str, str]) -> tuple[str, bool, str]:
+        file_id, label, split, out_path = task
+        arrays = {}
+        try:
+            for feature in SMPLH_FEATURES:
+                url = f"{S3_BASE_URL}/{label}/{split}/smplh/{feature}/{file_id}.npy"
+                arrays[feature] = _download_smplh_npy(url)
+
+            os.makedirs(os.path.dirname(out_path), exist_ok=True)
+            # Use savez_compressed to keep disk footprint modest — SMPL-H
+            # arrays compress well (hand pose is mostly smooth).
+            np.savez_compressed(out_path, **arrays)
+            return out_path, True, "OK"
+        except urllib.error.HTTPError as e:
+            return out_path, False, f"HTTP {e.code}"
+        except Exception as e:  # noqa: BLE001
+            return out_path, False, f"ERROR: {e}"
+
+    if tasks:
+        with ThreadPoolExecutor(max_workers=num_workers) as pool:
+            futures = [pool.submit(_fetch_and_write, t) for t in tasks]
+            for fut in tqdm(
+                as_completed(futures),
+                total=len(futures),
+                desc=f"SMPL-H {os.path.basename(interactions_dir.rstrip('/'))}",
+                unit="participant",
+            ):
+                out_path, ok, msg = fut.result()
+                if ok:
+                    written.append(out_path)
+                else:
+                    failed.append(f"{out_path} — {msg}")
+
+    return {"written": written, "skipped": skipped, "failed": failed}
+
+
+# =============================================================================
 # Audio (.wav) enrichment
 # =============================================================================
 
