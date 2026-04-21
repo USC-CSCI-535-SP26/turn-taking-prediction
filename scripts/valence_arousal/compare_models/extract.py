@@ -4,17 +4,19 @@ Run one face-emotion model across the 136 canonical participant videos and
 save per-frame valence, arousal, and 8-class logits to
 `predictions/{model}/{file_id}.npz`.
 
-V1 implements EmoNet end-to-end. HSEmotion is stubbed with a NotImplementedError
-and will be filled in once the EmoNet path has been validated on a `--limit 2`
-dry-run + real run. This split keeps the alignment/IO scaffolding correct for
-one model before we add a second.
+Both EmoNet and HSEmotion are implemented end-to-end. The EmoNet path was
+validated first (dry-run + partial real run of 27 file_ids on 2026-04-20);
+HSEmotion was integrated after that baseline was on disk. Alignment and
+output contract are shared between the two so `score.py` can load both
+against Imitator without special-casing.
 
 Usage:
     python extract.py --model emonet --dry-run --limit 2
     python extract.py --model emonet --limit 2
     python extract.py --model emonet
     python extract.py --model emonet --file-id V00_S1132_I00000333_P0737
-    python extract.py --model hsemotion        # raises NotImplementedError (V1)
+    python extract.py --model hsemotion --dry-run --limit 2
+    python extract.py --model hsemotion --limit 27   # match the EmoNet partial-run sample
 
 Design notes:
 
@@ -77,6 +79,7 @@ from common import (
 )
 
 import torch
+import torch.nn as nn
 
 from alignment import AlignmentMode, align_face
 
@@ -299,23 +302,59 @@ class EmoNetExtractor(EmotionExtractor):
         return {"valence": valence, "arousal": arousal, "class_logits": class_logits}
 
 
-# --- HSEmotion (stubbed for V1) ------------------------------------------
+# --- HSEmotion -----------------------------------------------------------
+
+# ImageNet normalization constants (matches torchvision's standard values,
+# which is what the HSEmotion library uses in facial_emotions.py:43-44).
+_IMAGENET_MEAN = (0.485, 0.456, 0.406)
+_IMAGENET_STD = (0.229, 0.224, 0.225)
+
+# Which HSEmotion checkpoint we use. Must be V/A-capable — only the `_mtl`
+# variant outputs valence/arousal. The `_b0_` prefix fixes input_size at 224.
+_HSEMOTION_MODEL_NAME = "enet_b0_8_va_mtl"
+
 
 class HSEmotionExtractor(EmotionExtractor):
     """
-    Stubbed for V1. Slotted in after EmoNet has been validated end-to-end.
+    HSEmotion (`enet_b0_8_va_mtl`), EfficientNet-B0 trained on AffectNet-8
+    with auxiliary V/A regression heads.
 
-    When filled in, the implementation will:
-      * Use `vendors/hsemotion/hsemotion/facial_emotions.py:get_model_path`
-        to fetch `enet_b0_8_va_mtl.pt` into `~/.hsemotion/`.
-      * Load via `torch.load(path, map_location=...)` — the file is a pickled
-        full model, not a state_dict (facial_emotions.py:50).
-      * Replace `model.classifier` with Identity and stash the linear
-        weights/bias for an out-of-model matmul (same trick as the library,
-        but batched across frames on MPS).
-      * ImageNet normalize inputs (mean [0.485, 0.456, 0.406], std [0.229, 0.224, 0.225]).
-      * Split the 10-dim output: first 8 dims = class logits, last 2 = (valence, arousal).
+    Forward path:
+        aligned RGB crop (224, 224, 3) uint8
+        → preprocess: /255, CHW, ImageNet normalize → (3, 224, 224) float
+        → backbone features via `self.net(batch)` → (B, feat_dim) float
+        → classifier matmul on-device: features @ W.T + b → (B, 10) float
+        → split: class_logits = [:, :8], valence = [:, -2], arousal = [:, -1]
+
+    Matches EmoNetExtractor's output contract exactly: a dict with
+    {"valence": (B,) f32, "arousal": (B,) f32, "class_logits": (B, 8) f32}.
+
+    Valence/arousal are clamped to [-1, 1] to match EmoNet's behavior and to
+    keep the comparison against Imitator's [-1, 1] targets numerically sane.
+    AffectNet's published labels are in [-1, 1]; the model can occasionally
+    produce slightly out-of-range values and we do not want those leaking
+    into CCC.
+
+    Weight-loading recipe (from vendors/hsemotion/hsemotion/facial_emotions.py):
+      * The .pt file is a **pickled full nn.Module** (timm EfficientNet), not
+        a state_dict — `torch.load(path, weights_only=False)`. Torch 2.6+
+        defaults `weights_only=True`, which would reject the file; we must
+        pass False.
+      * `enet_b0_8_va_mtl` is MTL: `classifier` is a single Linear that
+        outputs 10 scores per image → first 8 are class logits, last 2 are
+        (valence, arousal).
+      * The library's trick (facial_emotions.py:53-60): extract classifier
+        weights/bias, replace `model.classifier` with Identity, and apply
+        the linear layer downstream. We keep the weights as torch tensors
+        on-device so the whole forward (backbone → linear → split) stays
+        on MPS.
+      * Weight download: `get_model_path()` pulls `enet_b0_8_va_mtl.pt` into
+        `~/.hsemotion/` on first use (~18 MB).
+
+    Requires `timm` installed (pip install timm) — timm classes are
+    referenced by the pickled model at unpickle time.
     """
+
     model_name = "hsemotion"
     input_size = INPUT_SIZE["hsemotion"]
     align_mode: AlignmentMode = ALIGN_MODE["hsemotion"]
@@ -323,10 +362,204 @@ class HSEmotionExtractor(EmotionExtractor):
 
     def __init__(self, device: str, logger):
         super().__init__(device, logger)
-        raise NotImplementedError(
-            "HSEmotionExtractor is stubbed in V1. Validate the EmoNet path "
-            "first, then fill this in following the recipe in the class docstring."
-        )
+
+        # Make `from hsemotion.facial_emotions import get_model_path` resolvable
+        # without installing the vendored package. Same pattern as the EmoNet
+        # sys.path hack above.
+        hsem_root = VENDORS_DIR / "hsemotion"
+        if str(hsem_root) not in sys.path:
+            sys.path.insert(0, str(hsem_root))
+
+        # Eager-import timm so unpickling doesn't fail with a confusing
+        # ModuleNotFoundError deep inside torch.load. The pickled model
+        # references timm's EfficientNet class by fully-qualified name.
+        try:
+            import timm  # noqa: F401  — required at unpickle time
+        except ImportError as e:
+            raise ImportError(
+                "HSEmotion requires `timm` for unpickling the EfficientNet model. "
+                "Install with: pip install timm"
+            ) from e
+
+        from hsemotion.facial_emotions import get_model_path  # noqa: E402
+
+        # Download-or-reuse the cached checkpoint in ~/.hsemotion/.
+        # This does a urllib.urlretrieve on first call (~18 MB).
+        self.weights_path = Path(get_model_path(_HSEMOTION_MODEL_NAME))
+        if not self.weights_path.exists():
+            raise FileNotFoundError(
+                f"HSEmotion weights not found at {self.weights_path} after "
+                f"get_model_path() — download may have failed silently."
+            )
+
+        self.log.info("HSEmotion: loading weights from %s", self.weights_path)
+
+        # The .pt file is a pickled full nn.Module, not a state_dict. Torch 2.6+
+        # defaults weights_only=True which would reject pickled Python objects;
+        # we explicitly opt into the unsafe (but necessary here) unpickling.
+        try:
+            model = torch.load(
+                str(self.weights_path),
+                map_location="cpu",
+                weights_only=False,
+            )
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to unpickle HSEmotion model at {self.weights_path}. "
+                f"Likely causes: (1) timm version mismatch with the one the "
+                f"checkpoint was saved under, (2) corrupt/partial download "
+                f"(delete the file and retry to re-fetch). Original error: {e!r}"
+            ) from e
+
+        # Back-fill attributes added to timm after the checkpoint was saved.
+        # torch.load reconstructs the nn.Module via pickle's __setstate__, which
+        # does NOT call __init__, so new attributes added in later timm releases
+        # (e.g. `conv_s2d`, the space-to-depth conv added for EfficientNet-V2
+        # support) are absent on the unpickled instance. The new forward code
+        # references `self.conv_s2d` unconditionally, so nn.Module.__getattr__
+        # would raise AttributeError deep inside the batch forward.
+        n_backfilled = self._backfill_timm_attrs(model)
+        if n_backfilled:
+            self.log.info(
+                "HSEmotion: back-filled %d timm block(s) with missing "
+                "attributes (pickled checkpoint predates your installed timm).",
+                n_backfilled,
+            )
+
+        # Extract the classifier (Linear → 10-dim MTL head) into device
+        # tensors, then replace with Identity so the backbone returns raw
+        # features. We apply the linear transformation ourselves in
+        # forward_batch — numerically identical to leaving the classifier in
+        # place, but keeps everything on-device via torch ops instead of the
+        # library's numpy matmul.
+        cls = model.classifier
+        if isinstance(cls, nn.Sequential):
+            # Library handles this case too (facial_emotions.py:53-55); kept
+            # for robustness if Savchenko changes the head in a future release.
+            linear = cls[0]
+        else:
+            linear = cls
+        if not isinstance(linear, nn.Linear):
+            raise RuntimeError(
+                f"HSEmotion classifier is not a Linear layer: got {type(linear).__name__}. "
+                f"The MTL head is expected to be a single nn.Linear(feat_dim, 10)."
+            )
+        out_dim = linear.out_features
+        if out_dim != 10:
+            raise RuntimeError(
+                f"HSEmotion MTL classifier expected out_features=10 "
+                f"(8 class logits + valence + arousal), got {out_dim}. "
+                f"Wrong checkpoint? Expected model name: {_HSEMOTION_MODEL_NAME}."
+            )
+
+        self._cls_weight = linear.weight.detach().to(self.device)   # (10, feat_dim)
+        self._cls_bias = linear.bias.detach().to(self.device)       # (10,)
+
+        model.classifier = nn.Identity()
+        self.net = model.to(self.device)
+        # Standard nn.Module.eval() returns self; kept un-chained for symmetry
+        # with EmoNetExtractor (whose eval() does NOT return self — see above).
+        self.net.eval()
+
+        # Preprocessing constants as device tensors. Shape (3, 1, 1) so they
+        # broadcast against (3, H, W) without any extra view gymnastics.
+        self._mean = torch.tensor(_IMAGENET_MEAN, device=self.device,
+                                  dtype=torch.float32).view(3, 1, 1)
+        self._std = torch.tensor(_IMAGENET_STD, device=self.device,
+                                 dtype=torch.float32).view(3, 1, 1)
+
+    @staticmethod
+    def _backfill_timm_attrs(model: nn.Module) -> int:
+        """
+        Ensure nn.Module attributes added in newer timm versions exist on the
+        unpickled model, with safe defaults. Returns the number of submodules
+        patched (one increment per submodule, regardless of attr count).
+
+        Why this is needed: torch.load reconstructs the nn.Module via pickle's
+        __setstate__, which does NOT call __init__, so any attribute added to
+        the class's __init__ after the checkpoint was saved is absent on the
+        unpickled instance. nn.Module.__getattr__ then raises AttributeError
+        deep inside the forward pass.
+
+        Currently handles (all on DepthwiseSeparableConv / InvertedResidual):
+          * `conv_s2d` — space-to-depth conv added alongside EfficientNet-V2
+            support. Forward path checks `if self.conv_s2d is not None`, so
+            the safe default is `None` (feature disabled).
+          * `aa` — anti-aliasing downsample module added in the same refactor.
+            Forward calls `self.aa(x)` directly with no None-check, so the
+            safe default is `nn.Identity()` (pass-through — matches the
+            model's training-time behavior, when the attr didn't exist and
+            the op was skipped).
+
+        If future timm upgrades surface more AttributeErrors from pickled
+        checkpoints, extend `_NEW_ATTR_FACTORIES` / `_BLOCK_CLASSES` below.
+        Factory values (callables) rather than literal values so each
+        submodule gets its own fresh Module instance — prevents accidental
+        state-sharing if any future default becomes stateful.
+        """
+        _BLOCK_CLASSES = {"DepthwiseSeparableConv", "InvertedResidual"}
+        _NEW_ATTR_FACTORIES = {
+            "conv_s2d": lambda: None,          # forward: `if self.conv_s2d is not None`
+            "aa":       lambda: nn.Identity(),  # forward: `x = self.aa(x)` (called directly)
+        }
+
+        n_patched = 0
+        for submodule in model.modules():
+            if type(submodule).__name__ not in _BLOCK_CLASSES:
+                continue
+            patched_any = False
+            for attr_name, factory in _NEW_ATTR_FACTORIES.items():
+                if not hasattr(submodule, attr_name):
+                    # Use regular setattr (not object.__setattr__) so nn.Module
+                    # instances get properly registered in the parent's
+                    # `_modules` dict and are visible to .to(device), .eval(),
+                    # .parameters(), etc. nn.Module.__setattr__ delegates to
+                    # object.__setattr__ for non-Parameter/Buffer/Module values
+                    # anyway, so None assignments still land in __dict__.
+                    setattr(submodule, attr_name, factory())
+                    patched_any = True
+            if patched_any:
+                n_patched += 1
+        return n_patched
+
+    def preprocess(self, aligned_rgb: np.ndarray) -> torch.Tensor:
+        # aligned_rgb: (H, W, 3) uint8 RGB at self.input_size (224 for b0).
+        # Target: (3, H, W) float tensor on self.device, ImageNet-normalized.
+        if aligned_rgb.shape[0] != self.input_size or aligned_rgb.shape[1] != self.input_size:
+            # align_face should have produced exactly input_size × input_size;
+            # if not, the alignment path is returning the wrong shape.
+            raise ValueError(
+                f"HSEmotion preprocess expected {self.input_size}x{self.input_size} "
+                f"aligned crop, got {aligned_rgb.shape[:2]}. "
+                f"Check align_face(mode='5pt', out_size=...) wiring."
+            )
+        t = torch.from_numpy(aligned_rgb).to(self.device).float() / 255.0
+        t = t.permute(2, 0, 1).contiguous()          # HWC → CHW
+        t = (t - self._mean) / self._std             # broadcasted normalize
+        return t
+
+    @torch.inference_mode()
+    def forward_batch(self, batch: torch.Tensor) -> dict[str, np.ndarray]:
+        features = self.net(batch)                   # (B, feat_dim)
+        # Apply the extracted MTL head: scores = features @ W.T + b → (B, 10)
+        scores = features @ self._cls_weight.T + self._cls_bias
+
+        # Split the 10-dim output per facial_emotions.py:80-82.
+        class_logits = scores[:, :-2]                # (B, 8)
+        valence = scores[:, -2].clamp(-1.0, 1.0)     # (B,)
+        arousal = scores[:, -1].clamp(-1.0, 1.0)     # (B,)
+
+        if class_logits.shape[1] != 8:
+            raise RuntimeError(
+                f"HSEmotion class_logits unexpected width {class_logits.shape} "
+                f"— expected (B, 8). Model output dim was {scores.shape[1]}."
+            )
+
+        return {
+            "valence": valence.detach().cpu().numpy().astype(np.float32).reshape(-1),
+            "arousal": arousal.detach().cpu().numpy().astype(np.float32).reshape(-1),
+            "class_logits": class_logits.detach().cpu().numpy().astype(np.float32),
+        }
 
 
 def load_extractor(model: str, device: str, logger) -> EmotionExtractor:
