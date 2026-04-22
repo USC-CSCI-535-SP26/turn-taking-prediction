@@ -6,12 +6,34 @@ Run Facebook Research CPC (Rivière et al. 2020, 256-dim @ 100 Hz) over every
 per-participant .wav in a turn-taking manifest and save pooled features to a
 flat output directory.
 
-Repo link to clone if you are asked to do so: https://github.com/facebookresearch/CPC_audio.git
-if local, path to this repo must be passed as --cpc-repo
+!!! TROUBLESHOOTING: network / torch.hub errors — read this first !!!
+---------------------------------------------------------------------
+Symptoms you might see when the default (torch.hub) path fails:
+  - "Cannot find callable CPC_default in hubconf"
+  - "It looks like there is no internet connection..."
+  - "SSL: CERTIFICATE_VERIFY_FAILED" on github.com or dl.fbaipublicfiles.com
+  - "torch.hub.load(...) failed: ..."
 
-CPC checkpoint download file to save if you are using the locally cloned repo: https://dl.fbaipublicfiles.com/librilight/CPC_checkpoints/60k_epoch4-d0f474de.pt
-if using --cpc-repo flag, must also pass path to this CPC checkpoint local file using --checkpoint
+Cause: your network is blocking GitHub's or Meta's CDN. Typical on SSL-
+inspecting corporate / university WiFi (e.g. USC secure-wireless).
 
+Fix — do the two downloads manually on any network that works, then pass
+both paths to the script as CLI args:
+
+  # 1. Clone the CPC_audio repo (the Python package source):
+  git clone https://github.com/facebookresearch/CPC_audio /path/to/CPC_audio
+
+  # 2. Download the pretrained Rivière 2020 checkpoint (~7 MB):
+  curl -L -o /path/to/60k_epoch4-d0f474de.pt \\
+      https://dl.fbaipublicfiles.com/librilight/CPC_checkpoints/60k_epoch4-d0f474de.pt
+
+  # 3. Re-run this script with both paths passed via CLI:
+  python extract_cpc_from_manifest.py \\
+      --manifest ... --output-dir ... \\
+      --cpc-repo /path/to/CPC_audio \\
+      --checkpoint /path/to/60k_epoch4-d0f474de.pt
+
+Full rationale in the "CPC model loading" section below.
 
 Default layout
 --------------
@@ -119,21 +141,43 @@ and diff the feature arrays.
 
 CPC model loading
 -----------------
-Loading is routed through torch.hub:
+Two equivalent loading paths.
 
-    torch.hub.load('facebookresearch/CPC_audio', 'CPC_default')
+(A) torch.hub (default, requires internet):
 
-The hub entrypoint returns a tuple (model, hiddenGar, hiddenEncoder) —
-hiddenGar is the aggregator (c_t) dim, hiddenEncoder is the CNN-encoder
-(z_t) dim; for the Rivière 2020 baseline both are 256. We only need the
-model itself. Override the entrypoint name with --hub-entrypoint if the
-upstream repo renames it.
+    torch.hub.load('facebookresearch/CPC_audio', 'CPC_audio',
+                   pretrained=True, trust_repo=True)
 
-If torch.hub is blocked in your environment (no outbound GitHub access, etc.),
-pass --cpc-repo /path/to/cloned/CPC_audio and --checkpoint /path/to/60k.pt
-and the script will sys.path-insert the repo and load the checkpoint
-directly. This mirrors how the Seamless repo is consumed elsewhere in
-csci535-project.
+    Returns a CPCModel instance (the hubconf entrypoint builds and returns
+    just the model, not a tuple). Under the hood, hubconf.CPC_audio calls
+    torch.hub.load_state_dict_from_url to fetch the pretrained checkpoint
+    from:
+        https://dl.fbaipublicfiles.com/librilight/CPC_checkpoints/60k_epoch4-d0f474de.pt
+
+    So this path makes TWO outbound connections: one to github.com (for the
+    repo's hubconf.py) and one to dl.fbaipublicfiles.com (for the .pt).
+    If either host is blocked, the load fails.
+
+(B) Local repo + checkpoint (always works, no internet needed at run-time):
+
+    python extract_cpc_from_manifest.py \\
+        --cpc-repo /path/to/CPC_audio \\
+        --checkpoint /path/to/60k_epoch4-d0f474de.pt ...
+
+    The script sys.path-inserts the repo, torch.load's the checkpoint,
+    and replicates hubconf.py's model-construction flow exactly (it does
+    NOT use cpc.feature_loader.loadModel, which expects a training-output
+    directory with checkpoint_logs.json / checkpoint_args.json sidecars —
+    the release .pt bundle doesn't ship those).
+
+    Obtain both with:
+
+      git clone https://github.com/facebookresearch/CPC_audio /path/to/CPC_audio
+      curl -L -o /path/to/60k_epoch4-d0f474de.pt \\
+          https://dl.fbaipublicfiles.com/librilight/CPC_checkpoints/60k_epoch4-d0f474de.pt
+
+    Recommended on any network with SSL inspection (see troubleshooting
+    block at the top of this docstring).
 
 Exit codes (mirror extract_wavlm_from_manifest.py)
 --------------------------------------------------
@@ -235,7 +279,10 @@ DEFAULT_AUDIO_DIR = str(
 # facebookresearch/CPC_audio. If the upstream repo renames the hubconf
 # entrypoint, override with --hub-entrypoint.
 DEFAULT_HUB_REPO = "facebookresearch/CPC_audio"
-DEFAULT_HUB_ENTRYPOINT = "CPC_default"
+DEFAULT_HUB_ENTRYPOINT = "CPC_audio"    # the real entrypoint name in hubconf.py;
+                                        # it needs pretrained=True to actually load
+                                        # the 60k_epoch4 weights (else it returns a
+                                        # randomly-initialized model).
 
 DEFAULT_FEATURE_TYPE = "context"   # 'context' = aggregator output c_t (causal RNN output)
                                    # 'encoded' = CNN encoder output z_t (local-in-time)
@@ -414,17 +461,36 @@ def load_cpc(
         return the aggregator dim as the canonical feature_dim.
 
     (B) Local repo + checkpoint. If --cpc-repo and --checkpoint are both set,
-        we sys.path-insert the repo, import cpc.model.CPCModel (or the
-        repo's equivalent), and load_state_dict from the checkpoint. Use
-        this when outbound GitHub access is unavailable (CI, airgapped hosts).
+        we sys.path-insert the repo, mimic hubconf.py's CPC_audio() flow:
+        torch.load the checkpoint (expecting the release format
+        {"config": ..., "weights": ...}), build the model via
+        get_default_cpc_config + getEncoder + getAR + CPCModel, and
+        load_state_dict from ckpt["weights"]. Use this when outbound
+        GitHub access is unavailable (CI, airgapped hosts, or USC
+        secure-wireless doing SSL inspection on the GitHub API).
+        Note: this path does NOT use cpc.feature_loader.loadModel —
+        that helper expects a training-output directory with
+        checkpoint_logs.json + checkpoint_args.json sidecars, which the
+        release .pt bundle does not ship.
 
     Returns the model in eval mode on `device`.
     """
     import torch  # noqa: PLC0415
 
     if cpc_repo and checkpoint:
-        # Local path: sys.path insert the repo, import the model class,
-        # build it with a default config, load the checkpoint.
+        # Local path: sys.path insert the repo, import the model class +
+        # its helpers, load the release-format checkpoint manually.
+        #
+        # Why not cpc.feature_loader.loadModel?  loadModel expects a
+        # training-output *directory* containing:
+        #   - <11-char-prefix><digits>.pt         (e.g. checkpoint_42.pt)
+        #   - checkpoint_logs.json
+        #   - checkpoint_args.json
+        # The published release checkpoints (e.g. 60k_epoch4-d0f474de.pt)
+        # don't ship with those sidecars — they're standalone dicts with
+        # {"config": ..., "weights": ...} keys, designed for the hubconf
+        # path. We replicate that path here so the same .pt file works
+        # whether the user goes via torch.hub or --cpc-repo/--checkpoint.
         repo_path = Path(cpc_repo).resolve()
         if not repo_path.is_dir():
             raise FileNotFoundError(
@@ -437,48 +503,111 @@ def load_cpc(
         print(f"  Loading CPC:       local repo {repo_path}")
         print(f"  Checkpoint:        {checkpoint}")
 
-        # The facebookresearch/CPC_audio repo ships a load helper at
-        # cpc.feature_loader.loadModel. Import defensively — its exact
-        # name can drift across commits.
+        import argparse as _argparse  # noqa: PLC0415
         try:
-            from cpc.feature_loader import loadModel  # noqa: PLC0415
+            # Same imports hubconf.py does, in the same order.
+            from cpc.model import CPCModel as _CPCModel  # noqa: PLC0415
+            from cpc.cpc_default_config import get_default_cpc_config  # noqa: PLC0415
+            from cpc.feature_loader import getEncoder, getAR, loadArgs  # noqa: PLC0415
         except ImportError as e:
             raise RuntimeError(
-                f"Could not import cpc.feature_loader.loadModel from "
-                f"{repo_path}. Is {repo_path} actually a clone of "
-                f"{DEFAULT_HUB_REPO}? ({e})"
+                f"Could not import cpc.* helpers from {repo_path}. Is "
+                f"{repo_path} actually a clone of {DEFAULT_HUB_REPO}? ({e})"
             ) from e
 
-        # loadModel returns (model, hiddenGar, hiddenEncoder).
-        # hiddenGar  = aggregator output dim (= dim of c_t, the context stream).
-        # hiddenEncoder = CNN encoder output dim (= dim of z_t, the encoded stream).
-        # For the Rivière 2020 baseline, both are 256.
-        model, hidden_context_dim, hidden_encoder_dim = loadModel([checkpoint])
+        # Load the checkpoint dict. weights_only=False because the dict
+        # contains a plain Python 'config' subdict (not a pure tensor
+        # state-dict); newer torch emits a warning without the explicit flag.
+        try:
+            ckpt_data = torch.load(
+                checkpoint, map_location="cpu", weights_only=False
+            )
+        except Exception as e:  # noqa: BLE001
+            raise RuntimeError(
+                f"Failed to torch.load {checkpoint}: {e}"
+            ) from e
+
+        if not isinstance(ckpt_data, dict) or "config" not in ckpt_data \
+                or "weights" not in ckpt_data:
+            raise RuntimeError(
+                f"Checkpoint {checkpoint} is not the release-format CPC "
+                f"checkpoint (expected a dict with 'config' and 'weights' "
+                f"keys). Got: {type(ckpt_data).__name__}"
+                + (f", keys={list(ckpt_data.keys())}"
+                   if isinstance(ckpt_data, dict) else "")
+                + ". Download the canonical Rivière 2020 checkpoint from "
+                  "https://dl.fbaipublicfiles.com/librilight/CPC_checkpoints/"
+                  "60k_epoch4-d0f474de.pt"
+            )
+
+        # Rebuild the model the hubconf.py way: start from
+        # get_default_cpc_config(), overlay the checkpoint's training
+        # args, then construct encoder + AR + CPCModel and load weights.
+        loc_args = get_default_cpc_config()
+        loadArgs(loc_args, _argparse.Namespace(**ckpt_data["config"]))
+        encoder_net = getEncoder(loc_args)
+        ar_net = getAR(loc_args)
+        model = _CPCModel(encoder_net, ar_net)
+        # strict=False because the release checkpoint omits criterion /
+        # optimizer tensors that aren't part of CPCModel itself.
+        model.load_state_dict(ckpt_data["weights"], strict=False)
+
+        # Post-getAR() is when the transformer arMode path reassigns
+        # hiddenGar = hiddenEncoder, so read both AFTER those calls.
+        hidden_context_dim = int(getattr(loc_args, "hiddenGar", CPC_FEATURE_DIM))
+        hidden_encoder_dim = int(getattr(loc_args, "hiddenEncoder", CPC_FEATURE_DIM))
 
     else:
         print(f"  Loading CPC:       torch.hub {hub_repo} :: {hub_entrypoint}")
         try:
-            loaded = torch.hub.load(hub_repo, hub_entrypoint, trust_repo=True)
+            # pretrained=True is required by hubconf.CPC_audio to actually
+            # download + load the 60k_epoch4 weights. Without it, you get
+            # a randomly-initialized model and meaningless features.
+            loaded = torch.hub.load(
+                hub_repo, hub_entrypoint,
+                pretrained=True, trust_repo=True,
+            )
         except Exception as e:  # noqa: BLE001
             raise RuntimeError(
                 f"torch.hub.load({hub_repo!r}, {hub_entrypoint!r}) failed: "
                 f"{e}\n"
-                f"Either fix your network / GitHub access, or clone the repo "
-                f"locally and pass --cpc-repo /path/to/CPC_audio "
-                f"--checkpoint /path/to/cpc_pretrained.pt."
+                f"\n"
+                f"This is almost always caused by a network that blocks "
+                f"github.com or dl.fbaipublicfiles.com — common on SSL-\n"
+                f"inspecting corporate / university WiFi (e.g. USC secure-"
+                f"wireless).\n"
+                f"\n"
+                f"Workaround: download the repo + checkpoint manually on a "
+                f"network that works, then re-run with both paths as CLI args:\n"
+                f"\n"
+                f"  1. Clone the CPC_audio repo:\n"
+                f"     git clone https://github.com/facebookresearch/CPC_audio "
+                f"/path/to/CPC_audio\n"
+                f"\n"
+                f"  2. Download the Rivière 2020 pretrained checkpoint (~7 MB):\n"
+                f"     curl -L -o /path/to/60k_epoch4-d0f474de.pt \\\n"
+                f"         https://dl.fbaipublicfiles.com/librilight/"
+                f"CPC_checkpoints/60k_epoch4-d0f474de.pt\n"
+                f"\n"
+                f"  3. Re-run this script with both paths:\n"
+                f"     python extract_cpc_from_manifest.py ... \\\n"
+                f"         --cpc-repo /path/to/CPC_audio \\\n"
+                f"         --checkpoint /path/to/60k_epoch4-d0f474de.pt"
             ) from e
 
-        # Hub returns (model, hiddenGar, hiddenEncoder) per the upstream
-        # hubconf. hiddenGar is the aggregator (c_t) dim; hiddenEncoder is
-        # the CNN-encoder (z_t) dim. For the Rivière 2020 baseline, both
-        # are 256. We also tolerate the degenerate 'just model' return for
-        # forward-compat with older / custom hub entrypoints.
+        # hubconf.CPC_audio returns just the model (not a tuple). We
+        # tolerate the tuple form too for forward-compat with older /
+        # custom hub entrypoints like loadModel-returning-tuples.
         if isinstance(loaded, tuple):
             model = loaded[0]
             hidden_context_dim = loaded[1] if len(loaded) > 1 else CPC_FEATURE_DIM
             hidden_encoder_dim = loaded[2] if len(loaded) > 2 else CPC_FEATURE_DIM
         else:
             model = loaded
+            # For the hubconf path we don't get dim hints back; default to
+            # the Rivière 2020 baseline width. If a downstream sidecar
+            # feature_dim disagrees, the feature-save path reads the
+            # actual tensor shape so truth wins.
             hidden_context_dim = CPC_FEATURE_DIM
             hidden_encoder_dim = CPC_FEATURE_DIM
 
