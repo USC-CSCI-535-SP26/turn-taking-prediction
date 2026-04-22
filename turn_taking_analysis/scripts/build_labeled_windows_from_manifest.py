@@ -50,11 +50,17 @@ predicted. The "listener" is the partner. Features for each role are
 stored separately; the notebook can mix-and-match at load time.
 
 For MM-VAP-/Hisada-2024-style dyadic-concat experiments (lit review
-items 1.1, 1.4), the notebook provides a `ConcatFEATDataset` wrapper
-that reads from TWO role dirs and concatenates along the feature axis
-at __getitem__ time — so no `both/` dir is materialized here. This
-saves ~600 MB of disk per run and keeps the script's on-disk contract
-minimal. See spec §11.7 for the wrapper's contract.
+items 1.1, 1.4), the notebook's `SequenceDataset` / `BimodalDataset`
+classes (Cell 10) accept a length-2 `path_list` per modality slot:
+they read from TWO role dirs with identical basenames and concatenate
+along the feature axis at __getitem__ time — so no `both/` dir is
+materialized here. This saves ~600 MB of disk per run and keeps the
+script's on-disk contract minimal. Convention: `path_list[0]` =
+speaker, `path_list[1]` = listener. See spec §11.8 for the full
+contract. (An earlier spec draft proposed a standalone
+`ConcatFEATDataset` class for this; the capability was inlined into
+the two existing Dataset classes during implementation — behavior is
+identical.)
 
     model_input/
       openface/
@@ -77,11 +83,14 @@ the perspective tag; a sample at the same t where B is the floor holder
 produces a DIFFERENT basename with B's file_id. Both orientations
 coexist in every split.
 
-Notebook-side ablation recipes. Rows 1-6 use the stock BimodalDataset /
-SequenceDataset with a single path per modality slot. Rows 7-10 use
-ConcatFEATDataset, which takes a LIST of two paths per modality slot
-and concatenates them at __getitem__ time. FEAT_V / FEAT_A constants
-toggle only when a slot uses the concat wrapper:
+Notebook-side ablation recipes. All rows use the same two Dataset
+classes — SequenceDataset and BimodalDataset — parameterized by a
+`path_list` of length 1 or 2 per modality slot. Length-1 slots load
+a single .npy per sample (rows 1-6). Length-2 slots load from both
+paths (convention: [speaker, listener]) and concatenate along the
+feature axis at __getitem__ time (rows 7-10 and row 9' on the concat
+side). FEAT_V / FEAT_A constants are the effective post-concat dim
+a downstream GRU sees and toggle only when a slot is length-2:
 
     1. Dyadic cross-pair (primary, our framing):
          V = openface/listener                             FEAT_V = 20
@@ -105,22 +114,32 @@ toggle only when a slot uses the concat wrapper:
          A = wavlm/speaker                                 FEAT_A = 768
 
     7. Both-face + speaker-audio (MM-VAP visual ablation):
-         V = ConcatFEATDataset(openface/speaker, openface/listener)
-         A = wavlm/speaker                                 FEAT_V=40 FEAT_A=768
+         V = [openface/speaker, openface/listener]         FEAT_V = 40
+         A = [wavlm/speaker]                               FEAT_A = 768
 
     8. Listener-face + both-audio (VAP-style stereo audio):
-         V = openface/listener
-         A = ConcatFEATDataset(wavlm/speaker, wavlm/listener)  FEAT_V=20 FEAT_A=1536
+         V = [openface/listener]                           FEAT_V = 20
+         A = [wavlm/speaker, wavlm/listener]               FEAT_A = 1536
 
     9. MM-VAP-style full dyadic (direct replication, Russell & Harte 2025):
-         V = ConcatFEATDataset(openface/speaker, openface/listener)
-         A = ConcatFEATDataset(wavlm/speaker, wavlm/listener)  FEAT_V=40 FEAT_A=1536
+         V = [openface/speaker, openface/listener]         FEAT_V = 40
+         A = [wavlm/speaker, wavlm/listener]               FEAT_A = 1536
 
     10. Speaker-face + both-audio:
-          V = openface/speaker
-          A = ConcatFEATDataset(wavlm/speaker, wavlm/listener)  FEAT_V=20 FEAT_A=1536
+          V = [openface/speaker]                           FEAT_V = 20
+          A = [wavlm/speaker, wavlm/listener]              FEAT_A = 1536
 
-MAX_LEN_V=50, MAX_LEN_A=20, NUM_CLASSES=3 stay unchanged across every
+    9'. Permuted-dyad control on row 9 (spec §11.7):
+          V = [openface/speaker, openface/listener (listener half shuffled at test)]
+          A = [wavlm/speaker,    wavlm/listener    (listener half shuffled at test)]
+          Shared permutation σ across V and A.                FEAT_V=40 FEAT_A=1536
+
+A length-1 path_list loads a single .npy; a length-2 path_list loads
+from both paths and concatenates on the feature axis. Rows 1-6 are
+length-1 on both slots; rows 7-10 and row 9' use length-2 on at least
+one slot.
+
+MAX_LEN_V=60, MAX_LEN_A=20, NUM_CLASSES=3 stay unchanged across every
 recipe. GRU constructors in the notebook take feat_v / feat_a as args
 and adapt automatically when FEAT_V / FEAT_A change.
 
