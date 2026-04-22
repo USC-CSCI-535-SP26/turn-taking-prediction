@@ -186,7 +186,9 @@ Use these, do NOT reimplement. Brief signatures:
 
 ### 6.2 Minimum edits to repurpose for turn-taking
 
-**Keep untouched:** training loop (`run_epoch`, `train_model`, `evaluate`), all four fusion architectures, `nn.CrossEntropyLoss`, optimizer/LR/dropout, early stopping, plotting helpers. The practicum's hyperparameters are reasonable for POC scope.
+**Keep untouched:** training loop (`run_epoch`, `train_model`, `evaluate`), all four fusion architectures, `nn.CrossEntropyLoss`, optimizer/LR/dropout, plotting helpers. The practicum's hyperparameters are reasonable for POC scope.
+
+**Deviation from the practicum — early-stopping metric.** The practicum early-stopped on val accuracy (§6.1). This POC early-stops on **val macro-F1** instead (patience=4). Rationale: with natural-rate class imbalance (HOLD dominates, BC ~15%) and inverse-frequency-weighted cross-entropy, val accuracy is a misleading signal — it rewards correctly predicting the majority class at the expense of the minority classes that the weighted loss is actively trying to lift. Macro-F1 is both the reported metric and the quantity the class weights are implicitly optimizing for. Implemented in `train_model` (notebook Cell 14) via `sklearn.metrics.f1_score(..., average='macro')` on the val split's predictions each epoch.
 
 **Change in priority order:**
 
@@ -425,9 +427,9 @@ model_input/
 
 **Basename** = `{speaker_file_id}_t_{time_ms:07d}`. The speaker file_id is the perspective tag; a sample at the same `t` where the other participant is the floor holder produces a different basename with that participant's file_id. Both orientations coexist in every split.
 
-**Pairing by filename** holds across all four `(modality, role)` directories — identical basenames reference the same sample point. Rows 1–6 of the ablation table use the stock `BimodalDataset` / `SequenceDataset` with a string path per modality slot. Rows 7–10 use the `ConcatFEATDataset` wrapper (§11.8) with a list of two paths per slot; the wrapper reads both and concatenates at `__getitem__` time.
+**Pairing by filename** holds across all four `(modality, role)` directories — identical basenames reference the same sample point. All rows use the same two Dataset classes — `SequenceDataset` and `BimodalDataset` (notebook Cell 10) — parameterized by a `path_list` of length 1 or 2 per modality slot. Length-1 slots load a single `.npy` per sample; length-2 slots load from both paths (convention: `[speaker, listener]`) and concatenate along the feature axis at `__getitem__` time. Rows 1–6 use length-1 slots; rows 7–10 and row 9′ use length-2 slots for the concat modality. See §11.8 for the contract.
 
-**Notebook-side ablation recipes.** `MAX_LEN_V=60`, `MAX_LEN_A=20`, `NUM_CLASSES=3` are fixed across rows. `FEAT_V` / `FEAT_A` toggle only when a slot is a concat wrapper.
+**Notebook-side ablation recipes.** `MAX_LEN_V=60`, `MAX_LEN_A=20`, `NUM_CLASSES=3` are fixed across rows. `FEAT_V` / `FEAT_A` toggle only when a slot uses a length-2 path_list (the sum of per-path feature dims).
 
 | # | Experiment | `FEAT_PATH_V` | `FEAT_V` | `FEAT_PATH_A` | `FEAT_A` | Model(s) | Anchor |
 |---|---|---|---|---|---|---|---|
@@ -437,66 +439,36 @@ model_input/
 | 4 | Unimodal listener-face | `openface/listener` | 20 | — | — | `GRUClassifier` *(visual)* | Kendrick 2023 (Item 3.3) |
 | 5 | Unimodal speaker-face | `openface/speaker` | 20 | — | — | `GRUClassifier` *(visual)* | Nota 2021 (Item 3.4) |
 | 6 | Permuted-dyad control (§8.2) | `openface/listener` *(shuffled)* | 20 | `wavlm/speaker` | 768 | *(test-time re-eval of row 1's trained weights)* | dyadic-coordination test |
-| 7 | Both-face + speaker-audio | ConcatFEATDataset(`openface/speaker`, `openface/listener`) | 40 | `wavlm/speaker` | 768 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | MM-VAP visual ablation |
-| 8 | Listener-face + both-audio | `openface/listener` | 20 | ConcatFEATDataset(`wavlm/speaker`, `wavlm/listener`) | 1536 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | VAP-style stereo audio |
-| 9 | Full dyadic *(MM-VAP replication)* | ConcatFEATDataset(`openface/speaker`, `openface/listener`) | 40 | ConcatFEATDataset(`wavlm/speaker`, `wavlm/listener`) | 1536 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | Russell & Harte 2025 (Item 1.1) |
-| 10 | Speaker-face + both-audio | `openface/speaker` | 20 | ConcatFEATDataset(`wavlm/speaker`, `wavlm/listener`) | 1536 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | own-face + VAP-style audio |
+| 7 | Both-face + speaker-audio | concat(`openface/speaker`, `openface/listener`) | 40 | `wavlm/speaker` | 768 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | MM-VAP visual ablation |
+| 8 | Listener-face + both-audio | `openface/listener` | 20 | concat(`wavlm/speaker`, `wavlm/listener`) | 1536 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | VAP-style stereo audio |
+| 9 | Full dyadic *(MM-VAP replication)* | concat(`openface/speaker`, `openface/listener`) | 40 | concat(`wavlm/speaker`, `wavlm/listener`) | 1536 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | Russell & Harte 2025 (Item 1.1) |
+| 10 | Speaker-face + both-audio | `openface/speaker` | 20 | concat(`wavlm/speaker`, `wavlm/listener`) | 1536 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | own-face + VAP-style audio |
+| 9′ | Permuted-dyad control on row 9 | concat(`openface/speaker`, `openface/listener` *(listener half shuffled)*) | 40 | concat(`wavlm/speaker`, `wavlm/listener` *(listener half shuffled)*) | 1536 | *(test-time re-eval of row 9's trained weights)* | dyadic-coordination test for full-dyadic replication |
 
 **Note on `late_fusion_predict`**: it consumes two pre-trained unimodal `GRUClassifier` models and averages their softmax outputs with a grid-searched weight on val. For bimodal rows that include it, the matching unimodal `GRUClassifier`s for the same `FEAT_PATH_V` + `FEAT_PATH_A` must be trained first. Rows 3–5 cover the standard unimodal cases; rows 7–10 additionally require unimodal `GRUClassifier`s trained on their concat slot as input (trivially — same class, larger `input_size`).
 
-Permutation (row 6) is done at eval time by shuffling the listener-face filename assignment within the test split, keeping the speaker-audio and labels attached to each sample. A performance drop vs. row 1 → dyadic-coordination effect is real.
+**Permutation (row 6).** Done at eval time by shuffling the listener-face filename assignment within the test split, keeping the speaker-audio and labels attached to each sample. A performance drop vs. row 1 → dyadic-coordination effect is real.
+
+**Permutation (row 9′) — promoted from parenthetical §11.8 mention to a formal ablation row.** Done at eval time by shuffling the listener half of BOTH the visual concat slot AND the audio concat slot using a **shared permutation `σ`** — so the "fake listener" is coherent across face and voice (i.e., the face and audio of the permuted-in listener come from the same randomly-mismatched dyad). Primary (speaker) halves are left in their true pairing; only the secondary (listener) halves are shuffled. A performance drop vs. row 9 → the MM-VAP-style full-dyadic gain is genuinely cross-participant coupling rather than listener-stream side-information leakage. Controls for a distinct failure mode than row 6 (row 6 tests whether the listener face helps at all; row 9′ tests whether the full-dyadic coupling is dyadic).
 
 Paired by basename across modalities and roles. Class integers `{0:HOLD, 1:YIELD, 2:BACKCHANNEL, 3:INTERRUPT, 4:FAILED, 5:LAPSE}`. Manifest.json records all constants, per-(τ, split) class counts (natural + balanced), excluded-sample counts, and per-dyad flags (missing transcript, OpenFace low-tracking, duration mismatches).
 
-### 11.8 `ConcatFEATDataset` wrapper (notebook-side, ~30 lines)
+### 11.8 Dyadic-concat via length-2 `path_list` (notebook Cell 10)
 
-Added to the notebook to synthesize dyadic-concat features on the fly. Lives alongside `SequenceDataset` / `BimodalDataset` (notebook cell 10). Contract:
+Dyadic-concat features (rows 7–10, row 9′) are synthesized on the fly by the same `SequenceDataset` / `BimodalDataset` classes that handle rows 1–6 — there is **no separate `ConcatFEATDataset` class**. An earlier spec draft proposed a standalone wrapper; during notebook implementation the concat logic was inlined into the two existing Dataset classes to eliminate a code path and keep the loader factory uniform. Behavior is identical to what the proposed wrapper would have produced; only the class surface differs.
 
-```python
-class ConcatFEATDataset(Dataset):
-    """Reads two feature directories with identical filenames, pads each
-    independently to target_size, concatenates along the feature axis,
-    and returns (x_concat, label).
+**Contract.** Each modality slot accepts a `path_list` of 1 or 2 directory paths:
 
-    Used for ablation rows 7-10 where a modality slot should be fed the
-    dyadic concatenation of speaker+listener streams. No `both/` dir is
-    pre-materialized on disk; this wrapper synthesizes it per-sample.
-    """
-    def __init__(self, path_primary, path_secondary, file_list, labels_dict,
-                 feat_primary, feat_secondary, target_size):
-        self.path_primary = path_primary
-        self.path_secondary = path_secondary
-        self.feat_primary = feat_primary
-        self.feat_secondary = feat_secondary
-        self.target_size = target_size
-        self.files = sorted(file_list)
-        self.labels = [labels_dict[Path(f).stem] for f in self.files]
+- **Length-1 slot** (rows 1–6, and the non-concat slot of rows 7/8/10): `np.load(path_list[0] / basename)` → pad/clip to `target_size` → return.
+- **Length-2 slot** (rows 7–10 concat side, row 9′ both sides): `np.load` from `path_list[0]` (primary) and `path_list[1]` (secondary), pad each to `target_size` with per-path feature dim `feat_total // 2`, concatenate along the feature axis → return a tensor of shape `(target_size, feat_total)`.
 
-    def _load(self, path, fname, feat_dim):
-        x = np.load(os.path.join(path, fname)).astype(np.float32)
-        T = x.shape[0]
-        if T > self.target_size:
-            x = x[:self.target_size]
-        elif T < self.target_size:
-            x = np.vstack([x, np.zeros((self.target_size - T, feat_dim), np.float32)])
-        return x
+**Convention.** `path_list[0]` = **speaker** stream; `path_list[1]` = **listener** stream. Feature axis order is `[speaker-dims ; listener-dims]`, matching MM-VAP's speaker-first concat convention (Russell & Harte 2025).
 
-    def __len__(self):
-        return len(self.files)
+**Effective feature dim.** For a length-2 slot, `feat_total` (e.g. `feat_v = 40` for row 9's visual concat, `feat_a = 1536` for row 9's audio concat) equals per-path-dim + per-path-dim. The GRU constructors (`GRUClassifier`, `EarlyFusionGRU`, `NeuralConcatFusion`) take `feat_v` / `feat_a` as arguments and adapt automatically — no architectural branching on slot-length is needed.
 
-    def __getitem__(self, idx):
-        fname = self.files[idx]
-        xp = self._load(self.path_primary, fname, self.feat_primary)
-        xs = self._load(self.path_secondary, fname, self.feat_secondary)
-        x = np.concatenate([xp, xs], axis=-1)   # (target_size, feat_p + feat_s)
-        return torch.tensor(x), self.labels[idx]
-```
+**Permuted-dyad control against a concat slot (row 9′, formalized in §11.7).** The `BimodalDataset` constructor accepts `permute_listener_v` and `permute_listener_a` flags. When set, a single shared permutation `σ` is drawn once per Dataset instance and applied to the **secondary (listener) file list of each length-2 slot** — primary (speaker) filenames stay aligned with the sample identity / label. For length-1 slots whose path IS a listener path (i.e., row 6's visual slot), the same flag shuffles the primary file list instead, since there is no secondary. Permutation flags are applied **only to the test loader** by `make_loaders_for_experiment(..., test_only_permute=True)` so the model is trained on real pairings.
 
-Notebook integration: add this class in the data-loading cell (alongside the existing Dataset classes). For `make_bimodal_loaders()` / `make_merged_loaders()` callers that need a concat slot, pass a `ConcatFEATDataset` instance where a plain `SequenceDataset` would have gone. `feat_primary + feat_secondary` = the effective `FEAT_V` or `FEAT_A` the downstream GRU sees — pass this value to the GRU constructor.
-
-Convention: primary = speaker's stream, secondary = listener's stream. Feature axis order is `[speaker-dims ; listener-dims]`, matching MM-VAP's speaker-first concat convention.
-
-Permuted-dyad control against a concat slot (optional): pass a shuffled `file_list` to the secondary-only side by constructing the secondary data loader with permuted filenames while keeping the primary in fixed order — equivalent to MM-VAP's "listener half permuted" test.
+Implementation lives in notebook Cell 10. A separate standalone wrapper class is not materialized on disk or in code; references to "ConcatFEATDataset" in older drafts of this spec or in the docstring of `scripts/build_labeled_windows_from_manifest.py` refer to the same capability that the length-2 `path_list` now provides.
 
 ---
 
