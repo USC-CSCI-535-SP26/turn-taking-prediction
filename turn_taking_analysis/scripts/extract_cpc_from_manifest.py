@@ -2,9 +2,13 @@
 """
 extract_cpc_from_manifest.py
 
-Run Facebook Research CPC (Rivière et al. 2020, 256-dim @ 100 Hz) over every
-per-participant .wav in a turn-taking manifest and save pooled features to a
-flat output directory.
+Run Facebook Research CPC (Rivière et al. 2020, 256-dim @ 100 Hz) over
+every spliced .wav produced by splice_wavs.py, saving features in a
+directory tree that exactly mirrors the spliced-wav tree.
+
+NOTE on filename: this script retains its historical name for branch
+compatibility but no longer reads a manifest CSV. It walks the output
+tree of splice_wavs.py instead.
 
 !!! TROUBLESHOOTING: network / torch.hub errors — read this first !!!
 ---------------------------------------------------------------------
@@ -29,115 +33,127 @@ both paths to the script as CLI args:
 
   # 3. Re-run this script with both paths passed via CLI:
   python extract_cpc_from_manifest.py \\
-      --manifest ... --output-dir ... \\
+      --spliced-dir ... --output-dir ... \\
       --cpc-repo /path/to/CPC_audio \\
       --checkpoint /path/to/60k_epoch4-d0f474de.pt
 
 Full rationale in the "CPC model loading" section below.
 
-Default layout
---------------
-    turn_taking_analysis/
-      manifests/manifest.csv              <-- input (or poc_manifest.csv)
-      subset/
-        audio/
-          V00_S0743_I00000483_P0885.wav   <-- input (from download_audio_from_manifest.py)
-          ...
-        cpc_100hz/                         <-- output dir (REQUIRED, no default —
-          V00_S0743_I00000483_P0885.npy      pass --output-dir explicitly). Shape:
-          V00_S0743_I00000483_P0885.json     (T, 256) float32 at 100 Hz by default,
-          ...                                or (T/10, 256) at 10 Hz with --mean-pool.
+Input / output layout
+---------------------
+    --spliced-dir/
+        V03_S1930_I00000105_P5055/                         <-- original wav stem
+            0000.00-0002.00_V03_S1930_I00000105_P5055.wav  <-- spliced window
+            0000.50-0002.50_V03_S1930_I00000105_P5055.wav
+            ...
+        V00_S0743_I00000483_P0885/
+            ...
 
-Both the 48-wav POC and the ~934-wav full project are supported by swapping
---manifest. --output-dir is REQUIRED (no default) and must point to an
-existing directory — create it explicitly first with `mkdir -p`. The POC
-invocation looks like
+    --output-dir/                                          <-- exact mirror
+        V03_S1930_I00000105_P5055/
+            0000.00-0002.00_V03_S1930_I00000105_P5055.npy  <-- float32 features
+            0000.00-0002.00_V03_S1930_I00000105_P5055.json <-- sidecar (provenance)
+            ...
 
-    mkdir -p ../subset/cpc_100hz
-    python extract_cpc_from_manifest.py \\
-        --manifest ../manifests/poc_manifest.csv \\
-        --output-dir ../subset/cpc_100hz
+Each spliced wav produces one .npy (features, float32 at 100 Hz native
+or pooled rate) plus one sibling .json sidecar. The .npy filenames
+mirror the spliced .wav names 1:1; the .json is an orthogonal metadata
+artifact that preserves mean_pool_file()'s post-hoc pooling workflow
+(it reads feature_rate_hz from the sidecar).
 
-The full-project invocation (using DEFAULT_MANIFEST_PATH) is
+Why per-window CPC?
+-------------------
+CPC is a strictly causal encoder: the feature at frame t is a function
+of audio only up to t. If we ran CPC over an entire multi-minute
+interaction, the aggregator's hidden state at t=4:55 would have absorbed
+~5 minutes of context, while at t=0:05 it would have absorbed a few
+seconds. That asymmetry confounds turn-taking modeling, where we want
+every prediction conditioned on the same bounded window. Splicing the
+audio first and running CPC independently per window gives every output
+the same context budget.
 
-    mkdir -p ../subset/cpc_100hz
-    python extract_cpc_from_manifest.py --output-dir ../subset/cpc_100hz
+Applying the same windowing across every modality (CPC, WavLM, SMPL-H,
+OpenFace…) also lets us stack features without any resampling or
+realignment — window boundaries are shared by construction.
+
+Runtime (batched inference)
+---------------------------
+A torch DataLoader with --num-workers worker processes overlaps audio
+load + resample on CPU with the CPC forward pass on GPU. Each batch is
+(B, 1, 32000) with uniform T — splice_wavs.py's partial-trailing-window
+skip guarantees every window is exactly --window-len seconds, so no
+padding is needed. Writes go to a background ThreadPoolExecutor so disk
+I/O doesn't block the next forward pass.
+
+Defaults tuned for Apple-Silicon (MPS backend, unified memory):
+  --batch-size     64     # kernel-launch amortization across samples
+  --num-workers    8      # parallel wav load + 48→16 kHz resample
+  --progress-every 500    # throttle per-task log lines for ~900 prints
+
+Start/stop resilience
+---------------------
+Idempotent resume by default. For each spliced wav the script checks
+whether a valid .npy + .json pair already exists (both non-zero bytes,
+json parses); if so, the task is skipped. Writes go in order (.npy
+first, then .json), so a mid-write interruption leaves the pair
+invalid and gets re-run on the next invocation:
+
+  - killed before .npy finishes    -> .json missing -> already_have
+                                      returns False -> re-run
+  - killed between .npy and .json  -> .json missing -> re-run
+  - killed mid-.json-write         -> json.load fails -> re-run
+  - both finished cleanly          -> skipped on rerun
+
+The background writer's shutdown(wait=True) is in a `finally` block so a
+Ctrl-C drains pending writes before the process exits (as many .npy +
+.json pairs finish atomically as possible), preserving the invariant
+above for those in-flight tasks.
+
+Pass --overwrite to force re-extraction even when both files are present.
 
 Why CPC?
 --------
-CPC is the canonical causal / non-bidirectional audio encoder used by the VAP
-family (Ekstedt & Skantze 2022; Inoue et al. 2024; MM-VAP 2025). Its aggregator
-is a strictly autoregressive RNN — unlike WavLM / HuBERT / wav2vec 2.0, the
-feature at frame t is a function of audio only up to t. For a prediction-
-horizon task (this POC's τ-curve), that property is load-bearing: with a
-bidirectional encoder, features inside the [t − 2 s, t] input window can have
-self-attended across the [t, t + τ] horizon and leaked the label. Running
-CPC on the same wavs gives a feature stream whose causality is guaranteed
-by construction, and a clean ablation target against WavLM-base+ features.
+CPC is the canonical causal / non-bidirectional audio encoder used by the
+VAP family (Ekstedt & Skantze 2022; Inoue et al. 2024; MM-VAP 2025). Its
+aggregator is a strictly autoregressive RNN — unlike WavLM / HuBERT /
+wav2vec 2.0, the feature at frame t is a function of audio only up to t.
+For a prediction-horizon task the per-window slicing + CPC combination
+gives features whose causality is guaranteed by construction, and a
+clean ablation target against WavLM-base+ features.
 
 Full architecture / citations: docs/audio_encoder_research.md entry 1.
 
 What the script does
 --------------------
-For each file_id in the manifest (both file_id_a and file_id_b):
+For each spliced wav under --spliced-dir/<orig_stem>/:
 
-  1. Load {audio_dir}/{file_id}.wav via torchaudio and resample to 16 kHz
-     (CPC's training sample rate — Seamless ships 48 kHz mono wavs per
-     paper §2.4.2, so no downmix is needed).
-  2. Shape to (1, 1, T) as CPC expects (batch, channel=1, audio_samples).
-  3. Run CPC forward once per file (or per chunk if --chunk-length-s is set).
-     CPC returns (c_feature, z_feature, label) where:
-        - c_feature is the aggregator (AR RNN) output — the "context" stream,
-        - z_feature is the CNN-encoder-only output — the "encoded" stream.
+  1. Parse the filename `NNNN.NN-NNNN.NN_<orig_stem>.wav` to recover
+     the window's [start, end] seconds relative to the original wav.
+  2. Load the wav via torchaudio and resample to 16 kHz (CPC's training
+     sample rate — splice_wavs.py preserves the source sample rate, so
+     if the source was 48 kHz the spliced wav is also 48 kHz). Load +
+     resample happen in a DataLoader worker.
+  3. Stack B samples into (B, 1, 32000). Shape uniformity is guaranteed
+     by splice_wavs' partial-trailing-window skip.
+  4. Run CPC forward on the batch. CPC returns (c_feature, z_feature,
+     label) where
+     - c_feature is the aggregator (AR RNN) output — the "context" stream
+     - z_feature is the CNN-encoder-only output — the "encoded" stream
      Both are 256-dim @ 100 Hz. We keep whichever --feature-type selects.
-  4. Mean-pool every `--pool-factor` frames along time. Default pool_factor
-     = 1 — i.e. **no pooling by default**; the saved features are the
-     native 100 Hz CPC stream. Pass `--mean-pool` to pool to 10 Hz during
-     extraction (matches the WavLM-script 50/5=10 Hz raster), or pass
-     `--pool-factor N` for a custom integer factor.
-  5. NaN/Inf guard: refuse to save poisoned features.
-  6. Save {output_dir}/{file_id}.npy (float32, shape (T, 256)) and
-     {output_dir}/{file_id}.json sidecar with full provenance.
+  5. Per-sample: NaN/Inf guard, mean-pool every --pool-factor frames
+     along time (default 1 = no pooling), hand to a background writer.
+  6. Background writer saves --output-dir/<orig_stem>/<spliced_stem>.npy
+     (float32, shape (T, 256) at the chosen frame rate) and
+     <spliced_stem>.json sidecar with window timing and full CPC
+     provenance. Writes .npy FIRST for the resume invariant.
 
-Two-stage pooling workflow (recommended)
-----------------------------------------
-Default: extract once at native 100 Hz into a single folder. Later invoke
-the `mean_pool_file(file, save_to, pool_to=10.0)` function on each .npy
-to produce a separate pooled corpus — no CPC re-run required.
-
-    # 1. Extract native 100 Hz. Output dir is REQUIRED and must exist.
-    mkdir -p subset/cpc_100hz
-    python extract_cpc_from_manifest.py --output-dir subset/cpc_100hz
-
-    # 2. Later, pool to 10 Hz into a parallel directory (also must exist).
-    mkdir -p subset/cpc_10hz
-    from extract_cpc_from_manifest import mean_pool_file
-    from pathlib import Path
-    for npy in Path("subset/cpc_100hz").glob("*.npy"):
-        mean_pool_file(str(npy), "subset/cpc_10hz", pool_to=10.0)
-
-`mean_pool_file` reads each .npy plus its sibling sidecar (to learn the
-current frame rate), validates that `current_rate / pool_to` is an integer,
-applies the same reshape-mean used during extraction, and writes the pooled
-.npy + an updated sidecar that records the pool step for audit.
-
-Chunking
---------
-CPC is ~5 M params (vs. WavLM-base+'s ~94 M) and runs comfortably on a T4.
-For most Seamless interactions (< 10 min each) we process the whole file in
-a single forward pass. If a file OOMs, pass --chunk-length-s to split the
-waveform into fixed-length chunks and concatenate the outputs.
-
-Because CPC is strictly causal, naive non-overlapping chunks introduce only
-a brief RNN warm-up transient at each chunk boundary (< 100 frames at
-100 Hz, so < 10 frames at the pooled 10 Hz rate). This is orders of
-magnitude smaller than the 30-s-seam artefact WavLM's bidirectional
-transformer would have produced — which is why this script does NOT do the
-overlap-stitching dance extract_wavlm_from_manifest.py has. For the POC
-τ-curve framing (±50 ms label tolerance at worst) the transient is
-negligible. If you need to verify this empirically, run once with
---chunk-length-s 0 (whole-file, default) and once with --chunk-length-s N
-and diff the feature arrays.
+Two-stage pooling workflow
+--------------------------
+Default: extract once at native 100 Hz. Later invoke
+`mean_pool_file(file, save_to, pool_to=10.0)` on each .npy to produce
+a separate pooled corpus — no CPC re-run required. The sidecar next to
+each .npy records feature_rate_hz so mean_pool_file can validate that
+the requested pool_to evenly divides the source rate.
 
 CPC model loading
 -----------------
@@ -148,15 +164,14 @@ Two equivalent loading paths.
     torch.hub.load('facebookresearch/CPC_audio', 'CPC_audio',
                    pretrained=True, trust_repo=True)
 
-    Returns a CPCModel instance (the hubconf entrypoint builds and returns
-    just the model, not a tuple). Under the hood, hubconf.CPC_audio calls
+    Returns a CPCModel instance. Under the hood, hubconf.CPC_audio calls
     torch.hub.load_state_dict_from_url to fetch the pretrained checkpoint
     from:
         https://dl.fbaipublicfiles.com/librilight/CPC_checkpoints/60k_epoch4-d0f474de.pt
 
-    So this path makes TWO outbound connections: one to github.com (for the
-    repo's hubconf.py) and one to dl.fbaipublicfiles.com (for the .pt).
-    If either host is blocked, the load fails.
+    So this path makes TWO outbound connections: one to github.com (for
+    the repo's hubconf.py) and one to dl.fbaipublicfiles.com (for the
+    .pt). If either host is blocked, the load fails.
 
 (B) Local repo + checkpoint (always works, no internet needed at run-time):
 
@@ -165,80 +180,63 @@ Two equivalent loading paths.
         --checkpoint /path/to/60k_epoch4-d0f474de.pt ...
 
     The script sys.path-inserts the repo, torch.load's the checkpoint,
-    and replicates hubconf.py's model-construction flow exactly (it does
-    NOT use cpc.feature_loader.loadModel, which expects a training-output
-    directory with checkpoint_logs.json / checkpoint_args.json sidecars —
-    the release .pt bundle doesn't ship those).
+    and replicates hubconf.py's model-construction flow exactly. Use
+    this when outbound GitHub access is unavailable.
 
-    Obtain both with:
-
-      git clone https://github.com/facebookresearch/CPC_audio /path/to/CPC_audio
-      curl -L -o /path/to/60k_epoch4-d0f474de.pt \\
-          https://dl.fbaipublicfiles.com/librilight/CPC_checkpoints/60k_epoch4-d0f474de.pt
-
-    Recommended on any network with SSL inspection (see troubleshooting
-    block at the top of this docstring).
-
-Exit codes (mirror extract_wavlm_from_manifest.py)
---------------------------------------------------
+Exit codes
+----------
     0 — all tasks succeeded (or skipped-as-already-extracted).
-    1 — hard setup error (missing --output-dir, missing manifest,
-        missing audio dir, missing --cpc-repo/--checkpoint pairing,
-        model load failure).
+    1 — hard setup error (missing --spliced-dir, missing --output-dir,
+        missing --cpc-repo/--checkpoint pairing, model load failure).
     2 — one or more files failed extraction (see logs).
     3 — one or more input .wav files were missing on disk (non-fatal).
 
 Usage
 -----
-    # --output-dir is REQUIRED and must already exist. Create it first.
+    # Both dirs must already exist.
     mkdir -p ../subset/cpc_100hz
 
-    # Extract everything in the full manifest at native 100 Hz
-    python extract_cpc_from_manifest.py --output-dir ../subset/cpc_100hz
-
-    # POC manifest
     python extract_cpc_from_manifest.py \\
-        --manifest ../manifests/poc_manifest.csv \\
-        --output-dir ../subset/cpc_100hz
+        --spliced-dir ../subset/audio_sliced \\
+        --output-dir  ../subset/cpc_100hz
 
-    # (Every invocation below also needs --output-dir — omitted here to keep
-    #  the examples short. --output-dir must name an already-existing dir.)
+    # Tune for your machine
+    python extract_cpc_from_manifest.py \\
+        --spliced-dir ../subset/audio_sliced \\
+        --output-dir  ../subset/cpc_100hz \\
+        --batch-size 64 --num-workers 8
 
     # Dry-run to enumerate what would be extracted
     python extract_cpc_from_manifest.py \\
-        --output-dir ../subset/cpc_100hz --dry-run
+        --spliced-dir ../subset/audio_sliced \\
+        --output-dir  ../subset/cpc_100hz --dry-run
 
     # Force re-extraction
     python extract_cpc_from_manifest.py \\
-        --output-dir ../subset/cpc_100hz --overwrite
+        --spliced-dir ../subset/audio_sliced \\
+        --output-dir  ../subset/cpc_100hz --overwrite
 
-    # Chunk long files to cap VRAM
+    # Pool to 10 Hz during extraction (10x smaller on disk)
+    mkdir -p ../subset/cpc_10hz
     python extract_cpc_from_manifest.py \\
-        --output-dir ../subset/cpc_100hz --chunk-length-s 60
+        --spliced-dir ../subset/audio_sliced \\
+        --output-dir  ../subset/cpc_10hz --mean-pool
 
     # Use CNN-encoder output (z) instead of aggregator output (c)
     python extract_cpc_from_manifest.py \\
-        --output-dir ../subset/cpc_100hz --feature-type encoded
-
-    # Pool to 10 Hz during extraction (old default behavior).
-    # Mutually exclusive with --pool-factor. Note the different output dir
-    # so the 10 Hz corpus doesn't overwrite the 100 Hz one.
-    python extract_cpc_from_manifest.py \\
-        --output-dir ../subset/cpc_10hz --mean-pool
-
-    # Custom integer pool factor (e.g., 2 → 50 Hz for VAP parity)
-    python extract_cpc_from_manifest.py \\
-        --output-dir ../subset/cpc_50hz --pool-factor 2
+        --spliced-dir ../subset/audio_sliced \\
+        --output-dir  ../subset/cpc_100hz --feature-type encoded
 """
 
 from __future__ import annotations
 
 import argparse
-import csv
+import concurrent.futures
 import json
 import os
 import sys
 import time
+from collections import Counter
 from pathlib import Path
 
 
@@ -263,21 +261,12 @@ from download_annotated_interactions import (  # noqa: E402
 # -----------------------------------------------------------------------------
 # Defaults
 # -----------------------------------------------------------------------------
-DEFAULT_MANIFEST_PATH = str(
-    PROJECT_ROOT / "turn_taking_analysis" / "manifests" / "manifest.csv"
-)
-DEFAULT_AUDIO_DIR = str(
-    PROJECT_ROOT / "turn_taking_analysis" / "subset" / "audio"
-)
-# Intentional: --output-dir has NO default. Writing CPC features is
-# high-volume and the "right" destination depends on whether you're
-# producing the 100 Hz native corpus, a 10 Hz pooled corpus, or a
-# one-off debug extraction. Forcing the caller to name the directory
-# prevents typo-driven writes to an unexpected location.
+# Intentional: --spliced-dir and --output-dir have NO defaults. Writing CPC
+# features is high-volume and the "right" destination depends on whether
+# you're producing the 100 Hz native corpus, a 10 Hz pooled corpus, or a
+# one-off debug extraction. Forcing the caller to name both directories
+# prevents typo-driven reads from / writes to an unexpected location.
 
-# torch.hub entrypoint for the pretrained CPC checkpoint shipped with
-# facebookresearch/CPC_audio. If the upstream repo renames the hubconf
-# entrypoint, override with --hub-entrypoint.
 DEFAULT_HUB_REPO = "facebookresearch/CPC_audio"
 DEFAULT_HUB_ENTRYPOINT = "CPC_audio"    # the real entrypoint name in hubconf.py;
                                         # it needs pretrained=True to actually load
@@ -290,7 +279,14 @@ DEFAULT_POOL_FACTOR = 1            # 1 = no pooling; save native 100 Hz features
                                    # Use --mean-pool (→10) to pool during extraction,
                                    # or leave default and invoke mean_pool_file() later.
 DEFAULT_TARGET_RATE_HZ = 10.0      # Default target rate for mean_pool_file() and --mean-pool.
-DEFAULT_CHUNK_LENGTH_S = 0.0       # 0 = process full file in one forward pass
+
+# Batched-inference defaults, tuned for Apple-Silicon M5 Max 32-core
+# GPU / 36 GB unified memory. CUDA users can usually push batch-size
+# much higher; CPU-only users should drop it to 1.
+DEFAULT_BATCH_SIZE = 64
+DEFAULT_NUM_WORKERS = 8
+DEFAULT_WRITER_THREADS = 4
+DEFAULT_PROGRESS_EVERY = 500
 
 CPC_SAMPLE_RATE = 16_000           # CPC was trained on 16 kHz mono
 CPC_SAMPLES_PER_FRAME = 160        # CPC's 5-layer CNN stride over 16 kHz → 100 Hz
@@ -298,128 +294,113 @@ CPC_FEATURE_DIM = 256              # Rivière 2020 baseline channel width
 
 
 # =============================================================================
-# Manifest parsing — identical contract to extract_wavlm_from_manifest.py
-# =============================================================================
-
-REQUIRED_COLUMNS = {
-    "split",
-    "interaction_id",
-    "file_id_a",
-    "file_id_b",
-}
-
-
-def load_manifest(manifest_path: str) -> list[dict]:
-    """Load the manifest CSV into a list of dict rows and validate columns.
-
-    Fails fast on schema drift rather than producing silently-wrong tasks.
-    Works for any manifest that matches REQUIRED_COLUMNS (48-wav POC,
-    467-interaction full project, or any subset).
-    """
-    if not os.path.exists(manifest_path):
-        raise FileNotFoundError(
-            f"Manifest not found at {manifest_path}. "
-            f"Run build_manifest.py first (or pass --manifest)."
-        )
-
-    with open(manifest_path, newline="") as f:
-        reader = csv.DictReader(f)
-        missing = REQUIRED_COLUMNS - set(reader.fieldnames or [])
-        if missing:
-            raise ValueError(
-                f"Manifest {manifest_path} is missing required columns: "
-                f"{sorted(missing)}"
-            )
-        rows = list(reader)
-
-    if not rows:
-        raise ValueError(f"Manifest {manifest_path} has no rows.")
-
-    return rows
-
-
-# =============================================================================
 # Extraction-task descriptor
 # =============================================================================
 
 class ExtractTask:
-    """One wav to featurize: input path + destination path + bookkeeping tags."""
+    """One spliced wav to featurize: input path + destination paths + timing."""
 
     __slots__ = (
-        "split", "interaction_id", "participant_id",
-        "file_id", "audio_path", "output_path", "sidecar_path",
+        "orig_stem", "interaction_id", "participant_id",
+        "window_start_s", "window_end_s",
+        "audio_path", "output_path", "sidecar_path",
     )
 
     def __init__(
         self,
-        split: str,
+        orig_stem: str,
         interaction_id: str,
         participant_id: str,
-        file_id: str,
+        window_start_s: float,
+        window_end_s: float,
         audio_path: str,
         output_path: str,
         sidecar_path: str,
     ):
-        self.split = split
+        self.orig_stem = orig_stem
         self.interaction_id = interaction_id
         self.participant_id = participant_id
-        self.file_id = file_id
+        self.window_start_s = window_start_s
+        self.window_end_s = window_end_s
         self.audio_path = audio_path
         self.output_path = output_path
         self.sidecar_path = sidecar_path
 
     def __repr__(self) -> str:
-        return f"ExtractTask({self.file_id})"
+        return f"ExtractTask({Path(self.audio_path).name})"
 
 
-def build_tasks(
-    rows: list[dict],
-    audio_dir: str,
-    output_dir: str,
-    filter_split: str | None,
-) -> list[ExtractTask]:
-    """Expand manifest rows into one ExtractTask per participant wav.
+def _parse_window_filename(stem: str):
+    """Parse `NNNN.NN-NNNN.NN_<orig_stem>` from a spliced wav's stem.
 
-    Input wavs follow download_audio_from_manifest.py's flat naming:
-    {audio_dir}/{file_id}.wav. Outputs mirror that: {output_dir}/{file_id}.npy
-    plus {file_id}.json.
+    Returns (window_start_s, window_end_s, orig_stem) or None if the name
+    does not match the splice_wavs.py format. Uses `partition` to split
+    only on the FIRST underscore, since orig_stem itself contains '_'
+    (e.g. `V03_S1930_I00000105_P5055`).
     """
+    head, sep, orig = stem.partition("_")
+    if not sep or not orig:
+        return None
+    start_str, dash, end_str = head.partition("-")
+    if not dash:
+        return None
+    try:
+        start_s = float(start_str)
+        end_s = float(end_str)
+    except ValueError:
+        return None
+    return start_s, end_s, orig
+
+
+def build_tasks(spliced_dir: str, output_dir: str) -> list[ExtractTask]:
+    """Walk spliced_dir/<orig_stem>/*.wav and build one ExtractTask per wav.
+
+    The subdir name is the original wav stem (e.g.
+    `V03_S1930_I00000105_P5055`); `extract_interaction_id` +
+    `extract_participant_id` derive the IDs from it. Each spliced wav
+    filename encodes its [start, end] seconds relative to the original
+    (see splice_wavs.py's `_fmt_time`).
+
+    Outputs mirror the input tree exactly: `output_dir/<orig_stem>/
+    <spliced_stem>.npy` plus a sibling `<spliced_stem>.json` sidecar.
+    """
+    spliced_root = Path(spliced_dir)
     tasks: list[ExtractTask] = []
-    for row in rows:
-        if filter_split and row["split"] != filter_split:
+
+    for sub in sorted(spliced_root.iterdir()):
+        if not sub.is_dir():
+            continue
+        orig_stem = sub.name
+
+        try:
+            interaction_id = extract_interaction_id(orig_stem)
+            participant_id = extract_participant_id(orig_stem)
+        except Exception as e:  # noqa: BLE001
+            print(f"  WARN: subdir {orig_stem!r} does not match the expected "
+                  f"file-id pattern ({e}); skipping.", file=sys.stderr)
             continue
 
-        for side in ("a", "b"):
-            file_id = row[f"file_id_{side}"]
-            if not file_id:
-                print(f"  WARN: row {row['interaction_id']} has empty "
-                      f"file_id_{side}; skipping.", file=sys.stderr)
+        out_sub = Path(output_dir) / orig_stem
+
+        for wav in sorted(sub.glob("*.wav")):
+            parsed = _parse_window_filename(wav.stem)
+            if parsed is None:
+                print(f"  WARN: could not parse window times from "
+                      f"{wav.name!r}; skipping.", file=sys.stderr)
                 continue
-
-            # Cross-check file_id's implied interaction against the row.
-            # Same guard as extract_wavlm_from_manifest.py.
-            derived_iid = extract_interaction_id(file_id)
-            if derived_iid != row["interaction_id"]:
-                print(f"  WARN: file_id {file_id} implies interaction "
-                      f"{derived_iid} but manifest row says "
-                      f"{row['interaction_id']}; using derived value.",
-                      file=sys.stderr)
-
-            audio_path = os.path.join(audio_dir, f"{file_id}.wav")
-            output_path = os.path.join(output_dir, f"{file_id}.npy")
-            sidecar_path = os.path.join(output_dir, f"{file_id}.json")
+            window_start_s, window_end_s, _orig = parsed
 
             tasks.append(ExtractTask(
-                split=row["split"],
-                interaction_id=derived_iid,
-                participant_id=extract_participant_id(file_id),
-                file_id=file_id,
-                audio_path=audio_path,
-                output_path=output_path,
-                sidecar_path=sidecar_path,
+                orig_stem=orig_stem,
+                interaction_id=interaction_id,
+                participant_id=participant_id,
+                window_start_s=window_start_s,
+                window_end_s=window_end_s,
+                audio_path=str(wav),
+                output_path=str(out_sub / f"{wav.stem}.npy"),
+                sidecar_path=str(out_sub / f"{wav.stem}.json"),
             ))
 
-    tasks.sort(key=lambda t: (t.split, t.interaction_id, t.file_id))
     return tasks
 
 
@@ -627,103 +608,8 @@ def load_cpc(
 
 
 # =============================================================================
-# Per-file extraction
+# Per-sample helpers
 # =============================================================================
-
-def _load_and_resample(audio_path: str):
-    """Load a wav and resample to 16 kHz.
-
-    Returns (waveform_1d_float32_cpu, original_sample_rate).
-
-    Seamless ships per-participant mono wavs (one lapel mic per person,
-    single-channel .wav; see Seamless paper §2.4.2), so no downmix is
-    needed — torchaudio.load returns shape (1, T) directly. If you point
-    this script at a non-Seamless dataset that ships stereo wavs, add a
-    `waveform = waveform.mean(dim=0, keepdim=True)` here.
-
-    CPC was trained on raw 16 kHz audio with no further normalization; we
-    do NOT apply zero-mean/unit-var (WavLM's script does, but CPC's training
-    recipe in facebookresearch/CPC_audio uses the raw-ish torchaudio.load
-    output directly).
-    """
-    import torchaudio  # noqa: PLC0415
-
-    waveform, sr = torchaudio.load(audio_path)  # (1, T) float32 in ~[-1, 1]
-
-    if sr != CPC_SAMPLE_RATE:
-        resampler = torchaudio.transforms.Resample(
-            orig_freq=sr, new_freq=CPC_SAMPLE_RATE
-        )
-        waveform = resampler(waveform)
-
-    return waveform.squeeze(0), sr  # (T,), original_sr
-
-
-def _cpc_forward(model, waveform_1d, device: str, feature_type: str):
-    """Run CPC once over a 1-D waveform tensor. Return (T_frames, feature_dim) on CPU.
-
-    The facebookresearch/CPC_audio model expects input of shape (B, 1, T_audio)
-    and returns (c_feature, z_feature, label) — c is the aggregator (AR RNN)
-    output, z is the CNN-encoder-only output, label is used only during
-    training. Both features are 256-dim @ 100 Hz.
-    """
-    import torch  # noqa: PLC0415
-
-    x = waveform_1d.to(device=device, dtype=torch.float32)
-    x = x.unsqueeze(0).unsqueeze(0)   # (1, 1, T_audio)
-
-    with torch.inference_mode():
-        out = model(x, None)
-
-    # Handle both 2- and 3-tuple return shapes (old vs. new CPC_audio commits).
-    if isinstance(out, tuple):
-        if len(out) >= 2:
-            c_feature, z_feature = out[0], out[1]
-        else:
-            # Single-tensor fallback — treat it as whichever feature was asked for.
-            c_feature = z_feature = out[0]
-    else:
-        c_feature = z_feature = out
-
-    chosen = c_feature if feature_type == "context" else z_feature
-    # Shape from CPC: (1, T_frames, feature_dim). Squeeze batch.
-    chosen = chosen.squeeze(0).to(torch.float32).cpu()
-    return chosen
-
-
-def _chunked_forward(
-    model,
-    waveform_1d,
-    device: str,
-    feature_type: str,
-    chunk_samples: int,
-):
-    """Chunked forward for long waveforms. Concatenates per-chunk outputs.
-
-    Because CPC is causal, chunking without state carry only introduces a
-    brief RNN warm-up transient at each chunk boundary (< 1 s of frames)
-    rather than the full-utterance contamination a bidirectional encoder
-    would exhibit. For a 10 Hz downstream task this is negligible. If you
-    need to verify empirically, compare against the no-chunk path (leave
-    --chunk-length-s at 0).
-    """
-    import torch  # noqa: PLC0415
-
-    n_samples = waveform_1d.shape[0]
-    pieces = []
-    start = 0
-    while start < n_samples:
-        end = min(n_samples, start + chunk_samples)
-        piece = _cpc_forward(
-            model, waveform_1d[start:end], device, feature_type
-        )
-        pieces.append(piece)
-        start = end
-
-    if not pieces:
-        return torch.zeros((0, CPC_FEATURE_DIM), dtype=torch.float32)
-    return torch.cat(pieces, dim=0)
-
 
 def _mean_pool(features, pool_factor: int):
     """Mean-pool along time by pool_factor. Input (T, D) → (T // pool_factor, D).
@@ -924,129 +810,426 @@ def mean_pool_file(
     }
 
 
-def extract_one(
+def _build_sidecar(
     task: ExtractTask,
-    model,
-    device: str,
+    pooled,
+    orig_sr: int,
+    duration_s: float,
     feature_type: str,
     feature_dim: int,
     pool_factor: int,
-    chunk_samples: int,
     hub_repo: str,
     hub_entrypoint: str,
     checkpoint: str | None,
 ) -> dict:
-    """Run CPC over one wav end-to-end and write {file_id}.npy + .json.
+    """Assemble the per-window sidecar dict shared by the writer path.
 
-    Returns {task, status, message} with status in
-    {"ok", "missing", "skipped", "failed"} — same vocabulary as
-    extract_wavlm_from_manifest.py for a readable summary line.
+    Pulled out of the extraction loop so the schema lives in exactly one
+    place. Consumers (downstream feature-stacking code, `mean_pool_file`)
+    rely on `feature_rate_hz` and `feature_dim` being present and
+    accurate.
+    """
+    return {
+        "orig_stem":                task.orig_stem,
+        "spliced_stem":             Path(task.audio_path).stem,
+        "interaction_id":           task.interaction_id,
+        "participant_id":           task.participant_id,
+        "window_start_s":           task.window_start_s,
+        "window_end_s":             task.window_end_s,
+        "window_duration_s":        task.window_end_s - task.window_start_s,
+        "audio_source":             task.audio_path,
+        "source_sample_rate_hz":    int(orig_sr),
+        "resampled_sample_rate_hz": CPC_SAMPLE_RATE,
+        "duration_seconds":         duration_s,
+        # Model provenance. Populated differently depending on the
+        # load path (torch.hub vs. local checkpoint).
+        "model_family":             "cpc",
+        "model_id":                 (f"local:{checkpoint}" if checkpoint
+                                     else f"{hub_repo}::{hub_entrypoint}"),
+        "cpc_hub_repo":             hub_repo,
+        "cpc_hub_entrypoint":       hub_entrypoint,
+        "cpc_checkpoint":           checkpoint,
+        "cpc_feature_type":         feature_type,   # 'context' (c_t) or 'encoded' (z_t)
+        "cpc_samples_per_frame":    CPC_SAMPLES_PER_FRAME,
+        "raw_feature_rate_hz":      CPC_SAMPLE_RATE // CPC_SAMPLES_PER_FRAME,  # 100
+        "pool_factor":              pool_factor,
+        "feature_rate_hz":          (CPC_SAMPLE_RATE
+                                     / CPC_SAMPLES_PER_FRAME
+                                     / pool_factor),
+        "feature_dim":              int(pooled.shape[1]) if pooled.size else feature_dim,
+        "feature_frames":           int(pooled.shape[0]),
+        "dtype":                    str(pooled.dtype),
+        # Chunking provenance. Kept for schema parity with
+        # extract_wavlm_from_manifest.py and the pre-batched version of
+        # this script; batched inference over spliced windows never
+        # chunks (each wav is already short), so these are always 0.
+        "chunk_samples":            0,
+        "chunk_length_s":           0.0,
+    }
+
+
+def _write_outputs(npy_path: str, json_path: str, pooled, sidecar: dict) -> None:
+    """Write .npy then .json. Runs in a writer-pool thread.
+
+    Order is load-bearing for the resume invariant (see already_have and
+    the Start/stop resilience section of the module docstring): .npy
+    must land before .json, so a mid-write crash leaves the pair in a
+    state that `already_have` flags as incomplete.
     """
     import numpy as np  # noqa: PLC0415
+
+    os.makedirs(os.path.dirname(npy_path), exist_ok=True)
+    np.save(npy_path, pooled)
+    with open(json_path, "w") as f:
+        json.dump(sidecar, f, indent=2)
+
+
+def _checkpoints_equivalent(a: str | None, b: str | None) -> bool:
+    """True iff two checkpoint paths refer to the same file (or are
+    both None, i.e. both runs are using torch.hub).
+
+    Handles the common non-literal-match cases that would otherwise
+    make the compat check spuriously fail:
+      - symlinks and FS-level inode aliasing (via os.path.samefile)
+      - relative vs. absolute paths
+      - `~` / `$HOME` expansion
+      - trailing slashes, redundant `.` / `..` segments
+      - case differences on Windows (normcase)
+
+    Deliberately NOT handled: content-level equivalence (a byte-for-
+    byte identical .pt at a different path). That would require
+    hashing, which we skip; users who genuinely moved a checkpoint
+    while preserving contents should just pass --overwrite.
+    """
+    if a is None and b is None:
+        return True
+    if a is None or b is None:
+        return False
+
+    # Inode-level identity — fastest and catches the symlink / FS-
+    # aliasing cases. Only works when both files exist on disk.
+    try:
+        if os.path.samefile(a, b):
+            return True
+    except OSError:
+        pass
+
+    # Fall back to normalized-path string compare for the
+    # doesn't-exist-yet or cross-FS cases.
+    def _norm(p: str) -> str:
+        return os.path.normcase(os.path.realpath(os.path.expanduser(p)))
+
+    return _norm(a) == _norm(b)
+
+
+def check_output_dir_params_compat(
+    output_dir: str,
+    feature_type: str,
+    pool_factor: int,
+    hub_repo: str,
+    hub_entrypoint: str,
+    checkpoint: str | None,
+) -> str | None:
+    """Verify existing sidecars in output_dir match the current run's
+    model identity and extraction parameters.
+
+    Mixing incompatible parameters in one output directory produces a
+    silently-heterogeneous corpus: `already_have` would skip existing
+    files (seeing them as complete) even though their sidecars disagree
+    with the new run's intent. To prevent that, we sample a real CPC
+    sidecar and compare its full extraction identity against the
+    current args:
+
+      - cpc_feature_type   (context vs. encoded)
+      - pool_factor        (100 Hz native vs. pooled rates)
+      - cpc_hub_repo       (upstream repo; detects silent fork swap)
+      - cpc_hub_entrypoint (hubconf entrypoint; detects rename)
+      - cpc_checkpoint     (local .pt path; detects checkpoint swap)
+
+    The checkpoint comparison uses `_checkpoints_equivalent`, which
+    treats symlinked / relative / `~`-expanded paths pointing at the
+    same file as equal, so runs that reference the same .pt through
+    different paths don't trip the check spuriously.
+
+    To avoid sampling stray / foreign .json files that happen to live
+    in an `<output_dir>/<stem>/` subdir, we require each candidate
+    sidecar to satisfy two structural sanity checks:
+
+      1. A sibling .npy file exists at the same stem (indicating this
+         json is paired with a real feature file, as every CPC sidecar
+         should be).
+      2. `sidecar["model_family"] == "cpc"` (filters out sidecars from
+         other feature extractors — e.g. WavLM's).
+
+    We iterate candidates until one passes both checks, then use it
+    for comparison. Sampling just the first qualifying sidecar is
+    intentional: if the first one matches, we assume the whole
+    directory was written by a single consistent run (which is the
+    invariant we're trying to maintain). Directories hand-edited to
+    contain mixed params can still slip through — the per-file
+    sidecar records the truth and downstream consumers can re-check.
+
+    Returns None if no qualifying sidecars exist, if the sampled
+    sidecar matches current params, or if every candidate failed to
+    parse (a corrupt sidecar isn't evidence of param mismatch; the
+    resume path will re-extract it on the next run). Returns a
+    human-readable error message listing the mismatched fields on
+    real disagreement; the caller decides whether to refuse the run
+    or proceed.
+    """
+    root = Path(output_dir)
+    sidecar: dict | None = None
+    sampled_path: Path | None = None
+    read_errors: list[tuple[Path, Exception]] = []
+
+    # Iterate candidates rather than picking the first match. A subdir
+    # may contain a stray file that isn't our sidecar (e.g. a manifest,
+    # a README, a partial scratch file); skipping those and continuing
+    # avoids a spurious mismatch error against a non-CPC json.
+    for candidate in root.glob("*/*.json"):
+        # Structural check 1: a sibling .npy at the same stem.
+        if not candidate.with_suffix(".npy").exists():
+            continue
+        # Parse. On error, remember but keep looking — another subdir
+        # may have a clean sidecar.
+        try:
+            with open(candidate) as f:
+                parsed = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            read_errors.append((candidate, e))
+            continue
+        # Guard: json.load can legitimately return any JSON value
+        # (list, scalar, null). A stray .json in this subdir tree
+        # might contain any of those, and calling .get on a non-dict
+        # would AttributeError and crash the whole compat check.
+        # Treat anything that isn't a JSON object as "not a CPC
+        # sidecar" and keep searching.
+        if not isinstance(parsed, dict):
+            continue
+        # Structural check 2: model_family tag. Filters out foreign
+        # sidecars (e.g. from extract_wavlm_from_manifest.py) that
+        # happen to share the subdir layout.
+        if parsed.get("model_family") != "cpc":
+            continue
+        sidecar = parsed
+        sampled_path = candidate
+        break
+
+    if sidecar is None:
+        # No qualifying CPC sidecar was found. If we hit parse errors
+        # along the way, surface a one-time warning so the user isn't
+        # surprised by the verification being skipped; otherwise stay
+        # silent (a fresh / empty output_dir is the normal case).
+        if read_errors:
+            first_path, first_err = read_errors[0]
+            n = len(read_errors)
+            print(
+                f"WARNING: found {n} existing sidecar-shaped .json "
+                f"file(s) under {output_dir} but could not parse any "
+                f"(first error: {first_path}: {first_err}); proceeding "
+                f"without parameter-compatibility verification. Pass "
+                f"--overwrite if you want to discard prior output and "
+                f"start clean.",
+                file=sys.stderr,
+                flush=True,
+            )
+        return None
+
+    # --- Compare the sampled sidecar's params against current args ---
+    # String / integer fields: literal equality. A missing key
+    # (sidecar.get → None) counts as a mismatch against a non-None
+    # current value so an ancient / foreign sidecar missing required
+    # fields can't slip through.
+    string_checks = (
+        ("cpc_feature_type",   sidecar.get("cpc_feature_type"),   feature_type),
+        ("pool_factor",        sidecar.get("pool_factor"),        pool_factor),
+        ("cpc_hub_repo",       sidecar.get("cpc_hub_repo"),       hub_repo),
+        ("cpc_hub_entrypoint", sidecar.get("cpc_hub_entrypoint"), hub_entrypoint),
+    )
+    mismatches = [
+        f"{name}: sidecar has {existing!r}, current run requests {current!r}"
+        for name, existing, current in string_checks
+        if existing != current
+    ]
+
+    # Checkpoint path: use path-equivalence rather than literal string
+    # compare so symlink / relative / home-dir variants of the same .pt
+    # don't trip the check.
+    existing_ckpt = sidecar.get("cpc_checkpoint")
+    if not _checkpoints_equivalent(existing_ckpt, checkpoint):
+        mismatches.append(
+            f"cpc_checkpoint: sidecar has {existing_ckpt!r}, "
+            f"current run requests {checkpoint!r}"
+        )
+
+    if not mismatches:
+        return None
+
+    bullet_list = "\n".join(f"           - {m}" for m in mismatches)
+    return (
+        f"existing sidecar {sampled_path} disagrees with the current "
+        f"run's parameters:\n"
+        f"{bullet_list}\n"
+        f"       Mixing these in one output directory would produce an "
+        f"inconsistent corpus (already_have would silently skip the "
+        f"old-params files). Either:\n"
+        f"         - use a different --output-dir for the new params, or\n"
+        f"         - pass --overwrite to discard the prior extraction."
+    )
+
+
+# =============================================================================
+# Dataset / collate — async audio load + resample in DataLoader workers
+# =============================================================================
+
+class _SplicedWavDataset:
+    """Dataset that loads + resamples one spliced wav per __getitem__.
+
+    Returns a 5-tuple:
+        (waveform_1d_fp32_16k, source_sr, task_index, err_msg, status)
+
+    On success:  (waveform, sr,   idx, None,    None)
+    On missing:  (None,     None, idx, err_msg, "missing")  # file not on disk
+    On failure:  (None,     None, idx, err_msg, "failed")   # load/decode error
+
+    The "missing" vs "failed" split is preserved end-to-end through the
+    collate so main() can return exit code 3 for runs where inputs
+    weren't on disk (non-fatal) vs 2 for runs with real extraction
+    errors.
+
+    Each DataLoader worker gets its own copy of this instance after
+    pickle, so the torchaudio.transforms.Resample cache lives per-worker.
+    In practice every spliced wav in the corpus shares a single source
+    sample rate (48 kHz from Seamless), so the cache resolves to one
+    Resample object per worker after the first file.
+    """
+
+    def __init__(self, tasks: list[ExtractTask]):
+        self.tasks = tasks
+
+    def __len__(self) -> int:
+        return len(self.tasks)
+
+    def __getitem__(self, idx: int):
+        import torchaudio  # noqa: PLC0415
+
+        task = self.tasks[idx]
+
+        # Differentiate "file not on disk" ("missing", non-fatal at the
+        # run level — causes main() to exit 3) from other load errors
+        # ("failed", exit 2). This restores the semantic the old
+        # extract_one path used to emit before the rewrite.
+        if not os.path.exists(task.audio_path):
+            return (None, None, idx,
+                    f"input wav not on disk: {task.audio_path}",
+                    "missing")
+
+        try:
+            waveform, sr = torchaudio.load(task.audio_path)  # (1, T)
+            if sr != CPC_SAMPLE_RATE:
+                cache = getattr(self, "_resamplers", None)
+                if cache is None:
+                    cache = {}
+                    self._resamplers = cache
+                resampler = cache.get(sr)
+                if resampler is None:
+                    resampler = torchaudio.transforms.Resample(
+                        orig_freq=sr, new_freq=CPC_SAMPLE_RATE
+                    )
+                    cache[sr] = resampler
+                waveform = resampler(waveform)
+            return waveform.squeeze(0), sr, idx, None, None
+        except Exception as e:  # noqa: BLE001
+            return None, None, idx, f"{type(e).__name__}: {e}", "failed"
+
+
+def _collate_batch(items):
+    """Stack successful loads into (B, T); keep failures separate.
+
+    Every spliced wav has identical length by construction (splice_wavs
+    skips partial trailing windows), so `torch.stack` doesn't need
+    padding.
+
+    Defensive length-mismatch handling: if lengths disagree (should not
+    happen given splice_wavs' contract, but might if a spliced wav is
+    corrupt or truncated on disk), we keep whichever length is most
+    common in the batch and DEMOTE the outliers to `failures` with a
+    length-mismatch error. This preserves the majority's features
+    intact, rather than truncating every sample in the batch down to
+    the shortest outlier (which would silently gut the majority's
+    audio).
+
+    Each failure carries its status ("missing", "failed", or now
+    "failed" with a length-mismatch message) so the caller can preserve
+    per-status exit-code semantics.
+
+    Returns (batch_tensor, ok_srs, ok_local_idxs, orig_lengths,
+             failures) where:
+      - ok_srs/ok_local_idxs/orig_lengths cover ONLY the samples that
+        made it into batch_tensor (post-outlier-drop, if any),
+      - failures is list[(local_idx, err_msg, status)].
+    """
     import torch  # noqa: PLC0415
 
-    if not os.path.exists(task.audio_path):
-        return {
-            "task": task, "status": "missing",
-            "message": f"input wav not on disk: {task.audio_path}",
-        }
-
-    try:
-        waveform, orig_sr = _load_and_resample(task.audio_path)
-    except Exception as e:  # noqa: BLE001
-        return {"task": task, "status": "failed",
-                "message": f"audio load failed: {e}"}
-
-    n_samples = waveform.shape[0]
-    duration_s = n_samples / CPC_SAMPLE_RATE
-
-    try:
-        if chunk_samples > 0 and n_samples > chunk_samples:
-            features = _chunked_forward(
-                model, waveform, device, feature_type, chunk_samples)
+    ok_waves, ok_srs, ok_idxs, orig_lengths = [], [], [], []
+    failures = []
+    for wav, sr, idx, err, status in items:
+        if wav is None:
+            failures.append((idx, err, status))
         else:
-            features = _cpc_forward(model, waveform, device, feature_type)
-    except RuntimeError as e:
-        # Most common cause: CUDA OOM on a long file. Tell the user to retry
-        # with --chunk-length-s rather than silently degrading.
-        if device == "cuda":
-            try:
-                torch.cuda.empty_cache()
-            except Exception:  # noqa: BLE001
-                pass
-        is_oom = "out of memory" in str(e).lower()
-        hint = (f" — retry with --chunk-length-s <seconds> "
-                f"(e.g. 60)" if is_oom else "")
-        return {
-            "task": task, "status": "failed",
-            "message": f"CPC forward failed ({type(e).__name__}: {e}){hint}",
-        }
+            ok_waves.append(wav)
+            ok_srs.append(sr)
+            ok_idxs.append(idx)
+            orig_lengths.append(int(wav.shape[0]))
 
-    # NaN / Inf guard. CPC in fp32 rarely produces non-finite values, but
-    # adversarial inputs (zero-energy clips, NaN wavs) can.
-    if not torch.isfinite(features).all():
-        nan_count = int(torch.isnan(features).sum())
-        inf_count = int(torch.isinf(features).sum())
-        return {
-            "task": task, "status": "failed",
-            "message": (f"non-finite features: nan={nan_count:,} "
-                        f"inf={inf_count:,} of {features.numel():,}"),
-        }
+    if not ok_waves:
+        return None, [], [], [], failures
 
-    pooled = _mean_pool(features, pool_factor).numpy().astype(np.float32)
+    length_counts = Counter(orig_lengths)
+    if len(length_counts) == 1:
+        # Happy path — every wav has the same length, as splice_wavs
+        # guarantees. No outliers to drop.
+        batch = torch.stack(ok_waves, dim=0)
+        return batch, ok_srs, ok_idxs, orig_lengths, failures
 
-    try:
-        os.makedirs(os.path.dirname(task.output_path), exist_ok=True)
-        np.save(task.output_path, pooled)
+    # Lengths disagree. Use the modal (most common) length as the
+    # authoritative shape for this batch, and drop everything else
+    # into `failures` rather than truncating batchmates to match a
+    # short outlier.
+    #
+    # Tie-break via explicit sort rather than Counter.most_common:
+    # the language reference doesn't guarantee most_common's ordering
+    # for equal counts, so relying on CPython's implementation
+    # (insertion order) would not be portable. `max` with a key of
+    # (count, length) is deterministic everywhere — primary order
+    # count DESC (most common wins), secondary order length DESC
+    # (prefer the longer value on ties; corruption typically produces
+    # shorter outliers, so trusting the longer length is the safer
+    # default).
+    dominant_length, _count = max(
+        length_counts.items(),
+        key=lambda item: (item[1], item[0]),
+    )
+    kept_waves, kept_srs, kept_idxs, kept_lengths = [], [], [], []
+    for wav, sr, idx, length in zip(ok_waves, ok_srs, ok_idxs, orig_lengths):
+        if length == dominant_length:
+            kept_waves.append(wav)
+            kept_srs.append(sr)
+            kept_idxs.append(idx)
+            kept_lengths.append(length)
+        else:
+            failures.append((
+                idx,
+                (f"length mismatch: {length} samples, batch dominant "
+                 f"length is {dominant_length}; dropped to avoid "
+                 f"truncating batchmates"),
+                "failed",
+            ))
 
-        # Sidecar schema mirrors extract_wavlm_from_manifest.py field-for-field
-        # where meaningful, so downstream consumers can treat WavLM and CPC
-        # features interchangeably (modulo feature_dim). CPC-specific fields
-        # are prefixed with `cpc_` for clarity.
-        sidecar = {
-            "file_id":                  task.file_id,
-            "interaction_id":           task.interaction_id,
-            "participant_id":           task.participant_id,
-            "split":                    task.split,
-            "audio_source":             task.audio_path,
-            "source_sample_rate_hz":    int(orig_sr),
-            "resampled_sample_rate_hz": CPC_SAMPLE_RATE,
-            "duration_seconds":         duration_s,
-            # Model provenance. Populated differently depending on the
-            # load path (torch.hub vs. local checkpoint).
-            "model_family":             "cpc",
-            "model_id":                 (f"local:{checkpoint}" if checkpoint
-                                         else f"{hub_repo}::{hub_entrypoint}"),
-            "cpc_hub_repo":             hub_repo,
-            "cpc_hub_entrypoint":       hub_entrypoint,
-            "cpc_checkpoint":           checkpoint,
-            "cpc_feature_type":         feature_type,   # 'context' (c_t) or 'encoded' (z_t)
-            "cpc_samples_per_frame":    CPC_SAMPLES_PER_FRAME,
-            "raw_feature_rate_hz":      CPC_SAMPLE_RATE // CPC_SAMPLES_PER_FRAME,  # 100
-            "pool_factor":              pool_factor,
-            "feature_rate_hz":          (CPC_SAMPLE_RATE
-                                         / CPC_SAMPLES_PER_FRAME
-                                         / pool_factor),
-            "feature_dim":              int(pooled.shape[1]) if pooled.size else feature_dim,
-            "feature_frames":           int(pooled.shape[0]),
-            "dtype":                    str(pooled.dtype),
-            # Chunking provenance (0 = whole-file forward).
-            "chunk_samples":            chunk_samples,
-            "chunk_length_s":           (chunk_samples / CPC_SAMPLE_RATE
-                                         if chunk_samples else 0.0),
-        }
-        with open(task.sidecar_path, "w") as f:
-            json.dump(sidecar, f, indent=2)
-
-    except Exception as e:  # noqa: BLE001
-        return {"task": task, "status": "failed",
-                "message": f"save failed: {e}"}
-
-    return {
-        "task": task, "status": "ok",
-        "message": f"OK ({pooled.shape[0]:,}×{pooled.shape[1]}, "
-                   f"{duration_s:.1f}s -> {pooled.nbytes:,} bytes)",
-    }
+    # `dominant_length` is drawn from `orig_lengths`, so at least one
+    # sample always matches it — kept_waves is guaranteed non-empty.
+    batch = torch.stack(kept_waves, dim=0)
+    return batch, kept_srs, kept_idxs, kept_lengths, failures
 
 
 # =============================================================================
@@ -1058,7 +1241,8 @@ def already_have(output_path: str, sidecar_path: str) -> bool:
 
     A 0-byte .npy from a crashed prior run is treated as missing so the
     next run re-extracts it. Truncated sidecars (killed mid-write) fail
-    json.load and are also re-run.
+    json.load and are also re-run. See the Start/stop resilience block
+    in the module docstring for the full invariant.
     """
     for p in (output_path, sidecar_path):
         if not os.path.exists(p) or os.path.getsize(p) == 0:
@@ -1071,6 +1255,109 @@ def already_have(output_path: str, sidecar_path: str) -> bool:
     return True
 
 
+def _batched_forward_on_device(batch_tensor, model, device: str, feature_type: str):
+    """Run CPC forward over a stacked (B, T) batch; return (B, T_frames, D)
+    on CPU. Raises RuntimeError on forward failure — caller decides
+    whether to fall back to per-sample retries.
+    """
+    import torch  # noqa: PLC0415
+
+    x = batch_tensor.to(device=device, dtype=torch.float32).unsqueeze(1)
+    # x: (B, 1, T)
+    with torch.inference_mode():
+        out = model(x, None)
+    if isinstance(out, tuple):
+        c_feature = out[0]
+        z_feature = out[1] if len(out) > 1 else out[0]
+    else:
+        c_feature = z_feature = out
+    chosen = c_feature if feature_type == "context" else z_feature
+    return chosen.to(torch.float32).cpu()
+
+
+def _per_sample_fallback_forward(
+    batch_tensor,
+    model,
+    device: str,
+    feature_type: str,
+    batched_error: Exception,
+):
+    """When a batched forward raises, try each row individually so only
+    the genuinely-bad sample(s) get labeled failed.
+
+    Motivation: an OOM or shape error on a B=64 batch otherwise marks
+    every innocent bystander as failed, wasting compute when the cause
+    is isolated to one or two inputs. Running each sample as its own
+    B=1 forward also resolves most OOM-caused batch failures without
+    the user having to rerun with a smaller --batch-size.
+
+    Catches any `Exception` (not just `RuntimeError`) from a single
+    sample's forward and converts it to an error message for that row.
+    This is the whole point of the per-sample path: isolate ANY
+    individual-sample failure so the surviving batchmates still get
+    processed. `RuntimeError` alone would miss the less common
+    `AttributeError` / `TypeError` / `AssertionError` / `ValueError`
+    paths that torch or a third-party model can raise. Note: by
+    catching `Exception` rather than `BaseException`, `KeyboardInterrupt`
+    and `SystemExit` still propagate normally — Ctrl-C still aborts.
+
+    Returns a list of (features_cpu_tensor | None, error_msg | None) —
+    one entry per row of batch_tensor, aligned with its rows.
+    """
+    import torch  # noqa: PLC0415
+
+    batched_is_oom = "out of memory" in str(batched_error).lower()
+    outputs = []
+    for i in range(batch_tensor.shape[0]):
+        single = batch_tensor[i:i + 1].to(
+            device=device, dtype=torch.float32
+        ).unsqueeze(1)
+        # single: (1, 1, T)
+        try:
+            with torch.inference_mode():
+                out = model(single, None)
+            if isinstance(out, tuple):
+                c_feature = out[0]
+                z_feature = out[1] if len(out) > 1 else out[0]
+            else:
+                c_feature = z_feature = out
+            chosen = c_feature if feature_type == "context" else z_feature
+            features = chosen.squeeze(0).to(torch.float32).cpu()
+            outputs.append((features, None))
+        except Exception as e:  # noqa: BLE001 — intentionally broad (see docstring)
+            if device == "cuda":
+                try:
+                    torch.cuda.empty_cache()
+                except Exception:  # noqa: BLE001
+                    pass
+            # `is_oom` is only meaningful for RuntimeError-family
+            # messages; other exception types don't carry the OOM
+            # signature, so the check correctly falls through to the
+            # "deterministic failure" branch for them.
+            is_oom = "out of memory" in str(e).lower()
+            # Distinguish cause in the message: batch-level OOM that
+            # resolves per-sample means the sample is fine; per-sample
+            # OOM means the sample itself is too big or the device is
+            # pathologically low on memory.
+            batch_note = (
+                f" (batched forward failed with: "
+                f"{type(batched_error).__name__}: {batched_error})"
+            )
+            hint = ""
+            if is_oom and batched_is_oom:
+                hint = (" — OOM even at B=1; try a different --device "
+                        "or shrink the spliced window length")
+            elif not is_oom:
+                hint = (" — deterministic failure on this sample; "
+                        "check input and model compatibility")
+            outputs.append((
+                None,
+                f"CPC forward failed on isolated sample "
+                f"({type(e).__name__}: {e}){hint}.{batch_note}",
+            ))
+    return outputs
+
+
 def run_tasks(
     tasks: list[ExtractTask],
     model,
@@ -1078,55 +1365,357 @@ def run_tasks(
     feature_type: str,
     feature_dim: int,
     pool_factor: int,
-    chunk_samples: int,
     hub_repo: str,
     hub_entrypoint: str,
     checkpoint: str | None,
     overwrite: bool,
     dry_run: bool,
+    batch_size: int,
+    num_workers: int,
+    writer_threads: int,
+    progress_every: int,
 ) -> list[dict]:
-    """Sequential single-GPU task runner — same structure as the WavLM script."""
-    results: list[dict] = []
+    """Batched CPC extraction with async I/O.
 
-    if tasks and not dry_run:
-        os.makedirs(os.path.dirname(tasks[0].output_path), exist_ok=True)
+    Pipeline:
+      [DataLoader workers]    load + 48->16 kHz resample on CPU cores
+              ↓
+      [main]                  stack to (B, 1, T), run CPC forward on MPS/CUDA
+                              — on RuntimeError, fall back to B=1 per-sample
+                                so one bad input doesn't fail its batchmates
+              ↓
+      [writer ThreadPool]     NaN guard → pool → write .npy + .json
 
-    for task in tasks:
+    The writer pool decouples disk I/O from the GPU loop: once a batch's
+    forward is done, per-sample saves are submitted and the main thread
+    moves on to the next forward. `writer.shutdown(wait=True)` in the
+    `finally` block drains pending writes on Ctrl-C so in-flight tasks
+    either complete atomically or are re-run on resume. The same
+    `finally` also backfills any result slots that never got populated
+    (e.g. after a mid-loop KeyboardInterrupt, a DataLoader worker crash,
+    or an unhandled exception from the forward path) with a terminal
+    failure entry, so `print_summary` and main()'s exit-code computation
+    never encounter `None`.
+
+    Resilience is preserved end-to-end: _write_outputs writes .npy before
+    .json per task, and already_have() is checked up front to skip any
+    task whose pair already exists. See module docstring.
+    """
+    import numpy as np  # noqa: PLC0415
+    import torch  # noqa: PLC0415
+    from torch.utils.data import DataLoader  # noqa: PLC0415
+
+    n_total = len(tasks)
+    results: list[dict | None] = [None] * n_total
+
+    # Partition up-front into {skipped, dry, todo}. already_have() is
+    # cheap (stat + json.load of a tiny file) and done here rather than
+    # inside the DataLoader workers so the inner loop is all compute.
+    todo_tasks: list[ExtractTask] = []
+    todo_to_global: list[int] = []
+
+    for g_idx, task in enumerate(tasks):
         if not overwrite and already_have(task.output_path, task.sidecar_path):
-            result = {
+            results[g_idx] = {
                 "task": task, "status": "skipped",
                 "message": f"already extracted "
                            f"({os.path.getsize(task.output_path):,} bytes)",
             }
         elif dry_run:
-            result = {"task": task, "status": "dry",
-                      "message": f"DRY: {task.audio_path} -> {task.output_path}"}
+            results[g_idx] = {
+                "task": task, "status": "dry",
+                "message": f"DRY: {task.audio_path} -> {task.output_path}",
+            }
         else:
-            result = extract_one(
-                task=task,
-                model=model,
-                device=device,
-                feature_type=feature_type,
-                feature_dim=feature_dim,
-                pool_factor=pool_factor,
-                chunk_samples=chunk_samples,
-                hub_repo=hub_repo,
-                hub_entrypoint=hub_entrypoint,
-                checkpoint=checkpoint,
-            )
+            todo_to_global.append(g_idx)
+            todo_tasks.append(task)
 
-        print(f"  [{result['status']:<7}] {task.split:<5} "
-              f"{task.file_id}  {result['message']}")
-        results.append(result)
+    n_to_do = len(todo_tasks)
+    if n_to_do == 0:
+        # Nothing to run through the loader — just print and return.
+        _print_results(results, verbose=True)
+        return results  # type: ignore[return-value]
 
-    return results
+    print(f"  dispatching {n_to_do:,} new tasks "
+          f"(already-done: {n_total - n_to_do:,})")
+
+    ds = _SplicedWavDataset(todo_tasks)
+    loader = DataLoader(
+        ds,
+        batch_size=batch_size,
+        num_workers=num_workers,
+        collate_fn=_collate_batch,
+        pin_memory=False,   # irrelevant on MPS (unified memory) and CPU
+        shuffle=False,
+        persistent_workers=(num_workers > 0),
+    )
+
+    writer = concurrent.futures.ThreadPoolExecutor(
+        max_workers=writer_threads,
+        thread_name_prefix="cpc-write",
+    )
+    # pending holds (future, g_idx, task, pooled, duration_s) — we need
+    # the pooled array reference alive until the future completes
+    # because np.save reads from it asynchronously.
+    pending: list[tuple] = []
+
+    done = 0
+    last_progress = 0
+    start_time = time.time()
+
+    # Track fallbacks from batched → per-sample forward. Printed per-
+    # batch up to a cap (to avoid spamming logs if fallback is
+    # persistent), plus a total in the end-of-run summary so silent
+    # throughput drops don't go unnoticed.
+    n_fallback_batches = 0
+    FALLBACK_LOG_CAP = 5
+
+    def _reap_completed(force: bool) -> None:
+        """Move completed futures into results[]. Free pooled arrays."""
+        nonlocal pending
+        still = []
+        for fut, g_idx, task, pooled, duration_s in pending:
+            if fut.done() or force:
+                try:
+                    fut.result()
+                    results[g_idx] = {
+                        "task": task, "status": "ok",
+                        "message": f"OK ({pooled.shape[0]:,}×{pooled.shape[1]}, "
+                                   f"{duration_s:.1f}s -> {pooled.nbytes:,} bytes)",
+                    }
+                except Exception as e:  # noqa: BLE001
+                    results[g_idx] = {
+                        "task": task, "status": "failed",
+                        "message": f"save failed: {e}",
+                    }
+            else:
+                still.append((fut, g_idx, task, pooled, duration_s))
+        pending = still
+
+    def _queue_sample_write(
+        features,
+        task: ExtractTask,
+        g_idx: int,
+        orig_length: int,
+        orig_sr: int,
+    ) -> None:
+        """NaN guard → pool → build sidecar → submit to writer pool.
+
+        If features contain NaN/Inf, fills results[g_idx] with a failed
+        entry and returns without submitting. Otherwise submits the
+        write and appends to `pending` for later reaping.
+
+        `orig_length` is the waveform's TRUE sample count before any
+        collate-side length truncation, so the sidecar's
+        `duration_seconds` reflects the actual input duration even when
+        the defensive truncation path fired.
+        """
+        nonlocal done
+        if not torch.isfinite(features).all():
+            nan_count = int(torch.isnan(features).sum())
+            inf_count = int(torch.isinf(features).sum())
+            results[g_idx] = {
+                "task": task, "status": "failed",
+                "message": (f"non-finite features: nan={nan_count:,} "
+                            f"inf={inf_count:,} of {features.numel():,}"),
+            }
+            done += 1
+            return
+
+        pooled = _mean_pool(features, pool_factor).numpy().astype(np.float32)
+        duration_s = orig_length / CPC_SAMPLE_RATE
+        sidecar = _build_sidecar(
+            task=task,
+            pooled=pooled,
+            orig_sr=orig_sr,
+            duration_s=duration_s,
+            feature_type=feature_type,
+            feature_dim=feature_dim,
+            pool_factor=pool_factor,
+            hub_repo=hub_repo,
+            hub_entrypoint=hub_entrypoint,
+            checkpoint=checkpoint,
+        )
+        fut = writer.submit(
+            _write_outputs,
+            task.output_path, task.sidecar_path, pooled, sidecar,
+        )
+        pending.append((fut, g_idx, task, pooled, duration_s))
+        done += 1
+
+    try:
+        for batch in loader:
+            (batch_tensor, ok_srs, ok_local_idxs,
+             orig_lengths, failures) = batch
+
+            # 1) Record load-time failures (DataLoader-worker errors).
+            #    Preserve the "missing" vs "failed" distinction so
+            #    main() can return exit code 3 for files-not-on-disk.
+            for local_idx, err_msg, status in failures:
+                g_idx = todo_to_global[local_idx]
+                results[g_idx] = {
+                    "task": todo_tasks[local_idx],
+                    "status": status,
+                    "message": err_msg,
+                }
+                done += 1
+
+            if batch_tensor is None:
+                continue
+
+            # 2) Try the batched forward. If it raises, fall back to
+            #    per-sample forwards so an OOM or bad single input
+            #    doesn't mark all 64 batchmates failed.
+            batched_chosen_cpu = None
+            per_sample_outputs = None
+            try:
+                batched_chosen_cpu = _batched_forward_on_device(
+                    batch_tensor, model, device, feature_type,
+                )
+            except RuntimeError as batched_error:
+                if device == "cuda":
+                    try:
+                        torch.cuda.empty_cache()
+                    except Exception:  # noqa: BLE001
+                        pass
+                n_fallback_batches += 1
+                # Surface the first few fallbacks so the user isn't
+                # blindsided by a throughput drop. Cap the per-batch
+                # noise; the total count is printed in the summary.
+                if n_fallback_batches <= FALLBACK_LOG_CAP:
+                    is_oom = "out of memory" in str(batched_error).lower()
+                    oom_hint = (" — reduce --batch-size if this is OOM"
+                                if is_oom else "")
+                    print(
+                        f"  [WARN] batched forward failed on batch "
+                        f"#{n_fallback_batches} "
+                        f"({type(batched_error).__name__}: {batched_error}); "
+                        f"falling back to per-sample retry{oom_hint}",
+                        file=sys.stderr, flush=True,
+                    )
+                    if n_fallback_batches == FALLBACK_LOG_CAP:
+                        print(
+                            f"  [WARN] further batched-forward fallbacks "
+                            f"will be suppressed; total reported in summary.",
+                            file=sys.stderr, flush=True,
+                        )
+                per_sample_outputs = _per_sample_fallback_forward(
+                    batch_tensor, model, device, feature_type, batched_error,
+                )
+
+            # 3) Per-sample: pick features from whichever forward
+            #    succeeded, then NaN guard + pool + submit write.
+            for i, local_idx in enumerate(ok_local_idxs):
+                task = todo_tasks[local_idx]
+                g_idx = todo_to_global[local_idx]
+
+                if batched_chosen_cpu is not None:
+                    features = batched_chosen_cpu[i]
+                else:
+                    # per_sample_outputs is populated whenever
+                    # batched_chosen_cpu is None.
+                    features, err_msg = per_sample_outputs[i]  # type: ignore[index]
+                    if err_msg is not None:
+                        results[g_idx] = {
+                            "task": task, "status": "failed",
+                            "message": err_msg,
+                        }
+                        done += 1
+                        continue
+
+                _queue_sample_write(
+                    features,
+                    task,
+                    g_idx,
+                    orig_lengths[i],
+                    ok_srs[i],
+                )
+
+            # 4) Opportunistically reap completed writes so pooled-array
+            #    references can be freed.
+            _reap_completed(force=False)
+
+            # 5) Progress ping.
+            if progress_every > 0 and done - last_progress >= progress_every:
+                elapsed = time.time() - start_time
+                rate = done / elapsed if elapsed > 0 else 0.0
+                eta_s = (n_to_do - done) / rate if rate > 0 else 0.0
+                print(f"  progress: {done:,} / {n_to_do:,} "
+                      f"({100.0 * done / n_to_do:5.1f}%)  "
+                      f"rate: {rate:6.1f}/s  "
+                      f"ETA: {eta_s / 60:5.1f} min")
+                last_progress = done
+    finally:
+        # Drain whatever remains and shut down the writer pool. In
+        # `finally` so Ctrl-C during the loop still flushes in-flight
+        # writes — each completed (npy, json) pair is atomic per the
+        # resume invariant, so we preserve as much progress as possible
+        # before exiting.
+        _reap_completed(force=True)
+        writer.shutdown(wait=True)
+
+        # Backfill any result slots that never got populated. This can
+        # happen if a KeyboardInterrupt propagates out of the for-loop
+        # body, a DataLoader worker dies, or any other exception
+        # escapes. Without this, `print_summary` and main()'s
+        # n_failed/n_missing computation would TypeError on a None
+        # subscript. "failed" is the right label: these tasks have
+        # no .npy/.json pair on disk, so the resume path on the next
+        # run will see them as not-yet-done and retry.
+        for g_idx in range(n_total):
+            if results[g_idx] is None:
+                results[g_idx] = {
+                    "task": tasks[g_idx], "status": "failed",
+                    "message": ("task not processed before run terminated "
+                                "(Ctrl-C or loader error); rerun to retry"),
+                }
+
+    # Surface the total number of batches that fell back to per-sample
+    # forward. A non-zero count means throughput was (at best) ~B× slower
+    # for those batches; the user should consider shrinking --batch-size
+    # on the next run.
+    if n_fallback_batches > 0:
+        print(
+            f"\n  [NOTE] {n_fallback_batches:,} batch(es) fell back to "
+            f"per-sample forward after a batched-forward failure. "
+            f"Consider --batch-size smaller next run (the current "
+            f"batched-mode throughput claim does not apply to the "
+            f"fallback path).",
+            file=sys.stderr,
+        )
+
+    # Per-task log. Verbose for small runs (debug), failures-only for
+    # large runs (because 500k lines of OK is useless and slow).
+    _print_results(results, verbose=(n_total < 10_000))
+    return results  # type: ignore[return-value]
 
 
-def print_summary(results: list[dict], elapsed_s: float, dry_run: bool) -> None:
-    """Counts by status + total bytes written."""
+def _print_results(results: list, verbose: bool) -> None:
+    for r in results:
+        if r is None:
+            continue
+        if verbose or r["status"] != "ok":
+            print(f"  [{r['status']:<7}] {r['task'].orig_stem}/"
+                  f"{Path(r['task'].audio_path).name}  {r['message']}")
+
+
+def print_summary(results: list, elapsed_s: float, dry_run: bool) -> None:
+    """Counts by status + total bytes written.
+
+    Defensive against `None` entries in `results`: run_tasks's finally
+    block backfills any un-populated slots with a "failed" entry, but
+    we still tolerate None here so an unexpected code path that bypasses
+    that backfill can't crash the summary (and hide whatever the actual
+    error was).
+    """
     counts: dict[str, int] = {}
     bytes_written = 0
     for r in results:
+        if r is None:
+            # Shouldn't happen — run_tasks fills Nones in `finally` — but
+            # if it somehow does, treat as failed and keep going.
+            counts["failed"] = counts.get("failed", 0) + 1
+            continue
         counts[r["status"]] = counts.get(r["status"], 0) + 1
         if r["status"] == "ok":
             try:
@@ -1162,35 +1751,35 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
             "Extract Rivière-2020 CPC features (256-dim @ 100 Hz native) "
-            "from every participant wav in a turn-taking manifest. "
-            "Saves native 100 Hz by default; pass --mean-pool (or "
-            "--pool-factor N) to pool during extraction, or leave default "
-            "and invoke mean_pool_file() post-hoc to produce a pooled "
-            "corpus. Mirrors extract_wavlm_from_manifest.py's CLI and "
-            "sidecar schema so the two feature streams are drop-in-"
-            "swappable downstream."
+            "from every spliced wav produced by splice_wavs.py using "
+            "batched inference. Saves native 100 Hz by default; pass "
+            "--mean-pool (or --pool-factor N) to pool during extraction, "
+            "or leave default and invoke mean_pool_file() post-hoc. "
+            "Mirrors the input tree under --output-dir: <orig_stem>/"
+            "<spliced_stem>.npy + <spliced_stem>.json."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )
 
-    # I/O paths — identical surface to the WavLM script so `--manifest
-    # ../manifests/poc_manifest.csv` works the same way on both.
+    # I/O paths. No defaults on purpose — see the note in the Defaults
+    # block above.
     parser.add_argument(
-        "--manifest", default=DEFAULT_MANIFEST_PATH,
-        help="Path to the manifest CSV. Default: %(default)s",
-    )
-    parser.add_argument(
-        "--audio-dir", default=DEFAULT_AUDIO_DIR,
-        help="Directory containing input .wav files. Default: %(default)s",
+        "--spliced-dir", required=True,
+        help="REQUIRED. Parent directory containing splice_wavs.py output. "
+             "Expected layout: <spliced-dir>/<orig_stem>/*.wav where each "
+             "subdir is named after the original wav stem and holds one .wav "
+             "per window. Must already exist.",
     )
     parser.add_argument(
         "--output-dir", required=True,
         help="REQUIRED. Directory to save .npy / .json feature files. "
-             "Must already exist on disk (the script will not auto-create it "
-             "— this is a footgun guard against typos that would otherwise "
-             "silently land features in an unexpected location). Create it "
-             "explicitly first: `mkdir -p subset/cpc_100hz` etc.",
+             "Mirrors the --spliced-dir tree exactly: <output-dir>/"
+             "<orig_stem>/<spliced_stem>.npy + .json. Must already exist on "
+             "disk (the script will not auto-create it — this is a footgun "
+             "guard against typos that would otherwise silently land features "
+             "in an unexpected location). Create it explicitly first: "
+             "`mkdir -p subset/cpc_100hz` etc.",
     )
 
     # Model loading
@@ -1231,9 +1820,6 @@ def main() -> int:
     # `--pool-factor N` remains as an advanced escape hatch for custom rates
     # (e.g. --pool-factor 2 for 50 Hz VAP-parity). They are mutually
     # exclusive: pick one intent, not both.
-    # Derive the --mean-pool shortcut factor from the rate constants so the
-    # help text stays in sync with any future change to CPC_SAMPLES_PER_FRAME
-    # or DEFAULT_TARGET_RATE_HZ (rather than hard-coding 100 / 10 = 10 here).
     _native_rate = CPC_SAMPLE_RATE // CPC_SAMPLES_PER_FRAME                  # 100
     _mean_pool_factor = int(round(_native_rate / DEFAULT_TARGET_RATE_HZ))    # 10
     pool_group = parser.add_mutually_exclusive_group()
@@ -1252,27 +1838,44 @@ def main() -> int:
              "Use 10 to produce 10 Hz (same as --mean-pool); use 2 for the "
              "50 Hz rate VAP uses internally.",
     )
-    parser.add_argument(
-        "--chunk-length-s", type=float, default=DEFAULT_CHUNK_LENGTH_S,
-        help="If > 0, split long waveforms into chunks of this many seconds "
-             "before the forward pass (concatenating outputs). Default 0 = "
-             "process whole file in one pass. Raise to 30-60 if a file OOMs.",
-    )
 
-    # Runtime
+    # Runtime — batching + I/O
+    parser.add_argument(
+        "--batch-size", type=int, default=DEFAULT_BATCH_SIZE,
+        help="Number of spliced wavs to run through CPC in one forward "
+             "pass. Default %(default)s (tuned for M5 Max 32-core GPU). "
+             "Drop to 1 for sequential/debug behavior; raise on larger "
+             "CUDA GPUs. Memory scales linearly with B.",
+    )
+    parser.add_argument(
+        "--num-workers", type=int, default=DEFAULT_NUM_WORKERS,
+        help="DataLoader worker processes for audio load + 48->16 kHz "
+             "resample. Default %(default)s. Set to 0 to run everything "
+             "in the main process (useful for debugging, slower in "
+             "practice).",
+    )
+    parser.add_argument(
+        "--writer-threads", type=int, default=DEFAULT_WRITER_THREADS,
+        help="Threads in the .npy + .json background writer pool. "
+             "Default %(default)s. Disk I/O on internal SSD rarely "
+             "bottlenecks so this doesn't need tuning unless you're "
+             "writing to a slow/networked drive.",
+    )
+    parser.add_argument(
+        "--progress-every", type=int, default=DEFAULT_PROGRESS_EVERY,
+        help="Print a progress/rate/ETA line every N tasks. Default "
+             "%(default)s. Set to 0 to silence progress lines.",
+    )
     parser.add_argument(
         "--device", default="auto",
         help="Torch device. 'auto' picks cuda > mps > cpu. Default: auto.",
     )
 
-    # Selection / dry-run plumbing — identical surface to the WavLM script.
-    parser.add_argument(
-        "--filter-split", choices=["train", "val", "test"], default=None,
-        help="If set, only process rows whose manifest `split` column matches.",
-    )
+    # Selection / dry-run plumbing.
     parser.add_argument(
         "--overwrite", action="store_true",
-        help="Re-extract files that already have .npy + .json on disk.",
+        help="Re-extract files that already have .npy + .json on disk. "
+             "Default: skip-if-present so a killed run resumes cleanly.",
     )
     parser.add_argument(
         "--dry-run", action="store_true",
@@ -1281,11 +1884,16 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    # --- Validate --output-dir FIRST, before any other work. -----------
-    # This has to fail loudly and early: if the path is a typo or points
-    # somewhere unintended, we don't want to have already loaded the
-    # manifest, resolved a CUDA device, or — worst — downloaded the CPC
-    # checkpoint from torch.hub. Do the cheap filesystem check first.
+    # --- Validate --spliced-dir and --output-dir FIRST, before any other work.
+    # These have to fail loudly and early: if either path is a typo or
+    # points somewhere unintended, we don't want to have already resolved
+    # a CUDA device or — worst — downloaded the CPC checkpoint from
+    # torch.hub. Do the cheap filesystem checks first.
+    if not os.path.isdir(args.spliced_dir):
+        print(f"ERROR: --spliced-dir is not an existing directory: "
+              f"{args.spliced_dir}", file=sys.stderr)
+        return 1
+
     if not os.path.isdir(args.output_dir):
         print(f"ERROR: --output-dir is not an existing directory: "
               f"{args.output_dir}\n"
@@ -1296,6 +1904,26 @@ def main() -> int:
               f"       and re-run.", file=sys.stderr)
         return 1
 
+    if args.batch_size < 1:
+        print(f"ERROR: --batch-size must be >= 1; got {args.batch_size}",
+              file=sys.stderr)
+        return 1
+    if args.num_workers < 0:
+        print(f"ERROR: --num-workers must be >= 0; got {args.num_workers}",
+              file=sys.stderr)
+        return 1
+    # Pool factor must be a positive integer. 0 or negative would
+    # crash _mean_pool (ZeroDivisionError or reshape-with-negative-dim)
+    # mid-run after the CPC model is already loaded and a real batch
+    # is in flight; catch it up front so the user sees a clean error
+    # and loses no work. Note: --mean-pool overrides --pool-factor via
+    # the mutually-exclusive group, so we don't need to re-validate
+    # the --mean-pool branch's derived value (which is always 10).
+    if args.pool_factor < 1:
+        print(f"ERROR: --pool-factor must be >= 1; got {args.pool_factor}",
+              file=sys.stderr)
+        return 1
+
     # Enforce that --cpc-repo and --checkpoint are paired when used.
     if bool(args.cpc_repo) != bool(args.checkpoint):
         print("ERROR: --cpc-repo and --checkpoint must be set together "
@@ -1303,36 +1931,15 @@ def main() -> int:
               file=sys.stderr)
         return 1
 
-    # --- Load manifest --------------------------------------------------
-    print(f"Loading manifest:  {args.manifest}")
-    try:
-        rows = load_manifest(args.manifest)
-    except (FileNotFoundError, ValueError) as e:
-        print(f"ERROR: {e}", file=sys.stderr)
-        return 1
-    print(f"  {len(rows):,} interactions in manifest "
-          f"({2 * len(rows):,} participant wavs)")
+    # --- Enumerate tasks -----------------------------------------------
+    print(f"Scanning spliced dir: {args.spliced_dir}")
+    tasks = build_tasks(args.spliced_dir, args.output_dir)
+    n_subdirs = len({t.orig_stem for t in tasks})
+    print(f"  {len(tasks):,} spliced wavs across {n_subdirs:,} original wavs")
 
-    if not os.path.isdir(args.audio_dir):
-        print(f"ERROR: audio directory not found: {args.audio_dir}\n"
-              f"       Run download_audio_from_manifest.py first, or "
-              f"pass --audio-dir.", file=sys.stderr)
-        return 1
-
-    tasks = build_tasks(
-        rows=rows,
-        audio_dir=args.audio_dir,
-        output_dir=args.output_dir,
-        filter_split=args.filter_split,
-    )
-    if args.filter_split:
-        print(f"  Filtered to split='{args.filter_split}': "
-              f"{len(tasks):,} tasks")
     if not tasks:
         print("Nothing to extract. Exiting.")
         return 0
-
-    chunk_samples = int(args.chunk_length_s * CPC_SAMPLE_RATE)
 
     # Resolve effective pool factor from the mutually-exclusive pool group.
     # --mean-pool is a convenience shortcut that overrides pool_factor to
@@ -1348,14 +1955,33 @@ def main() -> int:
     native_rate = CPC_SAMPLE_RATE // CPC_SAMPLES_PER_FRAME          # 100
     out_rate = native_rate / effective_pool_factor
 
-    print(f"Audio directory:   {args.audio_dir}")
     print(f"Output directory:  {args.output_dir}")
     print(f"Extraction config: feature_type={args.feature_type}  "
           f"pool_factor={effective_pool_factor} "
           f"({native_rate} Hz -> {out_rate:g} Hz)  "
-          f"chunk={'whole-file' if chunk_samples == 0 else f'{args.chunk_length_s}s'}"
+          f"batch={args.batch_size}  workers={args.num_workers}  "
+          f"writers={args.writer_threads}"
           f"{'  [DRY-RUN]' if args.dry_run else ''}"
           f"{'  [OVERWRITE]' if args.overwrite else ''}")
+
+    # --- Verify any existing sidecars in --output-dir were written with
+    # the same model identity + extraction parameters as this run.
+    # Mixing them would silently produce a heterogeneous corpus
+    # (already_have would skip prior-params files despite the
+    # mismatch). --overwrite bypasses this check since the user has
+    # explicitly opted into discarding the prior extraction.
+    if not args.overwrite:
+        compat_err = check_output_dir_params_compat(
+            output_dir=args.output_dir,
+            feature_type=args.feature_type,
+            pool_factor=effective_pool_factor,
+            hub_repo=args.hub_repo,
+            hub_entrypoint=args.hub_entrypoint,
+            checkpoint=args.checkpoint,
+        )
+        if compat_err:
+            print(f"ERROR: {compat_err}", file=sys.stderr)
+            return 1
 
     # --- Load model (skipped on dry-run) --------------------------------
     model = None
@@ -1385,19 +2011,27 @@ def main() -> int:
         feature_type=args.feature_type,
         feature_dim=feature_dim,
         pool_factor=effective_pool_factor,
-        chunk_samples=chunk_samples,
         hub_repo=args.hub_repo,
         hub_entrypoint=args.hub_entrypoint,
         checkpoint=args.checkpoint,
         overwrite=args.overwrite,
         dry_run=args.dry_run,
+        batch_size=args.batch_size,
+        num_workers=args.num_workers,
+        writer_threads=args.writer_threads,
+        progress_every=args.progress_every,
     )
     elapsed = time.time() - start
 
     print_summary(results, elapsed, args.dry_run)
 
-    n_failed = sum(1 for r in results if r["status"] == "failed")
-    n_missing = sum(1 for r in results if r["status"] == "missing")
+    # Defensive against a None slipping through (shouldn't, since
+    # run_tasks backfills in `finally`, but belt-and-suspenders). Treat
+    # an unpopulated slot as failed so exit code reflects the problem.
+    n_failed = sum(1 for r in results
+                   if r is None or r["status"] == "failed")
+    n_missing = sum(1 for r in results
+                    if r is not None and r["status"] == "missing")
     if n_failed:
         return 2
     if n_missing:
