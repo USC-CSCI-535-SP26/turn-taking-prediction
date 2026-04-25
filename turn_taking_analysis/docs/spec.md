@@ -1,25 +1,27 @@
-# CSCI-535 Turn-Taking POC — Project Spec
+# CSCI-535 Turn-Taking — Project Spec
 
-**Updated:** 2026-04-21 (rev. 2 — encoder confirmed WavLM-base+, 3-class schema, splits-from-manifest)
+**Updated:** 2026-04-24 (rev. 3 — encoder switched to CPC, 3-class schema, splits-from-manifest)
 **Student:** Sika (USC, CSCI-535 Spring 2026)
 **Project root:** `/Users/rasikaramanan/Documents/usc/by_semester/sp26/csci535/project/seamless/csci535-project/turn_taking_analysis/`
-**Parent project (read & reuse):** `../` (the Cowork `seamless/csci535-project/` directory)
-**Scope:** Course POC, not a publication. Goal is a defensible horizon-curve result in a few hours of remaining work, not weeks. Prefer minimum-viable changes to existing code over clean rebuilds.
+**Parent directory:** `../csci535-project/` — holds artifacts from an older project direction. The turn-taking pipeline has a small legacy-coupling dependency on a handful of parent-level scripts (consumed by `build_manifest.py`); see §10. Most other parent-level files are out of scope.
+**Scope:** Course-paper-scale dyadic multimodal fusion for end-of-turn detection. Prefer minimum-viable changes to existing code over clean rebuilds.
 
 ---
 
 ## 1. Research question
 
-**Does adding OpenFace-derived facial behavior to a WavLM-base+ audio encoder measurably extend the prediction horizon of end-of-turn detection in dyadic conversation, relative to an audio-only baseline?**
+**Does adding OpenFace-derived facial behavior to a CPC audio encoder measurably extend the prediction horizon of end-of-turn detection in dyadic conversation, relative to an audio-only baseline?**
 
-> **Audio encoder note.** The POC uses **WavLM-base+** (`microsoft/wavlm-base-plus`, penultimate hidden layer index −2, 768-dim, mean-pooled ×5 → 10 Hz to match OpenFace). This is the lit-review-recommended encoder — see Item 7 / recommendation M1 in `docs/lit_review.md`: WavLM-base+ leads SUPERB paralinguistic tasks and incorporates conversational noise in pretraining, addressing HuBERT-base's LibriSpeech-read-speech mismatch. MM-VAP uses CPC, so our WavLM choice is closer in spirit to the Hisada et al. 2024 / SUPERB line than a direct deviation from MM-VAP. The lit review text still writes "HuBERT" in places because HuBERT is the genre-dominant 2022–26 encoder we're positioning against; WavLM and HuBERT are architecturally the same family (transformer SSL audio encoder, same 768 dim at base, same 50 Hz frame rate), so `multimodal_fusion_for_turns.ipynb`'s feature-shape constants (`FEAT_A = 768`, `MAX_LEN_A` unchanged) transfer with zero edits. Features are already extracted at `subset/wavlm/*.npy` (48 files) by `scripts/extract_wavlm_from_manifest.py`.
+> **Audio encoder note.** The project uses **CPC** (Contrastive Predictive Coding; Rivière et al. 2020, causal-RNN aggregator output, **256-dim @ 100 Hz native**; pretrained `60k_epoch4-d0f474de.pt` via `facebookresearch/CPC_audio`). This is the same encoder MM-VAP (Russell & Harte, ACL Findings 2025) uses, so it positions the audio side of this work directly in the MM-VAP lineage rather than against it. CPC's strict causality is load-bearing for prediction-horizon tasks: the feature at frame t is a function of audio only up to t, so per-window features cannot leak signal from inside the forward horizon `[t, t + τ]` (a property bidirectional encoders like WavLM, HuBERT, and wav2vec 2.0 do not have). To enforce that bound exactly, audio is sliced into uniform 2-s windows by `scripts/splice_wavs.py` (writing `subset/audio_sliced/<orig_stem>/<spliced_stem>.wav`), then CPC is run independently per window by `scripts/extract_cpc_from_manifest.py` (writing `subset/cpc/<orig_stem>/<spliced_stem>.npy`, shape `(200, 256)` float32 per 2-s window, plus a sibling `.json` sidecar with full provenance). For early-fusion alignment with OpenFace's 30 fps stream, CPC features are pooled post-hoc to 10 Hz via the `mean_pool_file` helper (factor 10 → 20 frames per 2-s window), giving `FEAT_A = 256` and `MAX_LEN_A = 20` after pooling. An earlier rev of this spec specified WavLM-base+; that decision was reverted in favor of CPC's strict causality + direct MM-VAP lineage. The legacy `extract_wavlm_from_manifest.py` is retained on disk for reference but is no longer the active encoder pipeline.
+
+> **Methodological framing.** The 4-way fusion taxonomy from the CSCI-535 practicum (unimodal, late, early, neural-concat) is reinterpreted dyadically: **Participant A and Participant B are the two channels to fuse, not two modalities within one person.** Each participant's feature stack — currently CPC (audio) + OpenFace (visual face), with SMPL-H body pose as a deferred candidate third modality (fetcher already staged at `scripts/extract_poc_smplh.py`) — is itself a pre-fused multimodal bundle; the architectural comparison happens at the cross-person integration step. The taxonomy spans increasing cross-person entanglement (unimodal → late → early → neural-concat), and supports independent per-modality and per-participant ablations: drop a modality entirely, or include a modality for only one of the two participants (e.g., audio-from-A + face-from-B). Concrete experiment grid in §11.7.
 
 - **Primary metric:** per-class F1 vs. prediction-horizon τ (a *curve*, not a single point), over τ ∈ {100, 200, 400, 500, 800, 1600} ms. 500 ms is an anchored commensurability point with MM-VAP's single-τ hold/shift accuracy.
 - **Label schema (3 trained classes + 3 exclusion-label classes):**
   - Trained on: **HOLD** (0), **YIELD** (1), **BACKCHANNEL** (2).
   - Excluded from training but *labeled* for analysis: **INTERRUPT** (3), **FAILED** (4), **LAPSE** (5). All six classes live in the same per-τ `labels_tau_XXXX.json`; the DataLoader filters to `{0, 1, 2}`. Full operational definitions in §11.
   - **Framing:** stride-based sampling, VAP-style. At each sample time `t`, perspective participant A is the current floor holder; input features are `[t − 2.0 s, t]`; labels are functions of the forward horizon `[t, t + τ]`. Input is τ-invariant; only labels vary with τ.
-- **Required control:** permuted-dyad baseline (participant A's audio paired with a mismatched participant's video). Without this the POC cannot distinguish a monadic "face predicts own turn-end" effect from a genuinely dyadic one. See §8.
+- **Required control:** permuted-dyad baseline (participant A's audio paired with a mismatched participant's video). Without this the experiment cannot distinguish a monadic "face predicts own turn-end" effect from a genuinely dyadic one. See §8.
 
 The full lit review (7 items, ~40 citations) is at `docs/lit_review.md`. One-paragraph positioning: this replicates the *direction* of MM-VAP (Russell & Harte, ACL Findings 2025) on a **face-to-face** corpus (Seamless, not videoconferencing) with a **permuted-dyad control** MM-VAP does not run, and reports horizon as a **τ-swept curve** instead of silence-duration-stratified point accuracy.
 
@@ -27,12 +29,12 @@ The full lit review (7 items, ~40 citations) is at `docs/lit_review.md`. One-par
 
 ## 2. Dataset
 
-- **Corpus:** Meta Seamless Interaction. Referred to as **"the paper"** throughout the project: `/Users/rasikaramanan/Documents/usc/by_semester/sp26/csci535/project/seamless/seamless_paper.pdf` (72 pp). Not the arXiv version.
-- **POC subset:** 48 per-participant media files from 24 dyads (2 participants each), ~168 video-minutes total, ~6.6 GB of video.
+- **Corpus:** Meta Seamless Interaction (Meta FAIR 2025). Referred to as **"the paper"** throughout the spec — the 72-pp release version, not the arXiv abridgement. The PDF is gitignored / sits outside the repo; obtain from Meta's release page when needed.
+- **Active scope:** the dyads listed in `manifests/poc_manifest.csv` (early-iteration subset). The full target corpus is `manifests/manifest.csv` (465 interactions).
 - **Already staged locally:**
   - `turn_taking_analysis/subset/video/*.mp4` — 48 per-participant videos.
   - `turn_taking_analysis/subset/audio/*.wav` — 48 per-participant audio files.
-  - `turn_taking_analysis/manifests/manifest.csv` — the real project manifest (467 interactions), built by `scripts/build_manifest.py` from the historical POC sample (`poc_manifest.csv`, produced by `build_poc_manifest.py`) plus `both_annotated_interactions/` and `single_annotated_interactions/`. Consumers (downloaders, label builder, notebook) read `manifest.csv` only.
+  - `turn_taking_analysis/manifests/manifest.csv` — the full-project manifest (465 interactions), built by `scripts/build_manifest.py` from `poc_manifest.csv` (produced by `build_poc_manifest.py`) plus `both_annotated_interactions/` and `single_annotated_interactions/`. Consumers (downloaders, label builder, notebook) read `manifest.csv` only.
 - **Seamless asset conventions (important):**
   - **Bboxes universal** — Seamless provides per-participant bboxes; skip face detection. Videos in `subset/video/` are already per-participant (one face each), so OpenFace `-f` single-face tracking is the right call.
   - **`has_imitator_movement`** is a per-participant **data-availability flag**, NOT a mimicry label.
@@ -44,13 +46,14 @@ The full lit review (7 items, ~40 citations) is at `docs/lit_review.md`. One-par
 
 ```
 per-participant video (.mp4)  ──→ OpenFace FeatureExtraction  ──→ 48-col CSV / video   (30 fps)
-per-participant audio (.wav)  ──→ WavLM-base+ encoder         ──→ ~10 Hz tokens        (×5 pool over 50 Hz)
+per-participant audio (.wav)  ──→ splice_wavs.py (2-s windows) ──→ CPC encoder ──→ 256-dim @ 100 Hz native
+                                                                                   (post-hoc ×10 pool → 10 Hz for OpenFace alignment)
                                                                        │
 Seamless VAD + WhisperX ──→ generate_timestamps_by_turn.py ──→ per-turn spans
                                                                        │
                               per-window 3-class labels (HOLD/YIELD/BC); overlap-heavy windows excluded
                                                                        │
-OpenFace windows + WavLM windows + labels  ──→  multimodal_fusion_for_turns.ipynb
+OpenFace windows + CPC windows + labels  ──→  multimodal_fusion_for_turns.ipynb
                                                  (GRU unimodal × 2, EarlyFusion, Late × 2, NeuralConcat)
                                                                        │
                                        per-class F1 @ τ ∈ {100, 200, 400, 800, 1600} ms
@@ -89,16 +92,19 @@ The exact working Colab cell is reproduced in Appendix B.
   - `{file_id}.json` — sidecar with `n_frames`, `n_frames_tracker_success`, `tracker_success_fraction`, `openface_cmd`, `runtime_seconds`.
 - **Threshold:** `tracker_success_fraction < 0.85` → flag as `LOW_TRACKING` per handoff §5 (per-file flag in the final writeup).
 - **Resume/skip** added: if CSV + JSON already exist for a `file_id`, the worker skips and returns a cached sidecar result.
-- **Output location:** on Google Drive at `${OUTPUT_DIR}` (configured in the Colab notebook's Cell 1). 15/48 currently present locally at `subset/openface/` — need to pull the remaining 33 from Drive. **TODO: complete download to `subset/openface/` (note: flat directory at `subset/openface/`, NOT `data/openface_features/` — the spec §10 layout was drafted before the local path was chosen; the WavLM sibling at `subset/wavlm/` sets the convention).**
+- **Output location:** on Google Drive at `${OUTPUT_DIR}` (configured in the Colab notebook's Cell 1). 15/48 currently present locally at `subset/openface/` — need to pull the remaining 33 from Drive. **TODO: complete download to `subset/openface/` (note: flat directory at `subset/openface/`, NOT `data/openface_features/` — the spec §10 layout was drafted before the local path was chosen; the existing flat sibling dirs (`subset/audio/`, `subset/vad/`, etc.) set the convention).**
 
-### 4.3 WavLM-base+ audio feature extraction — DONE
+### 4.3 CPC audio feature extraction — DONE
 
-Script: `scripts/extract_wavlm_from_manifest.py` (HuggingFace `microsoft/wavlm-base-plus`, hidden layer −2 = penultimate transformer layer, mean-pool factor 5 → 10 Hz, fp16 on CUDA).
+Two-stage pipeline:
 
-- All 48 `.npy` + 48 `.json` sidecars present at `subset/wavlm/`.
-- Feature shape: `(T_10hz, 768)` float32 per participant.
-- Sidecars carry source sample-rate / resampled rate / layer index / pool factor / feature-frame count for reproducibility.
-- Rationale for WavLM over HuBERT/Wav2Vec2: lit review Item 7 / M1 (SUPERB paralinguistic leader, conversational-noise pretraining).
+1. **`scripts/splice_wavs.py`** slices each per-participant `.wav` in `subset/audio/` into uniform 2-s windows (`--window-len 2 --stride 0.5`), writing them under `subset/audio_sliced/<orig_stem>/<spliced_stem>.wav`. `<spliced_stem>` has the form `NNNN.NN-NNNN.NN_<orig_stem>` (zero-padded start/end seconds — sorts lex = temporal). Partial trailing windows are skipped so every spliced wav is exactly 2 s.
+
+2. **`scripts/extract_cpc_from_manifest.py`** runs the pretrained CPC model (`facebookresearch/CPC_audio` torch.hub repo + `60k_epoch4-d0f474de.pt` checkpoint) over every spliced wav, writing features in a directory tree that mirrors `audio_sliced/` exactly: `subset/cpc/<orig_stem>/<spliced_stem>.npy` (shape `(200, 256)` float32 per 2-s window, 100 Hz native) plus a sibling `<spliced_stem>.json` sidecar with full provenance (source sample rate, resampled rate, model checkpoint, feature rate, frame count). Inference uses a torch DataLoader (`--batch-size 128 --num-workers 12 --writer-threads 8`) on Apple Silicon MPS; ~12-20 minutes wall-clock for the full corpus.
+
+- All 453,252 `.npy` + 453,252 `.json` files present at `subset/cpc/` (930 subdirs, one per per-participant audio file). Verified shape uniformity, no NaN/Inf, no orphan/missing pairs.
+- Rationale for CPC over WavLM/HuBERT/wav2vec 2.0: strict causality (load-bearing for prediction-horizon work — see §1 audio-encoder note) and direct lineage with MM-VAP (Russell & Harte 2025), which uses the same encoder.
+- For OpenFace-rate alignment in early fusion, run `mean_pool_file(npy, save_to, pool_to=10.0)` post-hoc to produce a parallel 10 Hz corpus at e.g. `subset/cpc_10hz/`.
 
 ### 4.4 Literature review — DONE (parallel Claude Code session)
 
@@ -107,7 +113,7 @@ Script: `scripts/extract_wavlm_from_manifest.py` (HuggingFace `microsoft/wavlm-b
 1. **Novelty.** MM-VAP (Russell & Harte, ACL Findings 2025) is the closest published prior art. Our differentiators: face-to-face corpus, permuted-dyad control, τ-curve.
 2. **Horizon metric.** Skantze 2017 / Roddy 2018 anchor τ-curve framing; VAP's projection-window probability is the 2022+ native alternative. Our τ-curve needs explicit justification.
 3. **Visual features.** MM-VAP's ablation: **AUs > head pose > gaze**. Kendon-1967 gaze-return survives only in qualified form.
-4. **WhisperX short-utterance error.** Real (paper Appendix A.1.4), but acceptable at POC scope. CrisperWhisper (Wagner 2024) is the named mitigation path if BC-class F1 is structurally low.
+4. **WhisperX short-utterance error.** Real (paper Appendix A.1.4) but acceptable at the project's current scale. CrisperWhisper (Wagner 2024) is the named mitigation path if BC-class F1 is structurally low.
 5. **INTERRUPT class.** Rare (~5-15% of POC frames). Report per-class F1; do NOT collapse into macro.
 6. **Audio-only baseline.** VAP is the 2024-26 default. HuBERT→GRU alone looks weak. Recommend adding a **VAP zero-shot checkpoint** run (Ekstedt & Skantze 2022 release) on the POC test set for credibility.
 7. **Participant-disjoint splits.** Load-bearing; confirmed as validity risk in §8.
@@ -117,19 +123,20 @@ Script: `scripts/extract_wavlm_from_manifest.py` (HuggingFace `microsoft/wavlm-b
 Use these, do NOT reimplement. Brief signatures:
 
 - **`generate_timestamps_by_turn.py <input_dir>`** — reads per-participant Seamless VAD JSONL files from each interaction under `<input_dir>/V*`, merges consecutive same-participant VAD segments into **turns** (a gap becomes a turn boundary only if the other participant spoke in it), flags overlap. Writes `{interaction}/interaction/timestamps_by_turn.json`. **Use this first** to get turn spans.
-- **`generate_moi_turns.py --input-dir <dir>`** — for each MOI annotation, finds the non-annotated participant's nearest pre/post turn with overlap flags. Writes `{interaction}/interaction/pre_and_post_moi/turns_pre_post.json`.
-- **`generate_moi_time_windows.py --input-dir <dir> --window <sec>`** — fixed-duration pre/post MOI spans with speaker attribution. Default window = 15 s.
-- **`download_annotated_interactions.py`, `download_single_annotated_interactions.py`** — fetch Seamless interaction assets from S3 (for any re-download / dyad extension).
-- **`compose_classifier_input.ipynb`** — in-progress classifier input assembly from the parent project's *prior* MOI classifier work (coordination analysis). Reference only; not reusable wholesale for turn-taking.
-- **`valence_arousal/*`** — prior coordination analysis. DONE. Not the active focus (see memory `project_classifier_focus.md`).
+- **`download_annotated_interactions.py`, `download_single_annotated_interactions.py`** — fetch Seamless interaction assets from S3; consumed by `build_manifest.py` as part of the manifest-build pipeline.
 
 ### 4.6 Project-root scripts already present (in `turn_taking_analysis/scripts/`)
 
 - **`build_manifest.py`** — builds the full-project `manifests/manifest.csv` (~467 interactions) by merging POC rows (from `poc_manifest.csv`) with every interaction under `both_annotated_interactions/` and `single_annotated_interactions/`. Enforces participant-disjoint splits via a connected-component / LPT bin-packing scheme. Splits in `manifest.csv` are authoritative — no re-splitting is needed downstream.
 - **`build_poc_manifest.py`** — historical. Built the original 48-row `manifests/poc_manifest.csv` for the POC, with its own `verify_disjoint_participants()` split enforcer. Still lives on disk because `build_manifest.py` uses it as one of its inputs, but consumers no longer read `poc_manifest.csv` directly.
-- **`download_audio_from_manifest.py`**, **`download_video_from_manifest.py`** — staged the 48 `.wav` and `.mp4` files already present in `subset/audio/` and `subset/video/`.
-- **`extract_openface_from_manifest.py`** — OpenFace extraction driver (feeds `subset/openface/`).
-- **`extract_wavlm_from_manifest.py`** — WavLM-base+ extraction driver. Already run; outputs at `subset/wavlm/`.
+- **`download_audio_from_manifest.py`**, **`download_video_from_manifest.py`** — fetch per-participant audio (`.wav`) and video (`.mp4`) for the manifest's interactions into `subset/audio/` and `subset/video/`.
+- **`download_vad_and_transcript_from_manifest.py`** — fetches Seamless VAD JSONLs and WhisperX transcript JSONLs into `subset/vad/` and `subset/transcript/` (transcript fetches may 403 on a small fraction of interactions).
+- *(OpenFace extraction has no in-repo driver script — it ran on Google Colab against the OpenFace 2.x `FeatureExtraction` binary; see §4.1–4.2 and Appendix B for the build / run recipe. Outputs land in `subset/openface/`.)*
+- **`splice_wavs.py`** — Companion to the CPC extractor: slices each `.wav` in `subset/audio/` into uniform 2-s windows under `subset/audio_sliced/`. Already run.
+- **`extract_cpc_from_manifest.py`** — CPC extraction driver (the active audio encoder, see §4.3). Walks `subset/audio_sliced/` and writes per-window features to `subset/cpc/`. Already run.
+- **`extract_wavlm_from_manifest.py`** — Legacy WavLM-base+ extraction driver. Superseded by `extract_cpc_from_manifest.py`; the WavLM output directory is no longer materialized. Kept on disk for reference.
+- **`extract_poc_smplh.py`** — Fetches per-participant SMPL-H bundles for the POC manifest's dyads from Seamless's S3 (six per-feature `.npy` arrays packed into one compressed `.npz` per participant). Outputs land in `smplh_features_poc/`. Used to make body-pose available as a candidate third per-participant modality (deferred from the active CPC + OpenFace stack — see §1 methodological framing and §6).
+- **`build_labeled_windows_from_manifest.py`** — Builds the per-window training/eval samples in `model_input/` from `manifests/manifest.csv` + per-modality features (CPC, OpenFace) + per-turn label spans. Implements the labeling logic in §11.
 - **`multimodal_fusion_for_turns.ipynb`** — the practicum-derived notebook to minimally modify. See §6.
 
 ---
@@ -142,8 +149,8 @@ Use these, do NOT reimplement. Brief signatures:
 
 3. **Per-window labels (stride-based, horizon-centric).** See §11 for full operational definitions. Workflow:
    - Reuse `../scripts/generate_timestamps_by_turn.py:merge_into_turns` (pure function — takes two VAD lists, returns sorted turns with `overlapping` flag). Do NOT depend on its on-disk directory layout.
-   - For each dyad: load per-participant VAD (`subset/vad/{fid}.jsonl`), transcript (`subset/transcript/{fid}.jsonl`, may 403), OpenFace (`subset/openface/{fid}.csv`), WavLM (`subset/wavlm/{fid}.npy`).
-   - For each participant A (treated as perspective / floor-holder), walk A's turns and emit sample points at `STRIDE_MS = 500` ms intervals inside each turn. Each sample gets: (i) 2 s of visual + audio features ending at `t` (written once), (ii) a label per τ (six labels per sample, stored across six per-τ JSON files).
+   - For each dyad: load per-participant VAD (`subset/vad/{fid}.jsonl`), transcript (`subset/transcript/{fid}.jsonl`, may 403), OpenFace (`subset/openface/{fid}.csv`), and per-window CPC features from `subset/cpc/{fid}/<spliced_stem>.npy` (one `.npy` per 2-s window covered by `splice_wavs.py`'s stride).
+   - For each participant A (treated as perspective / floor-holder), walk A's turns and emit sample points at `STRIDE_MS = 500` ms intervals inside each turn. Each sample point `t` resolves to one pre-extracted CPC window (`subset/cpc/{fid_A}/<start>-<end>_{fid_A}.npy` whose `[start, end]` covers `[t − 2, t]`) plus 2 s of OpenFace frames ending at `t`. Labels: one per τ (six labels per sample, stored across six per-τ JSON files).
    - Per-sample classification tree (precedence-ordered; full logic in §11.3):
      - Compute B's VAD segments + transcript words clipped to horizon `[t, t+τ]`.
      - Check **substantive-B** (OR-gate: clipped duration ≥ 700 ms, OR ≥ 3 words, OR contains non-BC vocabulary).
@@ -173,7 +180,7 @@ Use these, do NOT reimplement. Brief signatures:
 - **Features (as the notebook ships today, before our edits):**
   - OpenFace: **20-dim** (17 AU intensity + 3 head pose). Pre-extracted, one `.npy` per utterance.
   - HuBERT: **768-dim** (HuBERT-base penultimate layer, ×5 temporal pool → ~10 Hz). Pre-extracted, one `.npy` per utterance.
-  - **For this POC: swap the HuBERT features for WavLM-base+ features of the same shape (also 768-dim, penultimate layer, ×5 pool → 10 Hz).** No architectural change needed — `FEAT_A = 768` stays, sequence-length constants adapt as in §6.2(c). Features are at `subset/wavlm/*.npy`.
+  - **For this project: swap the HuBERT features for CPC features (256-dim @ 100 Hz native; pooled ×10 → 10 Hz to match OpenFace's post-pool rate).** Architectural change is minimal: `FEAT_A` shrinks 768 → 256 (or 1536 → 512 for two-participant concat slots, see §11.7 ablation table). Features are at `subset/cpc/<orig_stem>/<spliced_stem>.npy`, one `.npy` per 2-s spliced window, mirroring the `audio_sliced/` layout.
 - **Sequence lengths:** `MAX_LEN_V = 16`, `MAX_LEN_A = 40`, `MAX_LEN_EARLY = 40` (merged). Zero-pad / clip.
 - **Splits:** `subsampled/openface/{train,val,test}/*.npy` and `subsampled/hubert/{train,val,test}/*.npy`. Labels extracted from filename via `fname.split('_')[2]`.
 - **Architectures (PyTorch):**
@@ -186,7 +193,7 @@ Use these, do NOT reimplement. Brief signatures:
 
 ### 6.2 Minimum edits to repurpose for turn-taking
 
-**Keep untouched:** training loop (`run_epoch`, `train_model`, `evaluate`), all four fusion architectures, `nn.CrossEntropyLoss`, optimizer/LR/dropout, plotting helpers. The practicum's hyperparameters are reasonable for POC scope.
+**Keep untouched:** training loop (`run_epoch`, `train_model`, `evaluate`), all four fusion architectures, `nn.CrossEntropyLoss`, optimizer/LR/dropout, plotting helpers. The practicum's hyperparameters are reasonable defaults.
 
 **Deviation from the practicum — early-stopping metric.** The practicum early-stopped on val accuracy (§6.1). This POC early-stops on **val macro-F1** instead (patience=4). Rationale: with natural-rate class imbalance (HOLD dominates, BC ~15%) and inverse-frequency-weighted cross-entropy, val accuracy is a misleading signal — it rewards correctly predicting the majority class at the expense of the minority classes that the weighted loss is actively trying to lift. Macro-F1 is both the reported metric and the quantity the class weights are implicitly optimizing for. Implemented in `train_model` (notebook Cell 14) via `sklearn.metrics.f1_score(..., average='macro')` on the val split's predictions each epoch.
 
@@ -199,9 +206,9 @@ Use these, do NOT reimplement. Brief signatures:
   - **(ii) Use `FEAT_V = 48`** (all columns). Richer features, but requires updating every tensor-shape-dependent assertion and doubling memory. Defer.
   - The lit review (item 3) flags feature-importance ranking **AUs > head pose > gaze** — option (i) already includes the top two.
 
-(c) **Sequence lengths — using 2 s context.** At 30 fps video (Seamless paper §3.4) → `MAX_LEN_V = 60`; at ~10 Hz WavLM → `MAX_LEN_A = 20`; `MAX_LEN_EARLY = 20` for early fusion (downsample OpenFace by mean-pooling every 3 frames into a 10 Hz track, keeping both modalities at the WavLM rate). Document choice in the per-window sidecar. *(An earlier draft of this line said 25 fps / `MAX_LEN_V = 50`; that was a mistake caught when the dry-run showed every dyad's OF duration exceeding WavLM's by exactly 1.20× — the 25:30 ratio.)*
+(c) **Sequence lengths — using 2 s context.** At 30 fps video (Seamless paper §3.4) → `MAX_LEN_V = 60`; at 10 Hz pooled CPC → `MAX_LEN_A = 20`; `MAX_LEN_EARLY = 20` for early fusion (downsample OpenFace by mean-pooling every 3 frames into a 10 Hz track, matching the pooled CPC rate). Note: CPC is extracted at native 100 Hz (`MAX_LEN_A = 200` if used unpooled); the 10 Hz pool is applied post-hoc via `mean_pool_file` to align with OpenFace and to keep `MAX_LEN_A` from blowing up the early-fusion concat. Document the chosen rate (native 100 Hz vs. pooled 10 Hz) in the per-window sidecar. *(An earlier rev used WavLM at 10 Hz natively; with the encoder switch to CPC the source rate is 100 Hz and an explicit pool step is required for OpenFace alignment. An even-earlier draft said 25 fps / `MAX_LEN_V = 50`; that was caught when the dry-run showed OF duration exceeding the audio rate by 1.20× — the 25:30 ratio.)*
 
-(d) **Feature paths.** Point `FEAT_PATH_V` at per-window OpenFace `.npy` files and `FEAT_PATH_A` at per-window WavLM `.npy` files. File names must match across modalities so `BimodalDataset` pairs them correctly.
+(d) **Feature paths.** Point `FEAT_PATH_V` at per-window OpenFace `.npy` files and `FEAT_PATH_A` at the pooled-to-10-Hz per-window CPC `.npy` files (e.g. `model_input/cpc_10hz/{speaker,listener}/{train,val,test}/`). File names must match across modalities so `BimodalDataset` pairs them correctly.
 
 (e) **τ-sweep evaluation.** After training *once*, call `evaluate()` five times with different test-set variants (one per τ). Each variant has the same audio/video windows but labels derived from the boundary shifted by τ. Compile into a per-class F1 × τ table and plot. Do NOT retrain per τ — that defeats the horizon-curve framing.
 
@@ -221,19 +228,16 @@ Suggested naming: `{dyad_id}_{participant_id}_{window_start_ms}_{tau_ms}.npy`.
 
 ---
 
-## 7. Canonical references / conventions (from parent project memory)
+## 7. Canonical references / conventions
 
-- **"the paper"** → `/Users/rasikaramanan/Documents/usc/by_semester/sp26/csci535/project/seamless/seamless_paper.pdf`. Always this PDF, not the arXiv version.
-- **"the methodology doc" / "classifier method doc"** → the parent project's **MOI classifier** methodology (not this turn-taking POC). Mentioned for vocabulary disambiguation only; not load-bearing here.
-- **"the comparison notebook" / "bakeoff notebook"** → `../scripts/emotion_extractor_comparison_colab.ipynb`. Prior emotion-extractor work; reference, not reuse.
-- **Compute environment:** Colab Pro (not Pro+), ~280 compute units budget, T4 baseline GPU for all runtime estimates.
-- **Emotion extractor constraint (parent project):** no MLP training for emotion; Ekman-8 preferred / 7 OK; no 500 GB dataset downloads. *Not directly relevant to this POC but worth knowing if the user pivots.*
+- **"the paper"** → the 72-pp Meta Seamless Interaction release PDF (Meta FAIR 2025), not the arXiv abridgement. Not in the repo; obtain separately.
+- **Compute environment:** mixed — OpenFace ran on Colab Pro (T4); CPC extraction ran on Apple Silicon M5 Max (32-core GPU, 36 GB unified memory, MPS); other steps as noted per script.
 - **Bboxes universal:** skip face detection. Videos already per-participant.
 - **`has_imitator_movement`:** data-availability flag, not a mimicry label.
 
 ---
 
-## 8. Validity risks (from memory `project_turn_taking_validity_risks.md`)
+## 8. Validity risks
 
 **8.1 Whisper timestamp drift vs. horizon SNR.** Backchannel labels depend on WhisperX word timestamps; paper Appendix A.1.4 reports 87% of interactions have ≥1 word >3σ in timestamp length. Mitigation: (i) hand-annotate a 30-60 s slice of one dyad in Praat as a sanity check (cheap, ~30-60 min in Praat), and report the empirical short-utterance error; (ii) report BC-class F1 separately so label-noise impact is visible, not hidden.
 
@@ -245,9 +249,9 @@ Suggested naming: `{dyad_id}_{participant_id}_{window_start_ms}_{tau_ms}.npy`.
 
 ## 9. Open questions — RESOLVED at 2026-04-21 session start
 
-1. **Audio encoder — CLOSED.** WavLM-base+ (`microsoft/wavlm-base-plus`), penultimate transformer layer (`hidden_states[-2]`), ×5 mean-pool → 10 Hz, 768-dim. Already extracted to `subset/wavlm/`. Rationale: lit review Item 7 / M1.
+1. **Audio encoder — CLOSED.** CPC (Rivière 2020, causal-RNN aggregator output, 256-dim @ 100 Hz native; `60k_epoch4-d0f474de.pt`). Pooled ×10 → 10 Hz post-hoc for OpenFace alignment via `mean_pool_file`. Already extracted: 453,252 per-window `.npy` files at `subset/cpc/`. Rationale: strict causality (load-bearing for prediction-horizon work — see §1 audio-encoder note) and direct lineage with MM-VAP. An earlier rev of this spec selected WavLM-base+; that decision was reverted in favor of CPC.
 
-2. **Window length — CLOSED.** 2 s context. `MAX_LEN_V = 60` @ 30 fps OpenFace, `MAX_LEN_A = 20` @ 10 Hz WavLM.
+2. **Window length — CLOSED.** 2 s context. `MAX_LEN_V = 60` @ 30 fps OpenFace, `MAX_LEN_A = 20` @ 10 Hz pooled CPC (or `MAX_LEN_A = 200` if used at native 100 Hz; `mean_pool_file` produces the 10 Hz parallel corpus).
 
 3. **INTERRUPT class — CLOSED.** Dropped from POC label schema. Overlap-heavy transitions (`overlapping=True` span ≥ 500 ms and not a lexical backchannel) are *excluded* from the labeled window set rather than classified. Label schema is 3-class {HOLD, YIELD, BACKCHANNEL}. `NUM_CLASSES = 3`. Rationale: ≤50 INTERRUPT examples in the 4-dyad test set puts per-class F1 in the noise band; lit review Item 5 Flag #1.
 
@@ -263,8 +267,7 @@ Suggested naming: `{dyad_id}_{participant_id}_{window_start_ms}_{tau_ms}.npy`.
 turn_taking_analysis/                          ← this project root
 ├── docs/
 │   ├── spec.md                               ← this document
-│   ├── lit_review.md                         ← 7-item lit review, ~11k words
-│   └── lit_review_brief.md                   ← the brief that dispatched the lit review
+│   └── lit_review.md                         ← 7-item lit review, ~11k words
 ├── manifests/
 │   ├── manifest.csv                          ← full-project manifest (~467 interactions); consumer source of truth
 │   └── poc_manifest.csv                      ← historical 48-row POC; now only an input to build_manifest.py
@@ -273,36 +276,35 @@ turn_taking_analysis/                          ← this project root
 │   ├── build_poc_manifest.py                 ← historical POC builder; still feeds build_manifest.py
 │   ├── download_audio_from_manifest.py
 │   ├── download_video_from_manifest.py
-│   ├── extract_openface_from_manifest.py     ← OpenFace driver (Colab-run)
-│   ├── extract_wavlm_from_manifest.py        ← WavLM-base+ driver (DONE)
+│   ├── download_vad_and_transcript_from_manifest.py    ← VAD + WhisperX transcript fetcher
+│   ├── splice_wavs.py                        ← slices subset/audio/ into 2-s windows for CPC (DONE)
+│   ├── extract_cpc_from_manifest.py          ← CPC driver (DONE; active audio encoder)
+│   ├── extract_wavlm_from_manifest.py        ← legacy WavLM driver (superseded by CPC)
+│   ├── extract_poc_smplh.py                  ← POC SMPL-H fetcher (deferred candidate body-pose modality)
+│   ├── build_labeled_windows_from_manifest.py ← per-window sample builder (implements §11)
 │   └── multimodal_fusion_for_turns.ipynb     ← the notebook to minimally modify
 ├── subset/
 │   ├── audio/      V*_S*_I*_P*.wav           ← 48 per-participant audio files
 │   ├── video/      V*_S*_I*_P*.mp4           ← 48 per-participant videos
-│   ├── wavlm/      V*_S*_I*_P*.{npy,json}    ← 48/48 WavLM-base+ features (DONE)
+│   ├── audio_sliced/ <orig_stem>/<spliced_stem>.wav    ← 453,252 per-window 2-s audio slices (DONE; CPC input)
+│   ├── cpc/        <orig_stem>/<spliced_stem>.{npy,json} ← 453,252/453,252 per-window CPC features (DONE)
 │   ├── openface/   V*_S*_I*_P*.{csv,json}    ← 15/48 locally; 33 more to pull from Drive
 │   ├── vad/        V*_S*_I*_P*.jsonl         ← 48 Silero VAD files (downloader ready)
 │   └── transcript/ V*_S*_I*_P*.jsonl         ← up to 48 WhisperX transcripts (optional, some may 403)
 ├── model_input/                              ← TO CREATE via build_labeled_windows_from_manifest.py
 │   ├── openface/{speaker,listener}/{train,val,test}/{basename}.npy
-│   ├── wavlm/   {speaker,listener}/{train,val,test}/{basename}.npy
+│   ├── cpc/     {speaker,listener}/{train,val,test}/{basename}.npy   ← (10 Hz pooled, FEAT_A=256)
 │   ├── labels/labels_tau_XXXX.json           ← one file per τ
 │   └── manifest.json                         ← full provenance
 │   # Dyadic-concat ("both") configs are synthesized in the notebook via
 │   # ConcatFEATDataset (spec §11.8) — no pre-materialized dir needed.
 └── results/                                  ← TO CREATE: τ-curves, confusion matrices, permuted-dyad control
 
-# Parent (read & reuse, but treat as stable):
+# Parent (legacy coupling — turn-taking depends on a small set of parent-level scripts; not aspirational):
 ../scripts/
-├── generate_timestamps_by_turn.py            ← RUN FIRST for per-turn spans
-├── generate_moi_turns.py
-├── generate_moi_time_windows.py
-├── download_annotated_interactions.py
-├── download_single_annotated_interactions.py
-├── compose_classifier_input.ipynb            ← prior MOI classifier (reference only)
-└── valence_arousal/*                          ← prior coordination work (DONE; not this POC)
-
-../seamless_paper.pdf                          ← "the paper"
+├── generate_timestamps_by_turn.py            ← per-turn span builder used in §5 step 3
+├── download_annotated_interactions.py        ← consumed by build_manifest.py
+└── download_single_annotated_interactions.py ← consumed by build_manifest.py
 ```
 
 ---
@@ -314,7 +316,7 @@ These are the verbatim definitions driving `scripts/build_labeled_windows_from_m
 ### 11.1 Framing
 
 - **Sample point `t`**: a timestamp in seconds. Sampled every `STRIDE_MS` within a perspective participant A's turn.
-- **Perspective participant A**: the floor holder at `t`. Must be voiced at `t` (prerequisite). All feature slicing is from A's streams (A's OpenFace, A's WavLM).
+- **Perspective participant A**: the floor holder at `t`. Must be voiced at `t` (prerequisite). All feature slicing is from A's streams (A's OpenFace, A's CPC).
 - **Input context** (τ-invariant): features from `[t − WINDOW_S, t]`. 2 s of the past.
 - **Horizon** (τ-dependent): `[t, t + τ]`. The forward interval whose content determines the label.
 - **Clipping to horizon**: for a B-segment `[b_start, b_end]`, clipped form is `[max(b_start, t), min(b_end, t + τ)]`. The substantive / BC-qualifying tests operate on the clipped portion, not the underlying full-segment.
@@ -412,9 +414,9 @@ model_input/
   openface/
     speaker/{train,val,test}/{basename}.npy          # (60, 20)   — speaker's face
     listener/{train,val,test}/{basename}.npy         # (60, 20)   — listener's face
-  wavlm/
-    speaker/{train,val,test}/{basename}.npy          # (20, 768)  — speaker's audio
-    listener/{train,val,test}/{basename}.npy         # (20, 768)  — listener's audio
+  cpc/
+    speaker/{train,val,test}/{basename}.npy          # (20, 256) at 10 Hz pooled — speaker's audio
+    listener/{train,val,test}/{basename}.npy         # (20, 256) at 10 Hz pooled — listener's audio
   labels/
     labels_tau_0100.json                              # {basename: class_int 0..5}
     labels_tau_0200.json
@@ -433,17 +435,17 @@ model_input/
 
 | # | Experiment | `FEAT_PATH_V` | `FEAT_V` | `FEAT_PATH_A` | `FEAT_A` | Model(s) | Anchor |
 |---|---|---|---|---|---|---|---|
-| 1 | Dyadic cross-pair *(primary)* | `openface/listener` | 20 | `wavlm/speaker` | 768 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | our framing |
-| 2 | Monadic baseline | `openface/speaker` | 20 | `wavlm/speaker` | 768 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | control |
-| 3 | Unimodal audio | — | — | `wavlm/speaker` | 768 | `GRUClassifier` *(audio)* | VAP baseline (Item 6) |
+| 1 | Dyadic cross-pair *(primary)* | `openface/listener` | 20 | `cpc/speaker` | 256 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | our framing |
+| 2 | Monadic baseline | `openface/speaker` | 20 | `cpc/speaker` | 256 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | control |
+| 3 | Unimodal audio | — | — | `cpc/speaker` | 256 | `GRUClassifier` *(audio)* | VAP baseline (Item 6) |
 | 4 | Unimodal listener-face | `openface/listener` | 20 | — | — | `GRUClassifier` *(visual)* | Kendrick 2023 (Item 3.3) |
 | 5 | Unimodal speaker-face | `openface/speaker` | 20 | — | — | `GRUClassifier` *(visual)* | Nota 2021 (Item 3.4) |
-| 6 | Permuted-dyad control (§8.2) | `openface/listener` *(shuffled)* | 20 | `wavlm/speaker` | 768 | *(test-time re-eval of row 1's trained weights)* | dyadic-coordination test |
-| 7 | Both-face + speaker-audio | concat(`openface/speaker`, `openface/listener`) | 40 | `wavlm/speaker` | 768 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | MM-VAP visual ablation |
-| 8 | Listener-face + both-audio | `openface/listener` | 20 | concat(`wavlm/speaker`, `wavlm/listener`) | 1536 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | VAP-style stereo audio |
-| 9 | Full dyadic *(MM-VAP replication)* | concat(`openface/speaker`, `openface/listener`) | 40 | concat(`wavlm/speaker`, `wavlm/listener`) | 1536 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | Russell & Harte 2025 (Item 1.1) |
-| 10 | Speaker-face + both-audio | `openface/speaker` | 20 | concat(`wavlm/speaker`, `wavlm/listener`) | 1536 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | own-face + VAP-style audio |
-| 9′ | Permuted-dyad control on row 9 | concat(`openface/speaker`, `openface/listener` *(listener half shuffled)*) | 40 | concat(`wavlm/speaker`, `wavlm/listener` *(listener half shuffled)*) | 1536 | *(test-time re-eval of row 9's trained weights)* | dyadic-coordination test for full-dyadic replication |
+| 6 | Permuted-dyad control (§8.2) | `openface/listener` *(shuffled)* | 20 | `cpc/speaker` | 256 | *(test-time re-eval of row 1's trained weights)* | dyadic-coordination test |
+| 7 | Both-face + speaker-audio | concat(`openface/speaker`, `openface/listener`) | 40 | `cpc/speaker` | 256 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | MM-VAP visual ablation |
+| 8 | Listener-face + both-audio | `openface/listener` | 20 | concat(`cpc/speaker`, `cpc/listener`) | 512 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | VAP-style stereo audio |
+| 9 | Full dyadic *(MM-VAP replication)* | concat(`openface/speaker`, `openface/listener`) | 40 | concat(`cpc/speaker`, `cpc/listener`) | 512 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | Russell & Harte 2025 (Item 1.1) |
+| 10 | Speaker-face + both-audio | `openface/speaker` | 20 | concat(`cpc/speaker`, `cpc/listener`) | 512 | `EarlyFusionGRU` + `NeuralConcatFusion` + `late_fusion_predict` | own-face + VAP-style audio |
+| 9′ | Permuted-dyad control on row 9 | concat(`openface/speaker`, `openface/listener` *(listener half shuffled)*) | 40 | concat(`cpc/speaker`, `cpc/listener` *(listener half shuffled)*) | 512 | *(test-time re-eval of row 9's trained weights)* | dyadic-coordination test for full-dyadic replication |
 
 **Note on `late_fusion_predict`**: it consumes two pre-trained unimodal `GRUClassifier` models and averages their softmax outputs with a grid-searched weight on val. For bimodal rows that include it, the matching unimodal `GRUClassifier`s for the same `FEAT_PATH_V` + `FEAT_PATH_A` must be trained first. Rows 3–5 cover the standard unimodal cases; rows 7–10 additionally require unimodal `GRUClassifier`s trained on their concat slot as input (trivially — same class, larger `input_size`).
 
