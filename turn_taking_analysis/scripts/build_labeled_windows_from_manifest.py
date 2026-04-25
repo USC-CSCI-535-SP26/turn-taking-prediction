@@ -4,8 +4,10 @@ build_labeled_windows_from_manifest.py
 
 Generate per-τ ground-truth labels for the 3-class turn-taking classifier.
 
-Consumes per-participant VAD + transcript artifacts (plus wav-header metadata
-for file-duration bounding) and emits one labels JSON per τ in the grid.
+Consumes per-participant VAD + transcript JSONLs and emits one labels JSON
+per τ in the grid. File durations are read from a baked-in dict
+(AUDIO_DURATIONS_S, see the constants block) — no wav files needed at
+runtime.
 Feature slicing and saving are NOT part of this script — each modality is
 extracted independently by its own manifest-driven script (see
 extract_cpc_from_manifest.py, extract_openface_from_manifest.py, etc.).
@@ -282,6 +284,182 @@ BC_LEXICON = frozenset({
 
 
 # =============================================================================
+# Audio durations (inlined to remove runtime dependency on subset/audio/)
+# =============================================================================
+# Wav duration in seconds, keyed by interaction_id. Both participants in a
+# Seamless dyad share an identical wav duration (verified across the active
+# 457-interaction manifest), so one entry per interaction suffices for both
+# file_id_a and file_id_b. file_duration is the only thing the labeler ever
+# needed audio for; with this dict in place, build_labeled_windows_from_manifest.py
+# does not require any wavs on disk and runs anywhere the VAD + transcript
+# JSONLs exist.
+#
+# Regeneration recipe (run when manifest.csv changes):
+#   import csv, soundfile as sf, json
+#   d = {}
+#   with open('manifests/manifest.csv') as f:
+#       for r in csv.DictReader(f):
+#           p = f'subset/audio/{r["file_id_a"]}.wav'
+#           d[r['interaction_id']] = round(sf.info(p).frames / sf.info(p).samplerate, 3)
+#   # then format `d` into the literal below.
+AUDIO_DURATIONS_S = {
+    "V00_S0691_I00000482": 240.0, "V00_S0743_I00000483": 156.0, "V00_S1005_I00000249": 246.0,
+    "V00_S1132_I00000333": 262.0, "V00_S1132_I00000334": 194.0, "V00_S1132_I00000335": 290.0,
+    "V00_S1132_I00000336": 354.0, "V00_S1132_I00000337": 122.0, "V00_S1132_I00000338": 238.0,
+    "V00_S1132_I00000340": 100.0, "V00_S1132_I00000341": 82.0, "V00_S1132_I00000352": 204.0,
+    "V00_S1132_I00000354": 132.0, "V00_S1132_I00000360": 202.0, "V00_S1132_I00000361": 160.0,
+    "V00_S1204_I00000198": 198.0, "V00_S1204_I00000200": 96.0, "V00_S1204_I00000201": 458.0,
+    "V00_S1204_I00000202": 126.0, "V00_S1204_I00000204": 420.0, "V00_S1204_I00000207": 282.0,
+    "V00_S1204_I00000208": 278.0, "V00_S1204_I00000209": 176.0, "V00_S1279_I00000314": 300.0,
+    "V00_S1279_I00000315": 254.0, "V00_S1279_I00000316": 322.0, "V00_S1279_I00000319": 402.0,
+    "V00_S1279_I00000323": 432.0, "V00_S1279_I00000324": 486.0, "V00_S1279_I00000325": 302.0,
+    "V00_S1288_I00000092": 498.0, "V00_S1288_I00000093": 156.0, "V00_S1288_I00000094": 300.0,
+    "V00_S1288_I00000095": 386.0, "V00_S1288_I00000097": 240.0, "V00_S1288_I00000098": 250.0,
+    "V00_S1288_I00000099": 500.0, "V00_S1288_I00000102": 212.0, "V00_S1288_I00000103": 606.0,
+    "V00_S1289_I00000144": 216.0, "V00_S1289_I00000146": 216.0, "V00_S1289_I00000147": 234.0,
+    "V00_S1289_I00000149": 258.0, "V00_S1289_I00000150": 188.0, "V00_S1289_I00000152": 160.0,
+    "V00_S1289_I00000153": 200.0, "V00_S1289_I00000154": 200.0, "V00_S1289_I00000157": 156.0,
+    "V00_S1291_I00000000": 262.0, "V00_S1291_I00000001": 448.0, "V00_S1291_I00000002": 402.0,
+    "V00_S1291_I00000003": 376.0, "V00_S1291_I00000006": 246.0, "V00_S1291_I00000007": 324.0,
+    "V00_S1291_I00000008": 266.0, "V00_S1291_I00000009": 162.0, "V00_S1295_I00000280": 90.0,
+    "V00_S1295_I00000281": 350.0, "V00_S1295_I00000282": 462.0, "V00_S1295_I00000286": 502.0,
+    "V00_S1295_I00000287": 348.0, "V00_S1295_I00000297": 396.0, "V00_S1295_I00000298": 228.0,
+    "V00_S1297_I00000197": 248.0, "V00_S1297_I00000200": 122.0, "V00_S1297_I00000201": 158.0,
+    "V00_S1297_I00000202": 124.0, "V00_S1297_I00000204": 168.0, "V00_S1297_I00000205": 220.0,
+    "V00_S1297_I00000226": 280.0, "V01_S0283_I00000266": 128.0, "V01_S0325_I00000314": 198.0,
+    "V02_S3160_I00000501": 196.0, "V02_S3227_I00000514": 214.0, "V02_S3447_I00000082": 216.0,
+    "V02_S3613_I00000053": 182.0, "V02_S3653_I00000055": 172.0, "V02_S5099_I00000215": 174.0,
+    "V02_S5262_I00000293": 164.0, "V03_S0120_I00000131": 118.0, "V03_S0132_I00000125": 190.0,
+    "V03_S0132_I00000127": 356.0, "V03_S0132_I00000130": 420.0, "V03_S0132_I00000131": 744.0,
+    "V03_S0132_I00000134": 198.0, "V03_S0132_I00000138": 162.0, "V03_S0132_I00000140": 158.0,
+    "V03_S0132_I00000307": 222.0, "V03_S0134_I00000128": 250.0, "V03_S0134_I00000130": 190.0,
+    "V03_S0134_I00000132": 170.0, "V03_S0134_I00000138": 182.0, "V03_S0139_I00000135": 230.0,
+    "V03_S0139_I00000477": 60.0, "V03_S0139_I00000478": 106.0, "V03_S0139_I00000479": 180.0,
+    "V03_S0139_I00000500": 106.0, "V03_S0142_I00000126": 212.0, "V03_S0142_I00000128": 314.0,
+    "V03_S0145_I00000126": 238.0, "V03_S0145_I00000127": 184.0, "V03_S0145_I00000130": 134.0,
+    "V03_S0145_I00000137": 148.0, "V03_S0145_I00000307": 178.0, "V03_S0146_I00000371": 212.0,
+    "V03_S0146_I00000373": 190.0, "V03_S0154_I00000127": 270.0, "V03_S0154_I00000128": 218.0,
+    "V03_S0154_I00000131": 178.0, "V03_S0154_I00000307": 208.0, "V03_S0155_I00000135": 246.0,
+    "V03_S0155_I00000138": 184.0, "V03_S0155_I00000371": 178.0, "V03_S0155_I00000372": 188.0,
+    "V03_S0155_I00000375": 176.0, "V03_S0158_I00000125": 192.0, "V03_S0158_I00000138": 218.0,
+    "V03_S0162_I00000135": 228.0, "V03_S0162_I00000477": 148.0, "V03_S0162_I00000478": 228.0,
+    "V03_S0162_I00000482": 118.0, "V03_S0162_I00000500": 184.0, "V03_S0163_I00000381": 232.0,
+    "V03_S0164_I00000371": 178.0, "V03_S0164_I00000375": 590.0, "V03_S0166_I00000375": 368.0,
+    "V03_S0176_I00000128": 196.0, "V03_S0176_I00000134": 202.0, "V03_S0176_I00000307": 142.0,
+    "V03_S0176_I00000313": 176.0, "V03_S0176_I00000461": 78.0, "V03_S0190_I00000477": 202.0,
+    "V03_S0190_I00000479": 350.0, "V03_S0190_I00000482": 528.0, "V03_S0190_I00000483": 122.0,
+    "V03_S0191_I00000126": 338.0, "V03_S0191_I00000130": 284.0, "V03_S0191_I00000135": 460.0,
+    "V03_S0193_I00000371": 226.0, "V03_S0193_I00000373": 270.0, "V03_S0193_I00000374": 248.0,
+    "V03_S0193_I00000377": 272.0, "V03_S0194_I00000477": 132.0, "V03_S0194_I00000478": 188.0,
+    "V03_S0194_I00000482": 220.0, "V03_S0194_I00000483": 490.0, "V03_S0199_I00000125": 170.0,
+    "V03_S0199_I00000128": 200.0, "V03_S0199_I00000137": 286.0, "V03_S0199_I00000138": 222.0,
+    "V03_S0199_I00000307": 160.0, "V03_S0199_I00000309": 230.0, "V03_S0199_I00000461": 166.0,
+    "V03_S0201_I00000371": 230.0, "V03_S0201_I00000374": 212.0, "V03_S0201_I00000375": 256.0,
+    "V03_S0201_I00000382": 206.0, "V03_S0201_I00000502": 280.0, "V03_S0202_I00000126": 266.0,
+    "V03_S0202_I00000130": 244.0, "V03_S0202_I00000138": 192.0, "V03_S0202_I00000307": 184.0,
+    "V03_S0202_I00000309": 220.0, "V03_S0205_I00000372": 212.0, "V03_S0205_I00000382": 184.0,
+    "V03_S0205_I00000502": 206.0, "V03_S0205_I00000504": 172.0, "V03_S0208_I00000478": 218.0,
+    "V03_S0208_I00000480": 190.0, "V03_S0208_I00000482": 108.0, "V03_S0210_I00000377": 196.0,
+    "V03_S0210_I00000378": 136.0, "V03_S0210_I00000382": 270.0, "V03_S0210_I00000383": 224.0,
+    "V03_S0212_I00000377": 295.17, "V03_S0212_I00000482": 92.0, "V03_S0212_I00000487": 210.0,
+    "V03_S0212_I00000488": 182.0, "V03_S0213_I00000125": 380.0, "V03_S0213_I00000130": 250.0,
+    "V03_S0213_I00000461": 136.0, "V03_S0214_I00000480": 270.0, "V03_S0217_I00000486": 202.0,
+    "V03_S0217_I00000487": 182.0, "V03_S0217_I00000500": 134.0, "V03_S0220_I00000371": 120.0,
+    "V03_S0220_I00000374": 168.0, "V03_S0220_I00000498": 128.0, "V03_S0221_I00000135": 204.0,
+    "V03_S0221_I00000377": 102.29, "V03_S0221_I00000480": 182.0, "V03_S0221_I00000486": 284.0,
+    "V03_S0221_I00000495": 186.0, "V03_S0225_I00000373": 168.0, "V03_S0225_I00000374": 260.0,
+    "V03_S0226_I00000139": 222.0, "V03_S0226_I00000140": 224.0, "V03_S0241_I00000140": 136.0,
+    "V03_S0241_I00000373": 288.0, "V03_S0242_I00000372": 228.0, "V03_S0242_I00000502": 156.73,
+    "V03_S0243_I00000477": 168.0, "V03_S0243_I00000482": 186.0, "V03_S0243_I00000483": 272.0,
+    "V03_S0258_I00000137": 146.0, "V03_S0258_I00000140": 196.0, "V03_S0259_I00000495": 304.0,
+    "V03_S0260_I00000126": 150.0, "V03_S0260_I00000132": 188.0, "V03_S0260_I00000135": 336.0,
+    "V03_S0260_I00000309": 170.0, "V03_S0261_I00000374": 436.0, "V03_S0262_I00000126": 166.0,
+    "V03_S0262_I00000131": 216.0, "V03_S0262_I00000309": 176.0, "V03_S0263_I00000125": 150.0,
+    "V03_S0263_I00000130": 210.0, "V03_S0263_I00000135": 196.0, "V03_S0275_I00000377": 225.58,
+    "V03_S0275_I00000478": 230.0, "V03_S0281_I00000484": 156.0, "V03_S0292_I00000411": 212.0,
+    "V03_S0292_I00000414": 192.0, "V03_S0292_I00000415": 196.0, "V03_S0292_I00000416": 204.0,
+    "V03_S0292_I00000417": 290.0, "V03_S0292_I00000419": 206.0, "V03_S0292_I00000420": 178.0,
+    "V03_S0292_I00000423": 230.0, "V03_S0295_I00000054": 342.0, "V03_S0310_I00000126": 192.0,
+    "V03_S0310_I00000132": 192.0, "V03_S0310_I00000309": 192.0, "V03_S0310_I00000313": 164.0,
+    "V03_S0310_I00000498": 183.6, "V03_S0328_I00000126": 148.0, "V03_S0328_I00000137": 188.0,
+    "V03_S0329_I00000065": 278.0, "V03_S0332_I00000054": 294.0, "V03_S0333_I00000054": 160.0,
+    "V03_S0333_I00000055": 144.0, "V03_S0333_I00000061": 220.0, "V03_S0333_I00000063": 106.0,
+    "V03_S0333_I00000065": 414.0, "V03_S0340_I00000392": 172.0, "V03_S0368_I00000128": 900.0,
+    "V03_S0368_I00000130": 532.0, "V03_S0368_I00000132": 632.0, "V03_S0368_I00000461": 444.0,
+    "V03_S0368_I00000462": 448.0, "V03_S0370_I00000170": 282.0, "V03_S0370_I00000175": 160.0,
+    "V03_S0370_I00000178": 237.95, "V03_S0379_I00000371": 134.0, "V03_S0379_I00000373": 254.0,
+    "V03_S0379_I00000375": 266.0, "V03_S0379_I00000504": 106.0, "V03_S0386_I00000055": 416.0,
+    "V03_S0386_I00000057": 240.0, "V03_S0386_I00000060": 210.0, "V03_S0386_I00000063": 260.0,
+    "V03_S0386_I00000067": 200.0, "V03_S0389_I00000059": 256.0, "V03_S0389_I00000061": 238.0,
+    "V03_S0389_I00000063": 348.0, "V03_S0391_I00000105": 402.0, "V03_S0391_I00000110": 390.0,
+    "V03_S0391_I00000111": 570.0, "V03_S0408_I00000025": 206.0, "V03_S0408_I00000026": 298.0,
+    "V03_S0408_I00000031": 156.0, "V03_S0412_I00000411": 220.0, "V03_S0425_I00000054": 148.0,
+    "V03_S0434_I00000030": 272.0, "V03_S0434_I00000039": 295.11, "V03_S0437_I00000026": 292.0,
+    "V03_S0441_I00000195": 168.0, "V03_S0442_I00000026": 262.0, "V03_S0442_I00000032": 216.0,
+    "V03_S0442_I00000036": 190.0, "V03_S0446_I00000025": 136.0, "V03_S0446_I00000028": 230.0,
+    "V03_S0458_I00000072": 176.0, "V03_S0458_I00000073": 210.0, "V03_S0458_I00000077": 350.0,
+    "V03_S0458_I00000078": 336.0, "V03_S0459_I00000391": 230.0, "V03_S0459_I00000392": 234.0,
+    "V03_S0465_I00000159": 280.0, "V03_S0465_I00000162": 276.0, "V03_S0480_I00000055": 392.0,
+    "V03_S0483_I00000025": 192.0, "V03_S0483_I00000026": 234.0, "V03_S0484_I00000060": 200.0,
+    "V03_S0484_I00000061": 324.0, "V03_S0503_I00000073": 172.0, "V03_S0503_I00000074": 170.0,
+    "V03_S0503_I00000075": 134.0, "V03_S0503_I00000079": 166.0, "V03_S0503_I00000083": 114.0,
+    "V03_S0503_I00000085": 170.0, "V03_S0503_I00000087": 220.0, "V03_S0526_I00000026": 394.0,
+    "V03_S0526_I00000030": 332.0, "V03_S0526_I00000031": 162.0, "V03_S0526_I00000039": 334.0,
+    "V03_S0553_I00000194": 356.0, "V03_S0553_I00000412": 120.0, "V03_S0553_I00000414": 118.0,
+    "V03_S0553_I00000420": 160.0, "V03_S0553_I00000425": 226.0, "V03_S0558_I00000315": 170.0,
+    "V03_S0558_I00000316": 206.0, "V03_S0558_I00000320": 226.0, "V03_S0558_I00000324": 172.0,
+    "V03_S0581_I00000402": 226.0, "V03_S0607_I00000106": 214.0, "V03_S0607_I00000114": 158.0,
+    "V03_S0607_I00000123": 154.0, "V03_S0702_I00000205": 256.0, "V03_S0706_I00000391": 290.0,
+    "V03_S0706_I00000393": 232.0, "V03_S0706_I00000400": 158.0, "V03_S0706_I00000438": 274.0,
+    "V03_S0710_I00000063": 156.0, "V03_S0712_I00000412": 200.0, "V03_S0712_I00000415": 130.0,
+    "V03_S0712_I00000418": 88.0, "V03_S0712_I00000420": 436.0, "V03_S0712_I00000425": 191.38,
+    "V03_S0717_I00000180": 358.0, "V03_S0717_I00000185": 560.0, "V03_S0717_I00000188": 398.0,
+    "V03_S0774_I00000144": 208.0, "V03_S0774_I00000145": 320.0, "V03_S0774_I00000147": 318.0,
+    "V03_S0846_I00000070": 166.0, "V03_S0846_I00000285": 146.0, "V03_S0846_I00000297": 236.0,
+    "V03_S0846_I00000298": 128.0, "V03_S0846_I00000303": 168.0, "V03_S0865_I00000162": 128.0,
+    "V03_S0865_I00000164": 128.0, "V03_S0865_I00000169": 130.0, "V03_S0870_I00000054": 220.0,
+    "V03_S0880_I00000014": 138.0, "V03_S0880_I00000153": 246.0, "V03_S0880_I00000156": 52.0,
+    "V03_S0888_I00000144": 560.0, "V03_S0888_I00000153": 110.0, "V03_S0926_I00000072": 250.0,
+    "V03_S0926_I00000075": 168.0, "V03_S0926_I00000078": 126.0, "V03_S0926_I00000081": 144.0,
+    "V03_S0926_I00000088": 274.0, "V03_S0932_I00000162": 184.0, "V03_S0941_I00000179": 230.0,
+    "V03_S0941_I00000180": 286.0, "V03_S0941_I00000181": 358.0, "V03_S0941_I00000182": 318.0,
+    "V03_S0941_I00000184": 310.0, "V03_S0941_I00000190": 348.0, "V03_S0966_I00000210": 218.0,
+    "V03_S1052_I00000319": 288.0, "V03_S1052_I00000323": 268.0, "V03_S1052_I00000324": 212.0,
+    "V03_S1052_I00000327": 246.0, "V03_S1062_I00000057": 480.0, "V03_S1128_I00000087": 192.0,
+    "V03_S1131_I00000026": 286.0, "V03_S1131_I00000027": 432.0, "V03_S1131_I00000028": 612.0,
+    "V03_S1131_I00000031": 456.0, "V03_S1132_I00000105": 336.0, "V03_S1132_I00000110": 406.0,
+    "V03_S1135_I00000055": 216.0, "V03_S1139_I00000026": 146.0, "V03_S1139_I00000027": 206.0,
+    "V03_S1139_I00000032": 266.0, "V03_S1147_I00000105": 222.0, "V03_S1147_I00000110": 280.0,
+    "V03_S1153_I00000026": 250.0, "V03_S1153_I00000027": 380.0, "V03_S1153_I00000028": 556.0,
+    "V03_S1153_I00000031": 666.0, "V03_S1153_I00000032": 462.0, "V03_S1156_I00000027": 642.0,
+    "V03_S1159_I00000401": 374.0, "V03_S1159_I00000402": 330.0, "V03_S1176_I00000232": 124.0,
+    "V03_S1176_I00000388": 200.0, "V03_S1176_I00000389": 312.0, "V03_S1176_I00000390": 178.0,
+    "V03_S1176_I00000391": 314.0, "V03_S1176_I00000397": 252.0, "V03_S1176_I00000398": 126.0,
+    "V03_S1176_I00000438": 140.0, "V03_S1209_I00000054": 232.0, "V03_S1209_I00000055": 154.0,
+    "V03_S1209_I00000070": 226.0, "V03_S1209_I00000453": 105.98, "V03_S1220_I00000402": 538.0,
+    "V03_S1220_I00000403": 402.0, "V03_S1246_I00000056": 302.0, "V03_S1253_I00000314": 242.0,
+    "V03_S1253_I00000315": 212.0, "V03_S1253_I00000316": 216.0, "V03_S1253_I00000319": 196.0,
+    "V03_S1253_I00000320": 214.0, "V03_S1253_I00000321": 186.0, "V03_S1253_I00000323": 188.0,
+    "V03_S1253_I00000325": 216.0, "V03_S1270_I00000059": 170.0, "V03_S1270_I00000068": 220.0,
+    "V03_S1279_I00000111": 204.0, "V03_S1279_I00000112": 192.0, "V03_S1279_I00000120": 226.0,
+    "V03_S1279_I00000121": 210.0, "V03_S1309_I00000413": 264.0, "V03_S1309_I00000417": 376.0,
+    "V03_S1309_I00000419": 290.0, "V03_S1312_I00000159": 364.0, "V03_S1312_I00000166": 512.0,
+    "V03_S1313_I00000105": 356.0, "V03_S1313_I00000106": 206.0, "V03_S1313_I00000107": 262.0,
+    "V03_S1313_I00000110": 218.0, "V03_S1313_I00000111": 412.0, "V03_S1313_I00000112": 362.0,
+    "V03_S1317_I00000194": 194.0, "V03_S1317_I00000415": 236.0, "V03_S1317_I00000420": 154.0,
+    "V03_S1322_I00000110": 192.0, "V03_S1322_I00000119": 272.0, "V03_S1322_I00000121": 128.0,
+    "V03_S1331_I00000107": 192.0, "V03_S1331_I00000108": 172.0, "V03_S1331_I00000115": 220.0,
+    "V03_S1331_I00000118": 210.0, "V03_S1331_I00000121": 94.0, "V03_S1417_I00000320": 382.0,
+    "V03_S1631_I00000212": 154.0, "V03_S1825_I00000001": 156.0, "V03_S1848_I00000179": 152.0,
+    "V03_S1848_I00000185": 320.0, "V03_S1848_I00000189": 310.0, "V03_S1848_I00000190": 316.0,
+    "V03_S1869_I00000303": 210.0, "V03_S1930_I00000105": 256.0, "V03_S2044_I00000334": 406.0,
+    "V03_S2044_I00000337": 286.0, "V03_S2044_I00000338": 482.0, "V03_S2044_I00000340": 371.18,
+    "V03_S2083_I00000210": 198.0, "V03_S2083_I00000213": 226.0, "V03_S2083_I00000216": 210.0,
+    "V03_S2132_I00000216": 142.0,
+}
+
+
+# =============================================================================
 # IO paths + loaders
 # =============================================================================
 
@@ -296,9 +474,6 @@ DEFAULT_VAD_DIR = str(
 )
 DEFAULT_TRANSCRIPT_DIR = str(
     PROJECT_ROOT / "turn_taking_analysis" / "subset" / "transcript"
-)
-DEFAULT_AUDIO_DIR = str(
-    PROJECT_ROOT / "turn_taking_analysis" / "subset" / "audio"
 )
 
 
@@ -379,22 +554,34 @@ def extract_words_from_transcript(segments: list[dict]) -> list[dict]:
     return words
 
 
-def load_audio_duration(wav_path: str) -> float:
-    """Return a wav file's duration in seconds. Reads only the WAV header
-    via soundfile.info — no audio decoded. soundfile is already a project
-    dependency (used by splice_wavs.py).
+def get_audio_duration(interaction_id: str) -> float:
+    """Return the wav duration in seconds for an interaction, via a dict
+    lookup against the inlined `AUDIO_DURATIONS_S` table.
 
-    File duration is needed to bound the sample-time enumeration: we only
-    emit samples for t such that t + max(τ) ≤ file_duration, so every
-    horizon fits inside the file and listener-VAD silence past t+τ
-    accurately reflects "B not voiced" rather than "VAD didn't see this
-    region".
+    Both participants in a Seamless dyad share an identical wav duration
+    (verified across the active manifest), so one entry per interaction
+    suffices for both file_id_a and file_id_b. This eliminates the
+    runtime dependency on subset/audio/ — the labeling pipeline now
+    runs end-to-end from VAD + transcript JSONLs alone.
+
+    File duration is needed to bound the sample-time enumeration: we
+    only emit samples for t such that t + max(τ) ≤ file_duration, so
+    every horizon fits inside the file and listener-VAD silence past
+    t+τ accurately reflects "B not voiced" rather than "VAD didn't see
+    this region".
+
+    Raises KeyError if the interaction isn't in the table — typically
+    means manifest.csv was extended without regenerating
+    AUDIO_DURATIONS_S. See the regeneration recipe at the top of the
+    constants block.
     """
-    if not os.path.exists(wav_path):
-        raise FileNotFoundError(f"Audio wav missing: {wav_path}")
-    import soundfile as sf  # lazy import
-    info = sf.info(wav_path)
-    return info.frames / info.samplerate
+    if interaction_id not in AUDIO_DURATIONS_S:
+        raise KeyError(
+            f"interaction {interaction_id!r} not in AUDIO_DURATIONS_S; "
+            f"the dict is stale relative to manifest.csv. Regenerate it "
+            f"per the recipe near the dict definition."
+        )
+    return AUDIO_DURATIONS_S[interaction_id]
 
 
 # =============================================================================
@@ -716,7 +903,6 @@ def process_interaction(
     *,
     vad_dir: str,
     transcript_dir: str,
-    audio_dir: str,
     stride_ms: int,
     tau_grid_ms: tuple,
     substantive_duration_ms: float,
@@ -743,12 +929,11 @@ def process_interaction(
         load_transcript_jsonl(os.path.join(transcript_dir, f"{file_id_b}.jsonl"))
     )
 
-    # Audio durations (wav header only, fast). Use the shorter of the two
-    # as the effective file duration so sample horizons never extend past
-    # either participant's VAD coverage.
-    duration_a = load_audio_duration(os.path.join(audio_dir, f"{file_id_a}.wav"))
-    duration_b = load_audio_duration(os.path.join(audio_dir, f"{file_id_b}.wav"))
-    file_duration = min(duration_a, duration_b)
+    # File duration: dict lookup against the inlined AUDIO_DURATIONS_S
+    # table. Both participants in a Seamless dyad share an identical wav
+    # duration (verified across the active manifest), so one lookup
+    # serves both.
+    file_duration = get_audio_duration(dyad_id)
 
     transcript_present_a = len(words_a) > 0
     transcript_present_b = len(words_b) > 0
@@ -909,11 +1094,6 @@ def main() -> int:
     parser.add_argument("--transcript-dir", default=DEFAULT_TRANSCRIPT_DIR,
                         help="Per-participant WhisperX transcript JSONLs. "
                              "Default: %(default)s")
-    parser.add_argument("--audio-dir", default=DEFAULT_AUDIO_DIR,
-                        help="Per-participant wavs. Only the WAV header is "
-                             "read (via soundfile.info) — needed to bound "
-                             "sample-time enumeration by file duration. "
-                             "Default: %(default)s")
     parser.add_argument("--output-root", default=DEFAULT_OUTPUT_ROOT,
                         help="Parent of the emitted labels/ subdir and "
                              "manifest.json. Default: %(default)s")
@@ -997,7 +1177,6 @@ def main() -> int:
                 row=row,
                 vad_dir=args.vad_dir,
                 transcript_dir=args.transcript_dir,
-                audio_dir=args.audio_dir,
                 stride_ms=args.stride_ms,
                 tau_grid_ms=tau_grid,
                 substantive_duration_ms=args.substantive_duration_ms,
