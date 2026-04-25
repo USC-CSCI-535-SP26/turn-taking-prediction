@@ -81,6 +81,24 @@ DEFAULT_VAL_FRAC = 0.15
 DEFAULT_TEST_FRAC = 0.15
 DEFAULT_SEED = 42
 
+# Interactions excluded from the pool before splits are computed.
+# Each has empty (0-byte) VAD and/or transcript files at Meta's S3
+# source for one or both participants — verified by HTTP HEAD
+# (content-length: 0). The label-generation pipeline can't produce
+# valid samples without those upstream artifacts, so dropping them
+# here keeps manifest.csv aligned with what the labeler can actually
+# emit.
+EXCLUDED_INTERACTION_IDS = frozenset({
+    "V00_S1204_I00000196",   # P1109 VAD + transcript both 0 bytes
+    "V03_S0132_I00000132",   # both pids: VAD 0 bytes
+    "V03_S0134_I00000498",   # both pids: VAD + transcript both 0 bytes
+    "V03_S0190_I00000486",   # both pids: VAD + transcript both 0 bytes
+    "V03_S0199_I00000498",   # both pids: VAD + transcript both 0 bytes
+    "V03_S0329_I00000068",   # both pids: VAD + transcript both 0 bytes
+    "V03_S0702_I00000209",   # both pids: VAD + transcript both 0 bytes
+    "V03_S0712_I00000421",   # both pids: VAD 0 bytes
+})
+
 
 MANIFEST_COLUMNS = [
     "split",
@@ -412,6 +430,9 @@ def main() -> None:
     new_entries = [e for e in new_entries if e["interaction_id"] not in poc_iids]
 
     pool = poc_entries + new_entries
+    # Drop hand-flagged interactions with empty upstream VAD/transcript
+    # files before splits are computed (see EXCLUDED_INTERACTION_IDS).
+    pool = [e for e in pool if e["interaction_id"] not in EXCLUDED_INTERACTION_IDS]
     targets = compute_targets(len(pool), args.train_frac, args.val_frac)
 
     assignments, components = assign_splits(pool, targets, args.seed)
