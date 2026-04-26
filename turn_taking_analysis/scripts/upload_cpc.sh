@@ -28,11 +28,24 @@ awk -F, 'NR>1 {print $11"\t"$12"\t"$3}' manifests/manifest.csv \
     '
 echo "[$(date +%H:%M:%S)] tar done: $(ls "$TAR_DIR" | wc -l | tr -d ' ') tarballs"
 
-# --- Step 2: upload via rclone (parallel, resumable) ------------------------
+# --- Step 2: upload via rclone (throttled, resumable, integrity-checked) ----
+# Throttle params chosen after first run hit Drive's per-100s rate limit
+# (burst freezes at 18% with default --transfers=8). 15 MiB/s × 4 transfers
+# stays under the per-user quota and gives a steady, predictable rate
+# (~85 min for 88 GiB) instead of oscillating burst↔freeze.
+#   --checksum             : hash-compare existing dest files (catches partial
+#                            uploads on resume; ~15 sec for ~65 already-done)
+#   --transfers=4          : reduce concurrent pressure on Drive's quota
+#   --tpslimit=4 --burst=4 : cap rclone's API calls/sec → no 403 quotaExceeded
+#   --bwlimit=15M          : hard cap upload speed; trades peak for sustained
+#   --log-file             : audit trail, replayable diagnostics
 echo "[$(date +%H:%M:%S)] uploading to ${REMOTE}:${DRIVE_DEST}..."
 rclone copy "$TAR_DIR" "${REMOTE}:${DRIVE_DEST}" \
-  --transfers=8 --drive-chunk-size=64M \
-  --progress --stats=15s --log-level INFO
+  --checksum \
+  --transfers=4 --drive-chunk-size=64M \
+  --tpslimit=4 --tpslimit-burst=4 \
+  --bwlimit=15M \
+  --progress --stats=15s --log-file="$LOG" --log-level INFO
 
 # --- Step 3: cleanup --------------------------------------------------------
 echo "[$(date +%H:%M:%S)] cleaning up local tarballs..."
