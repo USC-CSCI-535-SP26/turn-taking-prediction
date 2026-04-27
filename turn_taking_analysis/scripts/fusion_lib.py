@@ -360,18 +360,28 @@ class TurnTakingDataset(Dataset):
             fid = speaker_fid if role == "speaker" else listener_fid
             fname = splice_filename_for(start_s, end_s, fid)
             path = os.path.join(mod_dir, fid, fname)
+            if not os.path.exists(path):
+                return None
             arr = np.load(path).astype(np.float32, copy=False)
             tensors.append(torch.from_numpy(arr))
         return tensors, s["label"]
 
 def _collate_streams(batch):
-    """Stack each stream across the batch. Returns (list_of_stacked, labels)."""
+    """Stack each stream across the batch. Returns (list_of_stacked, labels).
+    Skips None entries from missing files and truncates tensors to minimum
+    length to handle off-by-one frame mismatches across modalities.
+    """
+    batch = [b for b in batch if b is not None]
+    if not batch:
+        return None, None
     streams_per_sample, labels = zip(*batch)
     n_streams = len(streams_per_sample[0])
-    stacked = [
-        torch.stack([sample[i] for sample in streams_per_sample], dim=0)
-        for i in range(n_streams)
-    ]
+    stacked = []
+    for i in range(n_streams):
+        tensors = [sample[i] for sample in streams_per_sample]
+        min_len = min(t.shape[0] for t in tensors)
+        tensors = [t[:min_len] for t in tensors]
+        stacked.append(torch.stack(tensors, dim=0))
     labels_t = torch.tensor(labels, dtype=torch.long)
     return stacked, labels_t
 
@@ -1043,5 +1053,3 @@ def sweep_tau(
                   f"loss={ev['loss']:.4f}  macroF1={ev['macro_f1']:.4f}  "
                   f"per-class={ev['per_class_f1']}")
     return out
-
-
