@@ -469,18 +469,33 @@ class TurnTakingDataset(Dataset):
 
     def __getitem__(self, idx: int):
         s = self.samples[idx]
+
         speaker_fid = s["speaker_file_id"]
         listener_fid = s["listener_file_id"]
         start_s, end_s = s["start_s"], s["end_s"]
+
         tensors: list[torch.Tensor] = []
-        for mod_dir, role in self._resolved:
+
+        for (mod_dir, role), stream_cfg in zip(self._resolved, self.streams):
             fid = speaker_fid if role == "speaker" else listener_fid
+
             fname = splice_filename_for(start_s, end_s, fid)
             path = os.path.join(mod_dir, fid, fname)
-            arr = np.load(path).astype(np.float32, copy=False)
-            tensors.append(torch.from_numpy(arr))
-        return tensors, s["label"]
 
+            arr = np.load(path).astype(np.float32, copy=False)
+
+            # --- enforce fixed length ---
+            cfg = self.registry[stream_cfg["modality"]]
+            target_t = int(round(cfg.get("frame_rate_hz", 0.0) * WINDOW_S))
+            feature_dim = int(cfg["feature_dim"])
+
+            if target_t > 0:
+                arr = _fix_seq_len(arr, target_t=target_t, feature_dim=feature_dim)
+
+            tensors.append(torch.from_numpy(arr))
+
+        return tensors, s["label"]
+    
 class TurnTakingDatasetCoordination(Dataset):
     """
     Per-sample loader.
@@ -1133,6 +1148,33 @@ def run_experiment(
     samples = enumerate_samples(manifest_rows, labels)
     by_split = split_samples(samples)
 
+    has_file_stream = any(
+        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
+        for s in streams
+    )
+
+    if has_file_stream:
+        filtered_by_split = {}
+        total_dropped = 0
+
+        for split_name, samples_for_split in by_split.items():
+            kept, dropped = filter_samples_with_existing_files(
+                samples_for_split,
+                streams,
+                modality_registry,
+            )
+
+            filtered_by_split[split_name] = kept
+            total_dropped += len(dropped)
+
+            if verbose and dropped:
+                print(f"  dropped {len(dropped)} {split_name} samples missing feature files")
+                if dropped[0][1]:
+                    print("  example missing:", dropped[0][1][0])
+
+        by_split = filtered_by_split
+        samples = [s for sample_list in by_split.values() for s in sample_list]
+
     if max_samples_per_split is not None:
         # Shuffle each split BEFORE truncating so the cap pulls a random
         # subset rather than the first-N samples in label-iteration
@@ -1313,9 +1355,6 @@ def run_experiment_coordination(
 
         by_split = filtered_by_split
         samples = [s for sample_list in by_split.values() for s in sample_list]
-
-        by_split = filtered_by_split
-        samples = [s for split_samples in by_split.values() for s in split_samples]
 
     coordination_lookup = load_coordination_features(
             coordination_csv_path,
