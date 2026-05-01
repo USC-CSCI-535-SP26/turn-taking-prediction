@@ -1373,24 +1373,19 @@ def run_experiment(
     seed: int = 42,
     max_samples_per_split: int | None = None,
     verbose: bool = True,
+
+    # self-attention options
+    attention_dim: int | None = None,
+    attention_heads: int | list[int] = 4,
+    attention_layers: int = 2,
+    attention_pooling: str = "mean",
 ) -> dict:
-    """Train one experiment end-to-end.
+    """
+    Train one non-coordination experiment end-to-end.
 
-    Args:
-      streams: list of {'modality': <name>, 'role': 'speaker'|'listener'}.
-      fusion: 'unimodal' | 'early' | 'neural_concat'.
-      labels_path: path to labels_tau_XXXX.json (picks training τ).
-      hidden_size, dropout: applied to every fusion family.
-      num_layers_early: GRU stack depth for EarlyFusionGRU only
-        (unimodal and neural-concat use single-layer GRUs per practicum).
-      epochs, batch_size, learning_rate, patience: standard training
-        hyperparameters. Defaults match the practicum (30 / 32 / 1e-3 / 4).
-      max_samples_per_split: if set, truncate each split to at most this
-        many samples after a seed-deterministic shuffle (dry-run mode).
-
-    Returns:
-      dict with keys: name, config, samples_summary, train_history,
-        test_eval, model_state (best-val weights), stream_dims, device.
+    Supports:
+      - standard GRU: unimodal / early / neural_concat
+      - SSA: self_attention over non-coordination streams
     """
     torch.manual_seed(seed)
     np.random.seed(seed)
@@ -1416,12 +1411,14 @@ def run_experiment(
                 streams,
                 modality_registry,
             )
-
             filtered_by_split[split_name] = kept
             total_dropped += len(dropped)
 
             if verbose and dropped:
-                print(f"  dropped {len(dropped)} {split_name} samples missing feature files")
+                print(
+                    f"  dropped {len(dropped)} {split_name} samples "
+                    f"missing feature files"
+                )
                 if dropped[0][1]:
                     print("  example missing:", dropped[0][1][0])
 
@@ -1429,72 +1426,107 @@ def run_experiment(
         samples = [s for sample_list in by_split.values() for s in sample_list]
 
     if max_samples_per_split is not None:
-        # Shuffle each split BEFORE truncating so the cap pulls a random
-        # subset rather than the first-N samples in label-iteration
-        # order. Without the shuffle, the first N samples all come from
-        # the first 1–2 interactions in the labels JSON — wildly non-
-        # representative class distribution and useless for dry-run
-        # validation. Deterministic given `seed`.
         rng = random.Random(seed)
         for split in list(by_split.keys()):
             rng.shuffle(by_split[split])
             by_split[split] = by_split[split][:max_samples_per_split]
-        samples = [s for split_samples_list in by_split.values()
-                   for s in split_samples_list]
+        samples = [
+            s
+            for split_samples_list in by_split.values()
+            for s in split_samples_list
+        ]
 
-    stream_dims = [modality_registry[s["modality"]]["feature_dim"]
-                   for s in streams]
+    stream_dims = [int(modality_registry[s["modality"]]["feature_dim"]) for s in streams]
 
     if verbose:
         print(f"=== Experiment: {name} ===")
-        print(f"  streams:   {streams}")
-        print(f"  fusion:    {fusion}")
-        print(f"  device:    {device_t}")
+        print(f"  streams:     {streams}")
+        print(f"  fusion:      {fusion}")
+        print(f"  stream_dims: {stream_dims}")
+        print(f"  device:      {device_t}")
+
         summary = summarize_samples(samples)
-        print(f"  samples:   total={summary['total']}  "
-              f"per_split={summary['per_split']}")
+        print(
+            f"  samples:     total={summary['total']} "
+            f"per_split={summary['per_split']}"
+        )
         for sp, dist in summary["per_split_class"].items():
-            print(f"             {sp:5s} class-dist: {dist}")
+            print(f"               {sp:5s} class-dist: {dist}")
 
     train_loader = make_dataloader(
-        by_split.get("train", []), streams, modality_registry,
-        batch_size=batch_size, shuffle=True, num_workers=num_workers,
+        by_split.get("train", []),
+        streams,
+        modality_registry,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=num_workers,
     )
+
     val_loader = make_dataloader(
-        by_split.get("val", []), streams, modality_registry,
-        batch_size=batch_size, shuffle=False, num_workers=num_workers,
+        by_split.get("val", []),
+        streams,
+        modality_registry,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
     )
+
     test_loader = make_dataloader(
-        by_split.get("test", []), streams, modality_registry,
-        batch_size=batch_size, shuffle=False, num_workers=num_workers,
+        by_split.get("test", []),
+        streams,
+        modality_registry,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
     )
 
     model = build_model(
-        fusion, stream_dims,
+        fusion,
+        stream_dims,
         hidden_size=hidden_size,
         dropout=dropout,
         num_layers_early=num_layers_early,
+        attention_dim=attention_dim,
+        attention_heads=attention_heads,
+        attention_layers=attention_layers,
+        attention_pooling=attention_pooling,
     ).to(device_t)
+
     class_weights = compute_class_weights(by_split.get("train", [])).to(device_t)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     if verbose:
         n_params = sum(p.numel() for p in model.parameters())
-        print(f"  model:     {type(model).__name__}  ({n_params:,} params)")
-        print(f"  class_w:   {class_weights.cpu().tolist()}")
-        print(f"  epochs:    up to {epochs} (patience={patience})")
-        print(f"  dropout:   {dropout}  num_layers_early: {num_layers_early}")
+        print(f"  model:       {type(model).__name__} ({n_params:,} params)")
+        print(f"  class_w:     {class_weights.cpu().tolist()}")
+        print(f"  epochs:      up to {epochs} (patience={patience})")
+        print(f"  dropout:     {dropout}")
+        if fusion in {"self_attention", "attention"}:
+            print(
+                f"  attention:   dim={attention_dim or hidden_size}, "
+                f"heads={attention_heads}, layers={attention_layers}, "
+                f"pooling={attention_pooling}"
+            )
         print()
 
     model, history = train_model(
-        model, train_loader, val_loader, criterion, optimizer,
-        epochs=epochs, patience=patience, device=device_t, verbose=verbose,
+        model,
+        train_loader,
+        val_loader,
+        criterion,
+        optimizer,
+        epochs=epochs,
+        patience=patience,
+        device=device_t,
+        verbose=verbose,
     )
 
     if verbose:
         print(f"\n  final test eval ({name}):")
+
     test_eval = evaluate(model, test_loader, criterion, device_t)
+
     if verbose:
         print(f"    macro_f1 = {test_eval['macro_f1']:.4f}")
         print(f"    per-class F1 = {test_eval['per_class_f1']}")
@@ -1512,6 +1544,10 @@ def run_experiment(
             "learning_rate": learning_rate,
             "patience": patience,
             "labels_path": labels_path,
+            "attention_dim": attention_dim,
+            "attention_heads": attention_heads,
+            "attention_layers": attention_layers,
+            "attention_pooling": attention_pooling,
         },
         "stream_dims": stream_dims,
         "device": str(device_t),
@@ -1817,7 +1853,6 @@ def run_experiment_coordination(
 # =============================================================================
 # τ-sweep: re-evaluate trained weights against each per-τ label file
 # =============================================================================
-
 def sweep_tau(
     *,
     experiment_result: dict,
@@ -1832,7 +1867,10 @@ def sweep_tau(
     seed: int = 42,
     verbose: bool = True,
 ) -> dict[int, dict]:
-    """Rebuild test loaders at each τ, re-evaluate the trained model.
+    """
+    Evaluate on trained non-coordination model across tau label files.
+
+    Rebuild test loaders at each τ, re-evaluate the trained model.
 
     Returns: {tau_ms: {'macro_f1': float, 'per_class_f1': dict,
                        'loss': float, 'n_samples': int}}.
@@ -1846,6 +1884,10 @@ def sweep_tau(
     Keeping the criterion consistent with the training objective means
     the per-τ loss numbers are directly interpretable as "how well did
     the optimization target transfer to this τ."
+
+    Works for:
+      - standard GRU runs
+      - SSA self_attention runs
     """
     cfg = experiment_result["config"]
     streams = cfg["streams"]
@@ -1855,78 +1897,102 @@ def sweep_tau(
     num_layers_early = cfg.get("num_layers_early", 3)
     train_labels_path = cfg["labels_path"]
     stream_dims = experiment_result["stream_dims"]
+
     device_t = resolve_device(device) if isinstance(device, str) else device
 
-    # Rebuild the model with the SAME architectural hyperparams as
-    # training so the state dict loads cleanly (in particular,
-    # num_layers_early affects the shape of the GRU's parameter tensors
-    # for EarlyFusionGRU).
     model = build_model(
-        fusion, stream_dims,
+        fusion,
+        stream_dims,
         hidden_size=hidden_size,
         dropout=dropout,
         num_layers_early=num_layers_early,
+        attention_dim=cfg.get("attention_dim"),
+        attention_heads=cfg.get("attention_heads", 4),
+        attention_layers=cfg.get("attention_layers", 2),
+        attention_pooling=cfg.get("attention_pooling", "mean"),
     ).to(device_t)
+
     model.load_state_dict(experiment_result["model_state"])
 
-    # Reconstruct the training criterion — class-weighted CE from the
-    # train split at training-τ. This matches what `run_experiment`
-    # optimized against, so per-τ loss numbers are comparable to
-    # per-epoch train_loss in the training history.
     train_labels = load_labels(train_labels_path)
     train_samples = enumerate_samples(manifest_rows, train_labels)
     train_split = [s for s in train_samples if s["split"] == "train"]
+
+    train_split, _ = filter_samples_with_existing_files(
+        train_split,
+        streams,
+        modality_registry,
+    )
+
     if not train_split:
         raise ValueError(
-            f"sweep_tau: no train-split samples derivable from "
-            f"{train_labels_path}; cannot reconstruct class-weighted "
-            f"criterion. Did the manifest change between training "
-            f"and the τ-sweep?"
+            f"sweep_tau: no train-split samples from {train_labels_path}"
         )
+
     class_weights = compute_class_weights(train_split).to(device_t)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
 
     out: dict[int, dict] = {}
-    rng = random.Random(seed)
+
     for tau_ms in tau_grid_ms:
         labels_path = os.path.join(labels_dir, f"labels_tau_{tau_ms:04d}.json")
+
         if not os.path.exists(labels_path):
             if verbose:
                 print(f"  τ={tau_ms}ms: labels file missing at {labels_path}; skipping")
             continue
+
         labels = load_labels(labels_path)
         samples = enumerate_samples(manifest_rows, labels)
         test_samples = [s for s in samples if s["split"] == "test"]
+
+        test_samples, dropped = filter_samples_with_existing_files(
+            test_samples,
+            streams,
+            modality_registry,
+        )
+
+        if verbose and dropped:
+            print(f"  τ={tau_ms}ms: dropped {len(dropped)} missing-file samples")
+            if dropped[0][1]:
+                print("  example missing:", dropped[0][1][0])
+
         if max_samples_per_split is not None:
-            # Shuffle before truncating so the dry-run subset is
-            # representative (same rationale as run_experiment). Uses
-            # a per-τ-stable seed so different τs see the same subset
-            # of test samples where possible (basenames that exist at
-            # every τ stay aligned across τs).
             rng_tau = random.Random(seed)
             rng_tau.shuffle(test_samples)
             test_samples = test_samples[:max_samples_per_split]
+
         if not test_samples:
             if verbose:
                 print(f"  τ={tau_ms}ms: no test samples; skipping")
             continue
+
         loader = make_dataloader(
-            test_samples, streams, modality_registry,
-            batch_size=batch_size, shuffle=False, num_workers=num_workers,
+            test_samples,
+            streams,
+            modality_registry,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=num_workers,
         )
+
         ev = evaluate(model, loader, criterion, device_t)
+
         out[tau_ms] = {
             "macro_f1": ev["macro_f1"],
             "per_class_f1": ev["per_class_f1"],
             "loss": ev["loss"],
             "n_samples": len(test_samples),
         }
-        if verbose:
-            print(f"  τ={tau_ms:>4}ms  n={len(test_samples):>5}  "
-                  f"loss={ev['loss']:.4f}  macroF1={ev['macro_f1']:.4f}  "
-                  f"per-class={ev['per_class_f1']}")
-    return out
 
+        if verbose:
+            print(
+                f"  τ={tau_ms:>4}ms  n={len(test_samples):>5}  "
+                f"loss={ev['loss']:.4f}  macroF1={ev['macro_f1']:.4f}  "
+                f"per-class={ev['per_class_f1']}"
+            )
+
+    return out
 
 def sweep_tau_coordination(
     *,
@@ -2088,34 +2154,73 @@ def sweep_tau_coordination(
 
 def sweep_tau_coordination_safe(
     *,
-    experiment_result,
-    modality_registry,
-    manifest_rows,
-    labels_dir,
-    tau_grid_ms=DEFAULT_TAU_GRID_MS,
-    batch_size=32,
-    num_workers=0,
-    device="auto",
-    max_samples_per_split=None,
-    seed=42,
-    verbose=True,
-    coordination_csv_path=None,
-    coordination_feature_cols=None,
-    missing_coordination="zeros",
-):
+    experiment_result: dict,
+    modality_registry: dict[str, dict],
+    manifest_rows: list[dict],
+    labels_dir: str,
+    tau_grid_ms: tuple[int, ...] = DEFAULT_TAU_GRID_MS,
+    batch_size: int = 32,
+    num_workers: int = 0,
+    device: torch.device | str = "auto",
+    max_samples_per_split: int | None = None,
+    seed: int = 42,
+    verbose: bool = True,
+    coordination_csv_path: str | None = None,
+    coordination_feature_cols: list[str] | None = None,
+    missing_coordination: str = "zeros",
+) -> dict[int, dict]:
+    """
+    Evaluate one trained coordination model across tau label files.
+
+    Works for:
+      - coordination summary GRU/neural_concat
+      - CSA continuous coordination self_attention
+    """
     cfg = experiment_result["config"]
     streams = cfg["streams"]
     fusion = cfg["fusion"]
+
     device_t = resolve_device(device) if isinstance(device, str) else device
 
-    coordination_csv_path = coordination_csv_path or experiment_result.get("coordination_csv_path") or cfg.get("coordination_csv_path")
-    coordination_feature_cols = coordination_feature_cols or experiment_result.get("coordination_feature_cols") or fl.COORDINATION_FEATURE_COLUMNS
-    missing_coordination = experiment_result.get("missing_coordination", missing_coordination)
+    coordination_csv_path = (
+        coordination_csv_path
+        if coordination_csv_path is not None
+        else cfg.get("coordination_csv_path")
+    )
 
-    coordination_lookup = load_coordination_features(
-        coordination_csv_path,
-        feature_cols=coordination_feature_cols,
-    ) if coordination_csv_path is not None else {}
+    coordination_feature_cols = (
+        coordination_feature_cols
+        if coordination_feature_cols is not None
+        else cfg.get("coordination_feature_cols", COORDINATION_FEATURE_COLUMNS)
+    )
+
+    missing_coordination = cfg.get("missing_coordination", missing_coordination)
+
+    has_summary_coordination = any(
+        modality_registry[s["modality"]].get("kind", "spliced") == "coordination"
+        and modality_registry[s["modality"]].get("coordination_mode", "summary") == "summary"
+        for s in streams
+    )
+
+    has_file_stream = any(
+        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
+        for s in streams
+    )
+
+    if has_summary_coordination:
+        if coordination_csv_path is None:
+            raise ValueError(
+                "Summary coordination stream needs coordination_csv_path."
+            )
+
+        coordination_lookup = load_coordination_features(
+            coordination_csv_path,
+            feature_cols=coordination_feature_cols,
+        )
+        coordination_feature_dim = len(coordination_feature_cols)
+    else:
+        coordination_lookup = {}
+        coordination_feature_dim = None
 
     model = build_model(
         fusion,
@@ -2123,33 +2228,39 @@ def sweep_tau_coordination_safe(
         hidden_size=cfg["hidden_size"],
         dropout=cfg.get("dropout", 0.3),
         num_layers_early=cfg.get("num_layers_early", 3),
+        attention_dim=cfg.get("attention_dim"),
+        attention_heads=cfg.get("attention_heads", 4),
+        attention_layers=cfg.get("attention_layers", 2),
+        attention_pooling=cfg.get("attention_pooling", "mean"),
     ).to(device_t)
+
     model.load_state_dict(experiment_result["model_state"])
 
     train_labels = load_labels(cfg["labels_path"])
     train_samples = enumerate_samples(manifest_rows, train_labels)
+    train_samples = [s for s in train_samples if s["split"] == "train"]
 
-    # Match training behavior: filter missing file-backed streams
-    train_samples, _ = filter_samples_with_existing_files(
-        [s for s in train_samples if s["split"] == "train"],
-        streams,
-        modality_registry,
-    )
+    if has_file_stream:
+        train_samples, _ = filter_samples_with_existing_files(
+            train_samples,
+            streams,
+            modality_registry,
+        )
+
+    if not train_samples:
+        raise ValueError("No train samples available for class-weight reconstruction.")
 
     class_weights = compute_class_weights(train_samples).to(device_t)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
 
-    has_file_stream = any(
-        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
-        for s in streams
-    )
-
-    out = {}
+    out: dict[int, dict] = {}
 
     for tau_ms in tau_grid_ms:
         labels_path = os.path.join(labels_dir, f"labels_tau_{tau_ms:04d}.json")
+
         if not os.path.exists(labels_path):
-            print(f"  τ={tau_ms}ms: missing labels, skipping")
+            if verbose:
+                print(f"  τ={tau_ms}ms: missing labels, skipping")
             continue
 
         labels = load_labels(labels_path)
@@ -2163,9 +2274,13 @@ def sweep_tau_coordination_safe(
                 streams,
                 modality_registry,
             )
-            if verbose:
-                print(f"  τ={tau_ms}ms: kept {len(test_samples)}/{before}, dropped {len(dropped)} missing-file samples")
-                if dropped and dropped[0][1]:
+
+            if verbose and dropped:
+                print(
+                    f"  τ={tau_ms}ms: kept {len(test_samples)}/{before}, "
+                    f"dropped {len(dropped)} missing-file samples"
+                )
+                if dropped[0][1]:
                     print("    example missing:", dropped[0][1][0])
 
         if max_samples_per_split is not None:
@@ -2174,7 +2289,8 @@ def sweep_tau_coordination_safe(
             test_samples = test_samples[:max_samples_per_split]
 
         if not test_samples:
-            print(f"  τ={tau_ms}ms: no test samples, skipping")
+            if verbose:
+                print(f"  τ={tau_ms}ms: no test samples, skipping")
             continue
 
         loader = make_dataloader_coordination(
@@ -2183,9 +2299,9 @@ def sweep_tau_coordination_safe(
             modality_registry,
             batch_size=batch_size,
             shuffle=False,
-            num_workers=0,  # force stable debugging
+            num_workers=num_workers,
             coordination_lookup=coordination_lookup,
-            coordination_feature_dim=len(coordination_feature_cols),
+            coordination_feature_dim=coordination_feature_dim,
             missing_coordination=missing_coordination,
         )
 
@@ -2198,14 +2314,14 @@ def sweep_tau_coordination_safe(
             "n_samples": len(test_samples),
         }
 
-        print(
-            f"  τ={tau_ms:>4}ms  n={len(test_samples):>5}  "
-            f"loss={ev['loss']:.4f}  macroF1={ev['macro_f1']:.4f}  "
-            f"per-class={ev['per_class_f1']}"
-        )
+        if verbose:
+            print(
+                f"  τ={tau_ms:>4}ms  n={len(test_samples):>5}  "
+                f"loss={ev['loss']:.4f}  macroF1={ev['macro_f1']:.4f}  "
+                f"per-class={ev['per_class_f1']}"
+            )
 
     return out
-
 
 ##########################
 # COORDINATION ANALYSIS
