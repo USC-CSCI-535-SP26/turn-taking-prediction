@@ -2540,3 +2540,938 @@ def _load_continuous_coordination_file(
         arr = _fix_seq_len(arr, target_t=target_t, feature_dim=feature_dim)
 
     return arr
+
+
+# =============================================================================
+# PREFLIGHT — Idea 1 + Idea 2 combined
+#
+# Goal: catch torch.stack shape-divergence errors (e.g. continuous-coord zero-
+# fallback (1, F) mixed with real (T, F) WCC arrays in the same batch) AND
+# config / model-build errors BEFORE the experiment runner is ever called.
+#
+# Idea 1 — header-only audit. For every sample × stream pair, resolve the
+# file path the dataset would resolve and read just the .npy header (no
+# tensor deserialization). Tabulate shapes per stream; any divergence is a
+# stacking hazard. Fast: ~microseconds per file, single-minute total for
+# tens of thousands of samples.
+#
+# Idea 2 — static config validation + synthetic CPU forward. Validate every
+# experiment's stream config + fusion family + attention dims. Then build the
+# model and run a single forward on synthetic CPU tensors of registry-declared
+# shape. Catches model-build issues (attention_dim % heads, GRU input_size
+# mismatch, early-fusion T mismatch) without touching disk.
+#
+# Behavior: does NOT raise. Continues across all errors. Returns a structured
+# report with provenance (interaction_id, speaker/listener file_id +
+# participant, split, window timestamps, tried paths, observed/expected shape)
+# for every error.
+# =============================================================================
+
+PREFLIGHT_FUSION_FAMILIES = frozenset(
+    {"unimodal", "early", "neural_concat", "self_attention", "attention"}
+)
+
+
+def _participant_from_file_id(file_id: str) -> str:
+    """Extract the trailing Pxxxx token from a file_id like 'V00_S0691_I00000482_P0500'."""
+    if not file_id:
+        return ""
+    return file_id.split("_")[-1]
+
+
+def _read_npy_header_shape(path: str) -> tuple[int, ...] | None:
+    """Read just the .npy header to get the array shape.
+
+    Returns the shape tuple on success, None if the file does not exist OR the
+    header cannot be parsed (corrupt / truncated / unsupported version).
+
+    No tensor deserialization — just the magic + header. Microseconds per file.
+    """
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, "rb") as f:
+            version = np.lib.format.read_magic(f)
+            if version == (1, 0):
+                shape, _, _ = np.lib.format.read_array_header_1_0(f)
+            elif version == (2, 0):
+                shape, _, _ = np.lib.format.read_array_header_2_0(f)
+            elif hasattr(np.lib.format, "read_array_header_3_0") and version == (3, 0):
+                shape, _, _ = np.lib.format.read_array_header_3_0(f)
+            else:
+                return None
+        return tuple(shape)
+    except Exception:
+        return None
+
+
+def _read_feature_file_shape(path: str) -> tuple[int, ...] | None:
+    """Read shape of either a .npy or .json feature file.
+
+    Mirrors `_load_feature_file`'s dual-format support so the audit picks up the
+    same files the dataset would. JSON parsing is the full json.load, not a
+    cheap header — if the dataset later loads JSON it pays the same cost. .npy
+    path uses the cheap header read.
+
+    Returns None if file does not exist or shape cannot be determined.
+    """
+    if path.endswith(".json"):
+        if not os.path.exists(path):
+            return None
+        try:
+            with open(path) as f:
+                data = json.load(f)
+            if isinstance(data, dict):
+                if "features" in data:
+                    data = data["features"]
+                elif "embeddings" in data:
+                    data = data["embeddings"]
+                else:
+                    return None
+            arr = np.asarray(data)
+            return tuple(arr.shape)
+        except Exception:
+            return None
+    return _read_npy_header_shape(path)
+
+
+def _resolve_stream_paths(
+    sample: dict,
+    stream_cfg: dict,
+    modality_registry: dict[str, dict],
+) -> list[str]:
+    """Return the candidate file paths the dataset would resolve for this
+    (sample, stream) pair.
+
+    - Spliced: 2 candidate paths (.npy, .json) — mirrors `_load_feature_file`'s
+      dual-format support used by `TurnTakingDatasetCoordination`. The
+      original `TurnTakingDataset` only tries .npy, but auditing both is safe
+      (audit picks the first existing path).
+    - Continuous coord: 3 candidate paths (matches the loader's fallback chain).
+    - Summary coord: empty list (lookup is CSV-keyed, not path-based).
+    """
+    cfg = modality_registry[stream_cfg["modality"]]
+    kind = cfg.get("kind", "spliced")
+    role = stream_cfg["role"]
+
+    if kind == "coordination":
+        mode = cfg.get("coordination_mode", "summary")
+        if mode == "continuous":
+            return _coordination_continuous_candidates(cfg["dir"], sample)
+        return []  # summary coord — no path to resolve
+
+    fid = sample["speaker_file_id"] if role == "speaker" else sample["listener_file_id"]
+    fname = splice_filename_for(sample["start_s"], sample["end_s"], fid)
+    base_no_ext = os.path.join(cfg["dir"], fid, os.path.splitext(fname)[0])
+    return [base_no_ext + ".npy", base_no_ext + ".json"]
+
+
+def _make_error_record(
+    *,
+    experiment_name: str,
+    ablation_kind: str,
+    stream_idx: int,
+    stream_cfg: dict,
+    sample: dict,
+    error_kind: str,
+    error_message: str,
+    tried_paths: list[str] | None = None,
+    observed_shape: tuple | None = None,
+    expected_shape: tuple | None = None,
+) -> dict:
+    """Build a provenance-rich error record for a single (sample, stream) failure.
+
+    Every error carries enough context to grep the offending file directly:
+    interaction_id, speaker/listener file_id + participant, split, window
+    timestamps, the candidate paths the loader would have tried, and the
+    observed vs. expected shape (where applicable).
+    """
+    speaker_fid = sample.get("speaker_file_id", "")
+    listener_fid = sample.get("listener_file_id", "")
+    return {
+        "experiment_name": experiment_name,
+        "ablation_kind": ablation_kind,
+        "stream_idx": stream_idx,
+        "stream_modality": stream_cfg.get("modality", ""),
+        "stream_role": stream_cfg.get("role", ""),
+        "sample_basename": sample.get("basename", ""),
+        "interaction_id": sample.get("interaction_id", ""),
+        "speaker_file_id": speaker_fid,
+        "listener_file_id": listener_fid,
+        "speaker_participant": _participant_from_file_id(speaker_fid),
+        "listener_participant": _participant_from_file_id(listener_fid),
+        "split": sample.get("split", ""),
+        "window_start_s": float(sample.get("start_s", 0.0)),
+        "window_end_s": float(sample.get("end_s", 0.0)),
+        "tried_paths": list(tried_paths) if tried_paths else [],
+        "observed_shape": tuple(observed_shape) if observed_shape is not None else None,
+        "expected_shape": tuple(expected_shape) if expected_shape is not None else None,
+        "error_kind": error_kind,
+        "error_message": error_message,
+    }
+
+
+def _validate_experiment_config(
+    exp_cfg: dict,
+    modality_registry: dict[str, dict],
+    *,
+    coordination_csv_path: str | None,
+    coordination_lookup_provided: bool = False,
+    attention_dim: int | None,
+    attention_heads: "int | list[int]" = 4,
+    hidden_size: int,
+) -> list[str]:
+    """Pure-config validation. No data, no model build. Returns list of error
+    strings (empty list = pass). Continues past every error; never raises.
+
+    `attention_heads` is the global default used when an experiment has no
+    `attention_heads_by_modality` and no `attention_heads` of its own — must
+    match the value `_synthetic_forward` would receive at the same call site,
+    so the divisibility check is consistent with what would actually run.
+
+    `coordination_lookup_provided` should be True iff the caller (typically
+    `preflight_experiments`) was given a non-None `coordination_lookup` arg
+    — i.e. a pre-loaded summary-coord lookup is available regardless of
+    whether `coordination_csv_path` is set. Used to suppress the false-
+    positive "csv path not set" error when the lookup arrives by the
+    alternative route added in Fix 6.
+    """
+    errors: list[str] = []
+    streams = exp_cfg.get("streams", [])
+    fusion = exp_cfg.get("fusion", "")
+
+    if fusion not in PREFLIGHT_FUSION_FAMILIES:
+        errors.append(
+            f"unknown fusion family {fusion!r}; "
+            f"supported: {sorted(PREFLIGHT_FUSION_FAMILIES)}"
+        )
+
+    if not streams:
+        errors.append("experiment has no streams")
+        return errors
+
+    has_summary_coord = False
+    has_coord_any = False
+    spliced_target_Ts: list[int] = []
+
+    for i, s in enumerate(streams):
+        mod = s.get("modality")
+        role = s.get("role")
+        if mod not in modality_registry:
+            errors.append(f"stream[{i}] references unknown modality {mod!r}")
+            continue
+        if role not in {"speaker", "listener"}:
+            errors.append(f"stream[{i}] has invalid role {role!r}")
+            continue
+        cfg = modality_registry[mod]
+        kind = cfg.get("kind", "spliced")
+        if kind == "coordination":
+            has_coord_any = True
+            mode = cfg.get("coordination_mode", "summary")
+            if role != "speaker":
+                errors.append(
+                    f"stream[{i}] coordination modality {mod!r} requires "
+                    f"role='speaker'; got {role!r}"
+                )
+            if mode == "summary":
+                has_summary_coord = True
+                expected_dim = len(COORDINATION_FEATURE_COLUMNS)
+                if int(cfg.get("feature_dim", -1)) != expected_dim:
+                    errors.append(
+                        f"stream[{i}] summary coord {mod!r} feature_dim="
+                        f"{cfg.get('feature_dim')} != "
+                        f"len(COORDINATION_FEATURE_COLUMNS)={expected_dim}"
+                    )
+            elif mode == "continuous":
+                d = cfg.get("dir")
+                if not d or not os.path.isdir(d):
+                    errors.append(
+                        f"stream[{i}] continuous coord {mod!r} dir does not exist: {d!r}"
+                    )
+            else:
+                errors.append(
+                    f"stream[{i}] coord modality {mod!r} has invalid "
+                    f"coordination_mode={mode!r}"
+                )
+        else:
+            target_T = int(round(float(cfg.get("frame_rate_hz", 0.0)) * WINDOW_S))
+            if target_T > 0:
+                spliced_target_Ts.append(target_T)
+
+    # Fusion-family-specific checks
+    if fusion == "unimodal" and len(streams) != 1:
+        errors.append(f"unimodal requires exactly 1 stream; got {len(streams)}")
+
+    if fusion == "neural_concat" and len(streams) < 2:
+        errors.append(f"neural_concat requires >=2 streams; got {len(streams)}")
+
+    if fusion == "early":
+        if has_coord_any:
+            errors.append(
+                "early fusion is not supported with coordination streams "
+                "(summary T=1; continuous T differs from CPC/OpenFace). "
+                "Use neural_concat or self_attention."
+            )
+        if len(set(spliced_target_Ts)) > 1:
+            errors.append(
+                f"early fusion requires identical T across spliced streams; "
+                f"got {sorted(set(spliced_target_Ts))}"
+            )
+
+    if fusion in {"self_attention", "attention"}:
+        eff_dim = attention_dim if attention_dim is not None else hidden_size
+        # Resolution order mirrors the synthetic forward / runner:
+        #   per-experiment attention_heads_by_modality -> per-experiment
+        #   attention_heads -> global attention_heads parameter -> 4.
+        heads_cfg = exp_cfg.get(
+            "attention_heads_by_modality",
+            exp_cfg.get("attention_heads", attention_heads),
+        )
+        if isinstance(heads_cfg, int):
+            heads_list = [heads_cfg] * len(streams)
+        else:
+            heads_list = list(heads_cfg)
+            if len(heads_list) != len(streams):
+                errors.append(
+                    f"attention_heads_by_modality length {len(heads_list)} "
+                    f"!= number of streams {len(streams)}"
+                )
+        for i, h in enumerate(heads_list[: len(streams)]):
+            try:
+                h_int = int(h)
+            except Exception:
+                errors.append(f"attention_heads[{i}] is not an int: {h!r}")
+                continue
+            if h_int <= 0:
+                errors.append(f"attention_heads[{i}]={h_int} must be positive")
+                continue
+            if eff_dim % h_int != 0:
+                errors.append(
+                    f"attention_dim={eff_dim} not divisible by num_heads={h_int} "
+                    f"for stream[{i}]"
+                )
+
+    # Coord-runner requirement: at least one source for the summary lookup
+    # (CSV path OR pre-loaded lookup passed in by the caller) must exist.
+    if has_summary_coord and not coordination_csv_path and not coordination_lookup_provided:
+        errors.append(
+            "experiment has a summary coordination stream but neither "
+            "coordination_csv_path nor coordination_lookup is set"
+        )
+
+    return errors
+
+
+def _audit_stream_shapes(
+    *,
+    experiment_name: str,
+    ablation_kind: str,
+    samples: list[dict],
+    streams: list[dict],
+    modality_registry: dict[str, dict],
+    coordination_lookup: dict | None,
+    missing_coordination: str,
+    header_cache: dict[str, tuple[str, tuple[int, ...] | None]] | None = None,
+) -> dict:
+    """Header-only shape audit over every (sample, stream) pair.
+
+    For every stream:
+      - resolve the path(s) the dataset would resolve
+      - find the first existing path; read only the .npy header
+      - tabulate observed shapes; record a provenance-rich error record per
+        sample whose shape diverges, whose file is missing, or whose header
+        cannot be read
+
+    Returns:
+        {
+          "stream_summaries": [  # one entry per stream, in stream-config order
+            {
+              "stream_idx", "modality", "role", "kind",
+              "expected_T", "expected_F",
+              "observed_shapes":   {shape_tuple: count, ...},
+              "missing_count":     int,
+              "shape_mismatch_count": int,
+              "stack_hazard":      bool,
+            }, ...
+          ],
+          "errors": [error_record, ...]
+        }
+    """
+    if header_cache is None:
+        header_cache = {}
+    coordination_lookup = coordination_lookup or {}
+
+    stream_summaries: list[dict] = []
+    errors: list[dict] = []
+
+    for stream_idx, s in enumerate(streams):
+        cfg = modality_registry.get(s["modality"])
+        if cfg is None:
+            continue  # caught by config validation; skip silently here
+
+        kind = cfg.get("kind", "spliced")
+        mode = cfg.get("coordination_mode", None)
+        feature_dim = int(cfg["feature_dim"])
+        frame_rate_hz = float(cfg.get("frame_rate_hz", 0.0))
+        # `expected_T_from_rate` is the leading dim the loader will coerce to
+        # via `_fix_seq_len` whenever frame_rate_hz > 0 (applies to both spliced
+        # and continuous-coord streams). Used for both T_mismatch reporting
+        # and the post-coerce effective-shape calculation in stack_hazard.
+        expected_T_from_rate = (
+            int(round(frame_rate_hz * WINDOW_S)) if frame_rate_hz > 0 else None
+        )
+
+        observed_shapes: Counter = Counter()
+        missing_count = 0
+        shape_mismatch_count = 0
+
+        for sample in samples:
+            # ---- summary coord: CSV-keyed lookup, no path ----
+            if kind == "coordination" and mode == "summary":
+                speaker_fid = sample["speaker_file_id"]
+                speaker_pid = _participant_from_file_id(speaker_fid)
+                key = _coord_key(
+                    sample["interaction_id"],
+                    sample["start_s"],
+                    sample["end_s"],
+                    speaker_pid,
+                )
+                arr = coordination_lookup.get(key)
+                if arr is None:
+                    missing_count += 1
+                    if missing_coordination == "error":
+                        errors.append(_make_error_record(
+                            experiment_name=experiment_name,
+                            ablation_kind=ablation_kind,
+                            stream_idx=stream_idx,
+                            stream_cfg=s,
+                            sample=sample,
+                            error_kind="summary_csv_key_missing",
+                            error_message=(
+                                f"coordination CSV has no row for key={key}; "
+                                f"missing_coordination='error' will raise at training."
+                            ),
+                            expected_shape=(1, feature_dim),
+                        ))
+                    # Under 'zeros' policy summary returns (1, F) — same as real,
+                    # so no stack hazard. Record (1, F) so the per-stream summary
+                    # reflects what would actually go into torch.stack.
+                    observed_shapes[(1, feature_dim)] += 1
+                    continue
+
+                shape = tuple(arr.shape)
+                observed_shapes[shape] += 1
+                if shape != (1, feature_dim):
+                    shape_mismatch_count += 1
+                    errors.append(_make_error_record(
+                        experiment_name=experiment_name,
+                        ablation_kind=ablation_kind,
+                        stream_idx=stream_idx,
+                        stream_cfg=s,
+                        sample=sample,
+                        error_kind="shape_divergence",
+                        error_message=(
+                            f"summary coord shape {shape} != expected (1, {feature_dim})"
+                        ),
+                        observed_shape=shape,
+                        expected_shape=(1, feature_dim),
+                    ))
+                continue
+
+            # ---- file-backed streams: spliced OR continuous coord ----
+            tried_paths = _resolve_stream_paths(sample, s, modality_registry)
+
+            # Populate cache for any unseen path. Cache entry is
+            #   ("present", shape) | ("present", None=corrupt) | ("missing", None)
+            # Uses _read_feature_file_shape so .json fallbacks are handled the
+            # same way the dataset's _load_feature_file would.
+            for p in tried_paths:
+                if p in header_cache:
+                    continue
+                if os.path.exists(p):
+                    header_cache[p] = ("present", _read_feature_file_shape(p))
+                else:
+                    header_cache[p] = ("missing", None)
+
+            # Pick the first existing path (mirror loader behavior).
+            chosen: tuple[str, str, tuple[int, ...] | None] | None = None
+            for p in tried_paths:
+                status, sh = header_cache[p]
+                if status == "present":
+                    chosen = (p, status, sh)
+                    break
+
+            if chosen is None:
+                # No candidate path exists.
+                missing_count += 1
+                if kind == "coordination" and missing_coordination == "zeros":
+                    errors.append(_make_error_record(
+                        experiment_name=experiment_name,
+                        ablation_kind=ablation_kind,
+                        stream_idx=stream_idx,
+                        stream_cfg=s,
+                        sample=sample,
+                        error_kind="missing_file",
+                        error_message=(
+                            f"continuous coord file missing; missing_coordination="
+                            f"'zeros' will substitute (1, {feature_dim}) and trigger "
+                            f"a torch.stack mismatch against real-shaped windows in "
+                            f"the same batch."
+                        ),
+                        tried_paths=tried_paths,
+                        expected_shape=(expected_T_from_rate, feature_dim)
+                            if expected_T_from_rate else None,
+                    ))
+                else:
+                    errors.append(_make_error_record(
+                        experiment_name=experiment_name,
+                        ablation_kind=ablation_kind,
+                        stream_idx=stream_idx,
+                        stream_cfg=s,
+                        sample=sample,
+                        error_kind="missing_file",
+                        error_message="feature file does not exist at any candidate path",
+                        tried_paths=tried_paths,
+                        expected_shape=(expected_T_from_rate, feature_dim)
+                            if expected_T_from_rate else None,
+                    ))
+                continue
+
+            chosen_path, _status, shape = chosen
+
+            if shape is None:
+                errors.append(_make_error_record(
+                    experiment_name=experiment_name,
+                    ablation_kind=ablation_kind,
+                    stream_idx=stream_idx,
+                    stream_cfg=s,
+                    sample=sample,
+                    error_kind="header_read_failed",
+                    error_message=f"could not read .npy header at {chosen_path}",
+                    tried_paths=tried_paths,
+                ))
+                continue
+
+            observed_shapes[shape] += 1
+
+            # Trailing-dim check: must match registry feature_dim.
+            if shape and shape[-1] != feature_dim:
+                shape_mismatch_count += 1
+                errors.append(_make_error_record(
+                    experiment_name=experiment_name,
+                    ablation_kind=ablation_kind,
+                    stream_idx=stream_idx,
+                    stream_cfg=s,
+                    sample=sample,
+                    error_kind="feature_dim_mismatch",
+                    error_message=(
+                        f"trailing dim {shape[-1]} != registry feature_dim {feature_dim} "
+                        f"(file: {chosen_path})"
+                    ),
+                    observed_shape=shape,
+                    expected_shape=(None, feature_dim),
+                ))
+                continue
+
+            # Leading-dim (T) check for spliced streams. The loader will
+            # _fix_seq_len trim/pad, so this is non-fatal for stacking but is
+            # recorded as divergence so the user sees it.
+            if kind != "coordination" and expected_T_from_rate is not None:
+                if len(shape) >= 2 and shape[0] != expected_T_from_rate:
+                    shape_mismatch_count += 1
+                    errors.append(_make_error_record(
+                        experiment_name=experiment_name,
+                        ablation_kind=ablation_kind,
+                        stream_idx=stream_idx,
+                        stream_cfg=s,
+                        sample=sample,
+                        error_kind="T_mismatch",
+                        error_message=(
+                            f"leading dim {shape[0]} != expected T={expected_T_from_rate} "
+                            f"(loader will _fix_seq_len trim/pad to expected — recorded "
+                            f"as non-fatal divergence)."
+                        ),
+                        observed_shape=shape,
+                        expected_shape=(expected_T_from_rate, feature_dim),
+                    ))
+
+        # Stack-hazard verdict: compute the set of shapes that would actually
+        # reach torch.stack at runtime, accounting for the loader's coercion
+        # behavior. False positives must be avoided here because stack_hazard
+        # is the headline verdict callers act on.
+        #
+        # Coercion rules mirroring fusion_lib's loaders:
+        #   * Spliced + frame_rate_hz > 0: _fix_seq_len trims/pads leading dim
+        #     to expected_T_from_rate. Effective shape is (expected_T_from_rate, F).
+        #   * Continuous coord + frame_rate_hz > 0: same _fix_seq_len applies
+        #     to REAL files. Missing files under 'zeros' policy short-circuit
+        #     before _fix_seq_len and return raw (1, F).
+        #   * Continuous coord + frame_rate_hz = 0: no coercion; raw shape used.
+        #   * Summary coord: always (1, F) at runtime (real or zeros fallback).
+        #   * F-mismatched samples crash _fix_seq_len before stacking, so they
+        #     never contribute a shape to torch.stack — exclude them here so
+        #     they don't double-count as both feature_dim_mismatch and
+        #     stack_hazard.
+        effective_shapes: set[tuple] = set()
+        for raw_shape in observed_shapes:
+            if not raw_shape or raw_shape[-1] != feature_dim:
+                continue  # would crash before stacking; reported elsewhere
+            if expected_T_from_rate is not None and len(raw_shape) >= 2:
+                effective_shapes.add((expected_T_from_rate, raw_shape[-1]))
+            else:
+                effective_shapes.add(raw_shape)
+        # Continuous coord with 'zeros' policy: missing files inject an
+        # UNCOERCED (1, F) at runtime regardless of frame_rate_hz.
+        if (
+            kind == "coordination"
+            and mode == "continuous"
+            and missing_coordination == "zeros"
+            and missing_count > 0
+        ):
+            effective_shapes.add((1, feature_dim))
+        stack_hazard = len(effective_shapes) > 1
+
+        stream_summaries.append({
+            "stream_idx": stream_idx,
+            "modality": s.get("modality", ""),
+            "role": s.get("role", ""),
+            "kind": kind,
+            "expected_T": expected_T_from_rate,
+            "expected_F": feature_dim,
+            "observed_shapes": {repr(k): v for k, v in observed_shapes.items()},
+            "missing_count": missing_count,
+            "shape_mismatch_count": shape_mismatch_count,
+            "stack_hazard": stack_hazard,
+        })
+
+    return {"stream_summaries": stream_summaries, "errors": errors}
+
+
+def _synthetic_forward(
+    *,
+    streams: list[dict],
+    fusion: str,
+    modality_registry: dict[str, dict],
+    hidden_size: int,
+    dropout: float,
+    num_layers_early: int,
+    attention_dim: int | None,
+    attention_heads,
+    attention_layers: int,
+    attention_pooling: str,
+    continuous_coord_T: int = 21,
+) -> str | None:
+    """Build the fusion model on CPU and run a single forward pass on synthetic
+    tensors of registry-declared shape. Returns None on success, a short error
+    message on failure.
+
+    No DataLoader, no disk I/O. B=2 is enough to exercise per-batch broadcast.
+    """
+    try:
+        stream_dims: list[int] = []
+        synthetic_inputs: list[torch.Tensor] = []
+        B = 2
+
+        for s in streams:
+            cfg = modality_registry[s["modality"]]
+            kind = cfg.get("kind", "spliced")
+            mode = cfg.get("coordination_mode", None)
+            F = int(cfg["feature_dim"])
+            stream_dims.append(F)
+
+            if kind == "coordination" and mode == "summary":
+                T = 1
+            elif kind == "coordination" and mode == "continuous":
+                T = continuous_coord_T
+            else:
+                fr = float(cfg.get("frame_rate_hz", 0.0))
+                T = int(round(fr * WINDOW_S)) if fr > 0 else 1
+                if T <= 0:
+                    T = 1
+
+            synthetic_inputs.append(torch.zeros(B, T, F, dtype=torch.float32))
+
+        model = build_model(
+            fusion,
+            stream_dims,
+            hidden_size=hidden_size,
+            num_classes=NUM_CLASSES,
+            dropout=dropout,
+            num_layers_early=num_layers_early,
+            attention_dim=attention_dim,
+            attention_heads=attention_heads,
+            attention_layers=attention_layers,
+            attention_pooling=attention_pooling,
+        )
+        model.eval()
+        with torch.inference_mode():
+            logits = model(synthetic_inputs)
+        if tuple(logits.shape) != (B, NUM_CLASSES):
+            return (
+                f"model returned shape {tuple(logits.shape)}; "
+                f"expected ({B}, {NUM_CLASSES})"
+            )
+        return None
+    except Exception as e:
+        return f"{type(e).__name__}: {e}"
+
+
+def preflight_experiments(
+    *,
+    ablation_kind: str,
+    experiments: dict[str, dict],
+    modality_registry: dict[str, dict],
+    manifest_rows: list[dict],
+    labels_path: str,
+    coordination_csv_path: str | None = None,
+    coordination_feature_cols: list[str] = COORDINATION_FEATURE_COLUMNS,
+    coordination_lookup: dict | None = None,
+    missing_coordination: str = "zeros",
+    max_samples_per_split: int | None = None,
+    seed: int = 42,
+    hidden_size: int = 64,
+    dropout: float = 0.3,
+    num_layers_early: int = 3,
+    attention_dim: int | None = None,
+    attention_heads: "int | list[int]" = 4,
+    attention_layers: int = 2,
+    attention_pooling: str = "mean",
+    fail_fast: bool = False,
+    verbose: bool = True,
+    header_cache: dict | None = None,
+) -> dict:
+    """
+    Idea 1 + Idea 2 combined preflight for one ablation block.
+
+    For each experiment in `experiments`:
+      1) Static config validation (no data, no model build).
+      2) Header-only shape audit over every sample × stream pair.
+         Walks the union of samples that the runner OR τ-sweep might load,
+         which is broader than what the runner alone uses at training-τ:
+         the audit drops the training-class filter and accepts the full
+         valid label range (0..5). Reasoning: the τ-sweep re-enumerates at
+         each τ, and a window's class can shift across τs — a sample that
+         is non-training at training-τ may be training-class at another τ.
+         File existence and shape are τ-invariant, so auditing the full
+         class universe at training-τ covers every sample any τ might load.
+         Missing-file errors that the runner would silently drop or
+         substitute are surfaced.
+      3) Synthetic CPU forward through the built model.
+
+    Continues across ALL errors and reports them all. Each error record carries
+    full provenance (interaction_id, speaker/listener file_id + participant,
+    split, window timestamps, tried paths, observed/expected shape, error kind).
+
+    The same `header_cache` (path -> ("present"|"missing", shape|None)) can be
+    threaded through multiple `preflight_experiments` calls (one per ablation)
+    so shared paths (e.g. CPC speaker streams referenced by all ablations) are
+    only header-read once across the entire preflight.
+
+    `coordination_lookup` accepts a pre-loaded lookup dict (output of
+    `load_coordination_features`) so the CSV is parsed once across all
+    ablations rather than once per call. If None and `coordination_csv_path`
+    is set, the CSV is loaded internally.
+
+    Returns:
+        {
+          "ablation_kind": str,
+          "experiments": {
+              exp_name: {
+                  "status": "PASS" | "FAIL",
+                  "config_errors":             [str, ...],
+                  "shape_errors":              [error_record, ...],
+                  "missing_file_errors":       [error_record, ...],
+                  "synthetic_forward_error":   str | None,
+                  "stream_summaries":          [{...}, ...],
+              },
+              ...
+          },
+          "summary": {totals},
+        }
+    """
+    # Resolve sample list once; all experiments at the same ablation share it
+    # (they all read the same training-τ labels file).
+    #
+    # Class-filter override: pass the FULL valid label range (0..5) instead of
+    # the default training-class subset {0,1,2}. The runner pipeline enumerates
+    # samples FRESH at each τ in the τ-sweep (sweep_tau, sweep_tau_coordination,
+    # sweep_tau_coordination_safe each call enumerate_samples per-τ). A window
+    # whose class is non-training (3=INTERRUPT / 4=FAILED / 5=LAPSE) at
+    # training-τ may be a training class at some other τ, in which case it
+    # WILL be loaded by the τ-sweep at that τ. Since feature-file existence
+    # and shape are τ-invariant, auditing the full class range at training-τ
+    # gives the universe of samples any τ might load — closing the
+    # τ-coverage gap that would otherwise let τ-sweep-only stack errors slip
+    # past the preflight (the screenshotted bug class).
+    labels = load_labels(labels_path)
+    samples = enumerate_samples(
+        manifest_rows, labels, training_classes=VALID_LABEL_INTS,
+    )
+
+    if max_samples_per_split is not None:
+        rng = random.Random(seed)
+        by_split = split_samples(samples)
+        for split in list(by_split.keys()):
+            rng.shuffle(by_split[split])
+            by_split[split] = by_split[split][:max_samples_per_split]
+        samples = [s for lst in by_split.values() for s in lst]
+
+    # Capture whether the caller passed a lookup explicitly BEFORE we mutate
+    # the local variable. This signal feeds the config validator so it doesn't
+    # falsely flag "csv path not set" when the alternative route is in use.
+    caller_provided_lookup = coordination_lookup is not None
+
+    # Use the caller-provided coordination_lookup if given; otherwise load once
+    # from CSV. Sharing across ablation calls saves the CSV-parse cost per
+    # ablation (the lookup itself is read-only; safe to share).
+    if coordination_lookup is None:
+        coordination_lookup = {}
+        if coordination_csv_path is not None and os.path.exists(coordination_csv_path):
+            try:
+                coordination_lookup = load_coordination_features(
+                    coordination_csv_path,
+                    feature_cols=coordination_feature_cols,
+                )
+            except Exception as e:
+                if verbose:
+                    print(f"[preflight] WARNING: failed to load coordination CSV: {e}")
+
+    if header_cache is None:
+        header_cache = {}
+
+    per_exp_reports: dict[str, dict] = {}
+    totals = {
+        "total_experiments": 0,
+        "passed": 0,
+        "failed": 0,
+        "total_config_errors": 0,
+        "total_shape_errors": 0,
+        "total_missing_files": 0,
+        "total_synthetic_forward_failures": 0,
+    }
+
+    for exp_name, exp_cfg in experiments.items():
+        totals["total_experiments"] += 1
+        if verbose:
+            print(f"[preflight] {ablation_kind}/{exp_name} ...")
+
+        # 1) Config validation — never raises.
+        config_errors = _validate_experiment_config(
+            exp_cfg,
+            modality_registry,
+            coordination_csv_path=coordination_csv_path,
+            coordination_lookup_provided=caller_provided_lookup,
+            attention_dim=attention_dim,
+            attention_heads=attention_heads,
+            hidden_size=hidden_size,
+        )
+
+        streams = exp_cfg.get("streams", [])
+        all_mods_known = all(s.get("modality") in modality_registry for s in streams)
+
+        # 2) Shape audit — skipped only if streams reference unknown modalities
+        # (would crash the audit). All other config errors still let the audit
+        # run so the user sees data issues simultaneously.
+        audit = {"stream_summaries": [], "errors": []}
+        if streams and all_mods_known:
+            try:
+                audit = _audit_stream_shapes(
+                    experiment_name=exp_name,
+                    ablation_kind=ablation_kind,
+                    samples=samples,
+                    streams=streams,
+                    modality_registry=modality_registry,
+                    coordination_lookup=coordination_lookup,
+                    missing_coordination=missing_coordination,
+                    header_cache=header_cache,
+                )
+            except Exception as e:
+                audit["errors"].append({
+                    "experiment_name": exp_name,
+                    "ablation_kind": ablation_kind,
+                    "error_kind": "audit_internal_error",
+                    "error_message": f"{type(e).__name__}: {e}",
+                    "stream_idx": -1,
+                    "stream_modality": "",
+                    "stream_role": "",
+                    "sample_basename": "",
+                    "interaction_id": "",
+                    "speaker_file_id": "",
+                    "listener_file_id": "",
+                    "speaker_participant": "",
+                    "listener_participant": "",
+                    "split": "",
+                    "window_start_s": 0.0,
+                    "window_end_s": 0.0,
+                    "tried_paths": [],
+                    "observed_shape": None,
+                    "expected_shape": None,
+                })
+
+        # 3) Synthetic forward — only meaningful if the config is at least
+        # minimally sane (known modalities, valid roles, fusion family known).
+        synthetic_forward_error: str | None = None
+        if streams and all_mods_known and exp_cfg.get("fusion") in PREFLIGHT_FUSION_FAMILIES:
+            heads_for_exp = exp_cfg.get(
+                "attention_heads_by_modality",
+                exp_cfg.get("attention_heads", attention_heads),
+            )
+            synthetic_forward_error = _synthetic_forward(
+                streams=streams,
+                fusion=exp_cfg.get("fusion", ""),
+                modality_registry=modality_registry,
+                hidden_size=hidden_size,
+                dropout=dropout,
+                num_layers_early=num_layers_early,
+                attention_dim=attention_dim,
+                attention_heads=heads_for_exp,
+                attention_layers=attention_layers,
+                attention_pooling=attention_pooling,
+            )
+
+        shape_errors = [e for e in audit["errors"]
+                        if e.get("error_kind") != "missing_file"]
+        missing_file_errors = [e for e in audit["errors"]
+                               if e.get("error_kind") == "missing_file"]
+
+        passed = (
+            not config_errors
+            and not audit["errors"]
+            and synthetic_forward_error is None
+        )
+
+        per_exp_reports[exp_name] = {
+            "status": "PASS" if passed else "FAIL",
+            "config_errors": config_errors,
+            "shape_errors": shape_errors,
+            "missing_file_errors": missing_file_errors,
+            "synthetic_forward_error": synthetic_forward_error,
+            "stream_summaries": audit["stream_summaries"],
+        }
+
+        totals["passed"] += int(passed)
+        totals["failed"] += int(not passed)
+        totals["total_config_errors"] += len(config_errors)
+        totals["total_shape_errors"] += len(shape_errors)
+        totals["total_missing_files"] += len(missing_file_errors)
+        totals["total_synthetic_forward_failures"] += int(
+            synthetic_forward_error is not None
+        )
+
+        if verbose:
+            verdict = "PASS" if passed else "FAIL"
+            print(
+                f"[preflight] {ablation_kind}/{exp_name}: {verdict} "
+                f"(cfg_err={len(config_errors)}, shape_err={len(shape_errors)}, "
+                f"missing={len(missing_file_errors)}, "
+                f"synth_fwd={'ok' if synthetic_forward_error is None else 'FAIL'})"
+            )
+
+        if fail_fast and not passed:
+            break
+
+    return {
+        "ablation_kind": ablation_kind,
+        "experiments": per_exp_reports,
+        "summary": totals,
+    }
