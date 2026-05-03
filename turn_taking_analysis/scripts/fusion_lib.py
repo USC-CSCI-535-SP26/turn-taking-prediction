@@ -1866,6 +1866,7 @@ def sweep_tau(
     max_samples_per_split: int | None = None,
     seed: int = 42,
     verbose: bool = True,
+    restrict_to_train_universe: bool = True,
 ) -> dict[int, dict]:
     """
     Evaluate on trained non-coordination model across tau label files.
@@ -1884,6 +1885,24 @@ def sweep_tau(
     Keeping the criterion consistent with the training objective means
     the per-τ loss numbers are directly interpretable as "how well did
     the optimization target transfer to this τ."
+
+    Test-cohort semantics — `restrict_to_train_universe` (default True):
+        When True, the per-τ test cohort is intersected with the set of
+        test-split basenames whose class at training-τ was in {0,1,2}.
+        This produces a fixed test cohort across τs (with the per-τ
+        eligibility filter still applied — a basename whose class shifts
+        out of {0,1,2} at some τ is excluded at that τ). Matches the
+        "only labels change per τ" framing above and closes the silent-
+        zero-substitution issue when coordination feature extraction
+        only covered the τ=400 training universe (preflight Problem B /
+        Problem A; see turn_taking_analysis/docs/preflight_problems.md).
+
+        When False, restores the prior per-τ-recomputed cohort: each τ
+        independently enumerates its own class-{0,1,2} test set, which
+        may include windows that were class-{3,4,5} at training-τ and
+        therefore have no extracted coord feature. Provided for
+        backwards compatibility with prior τ-curve numbers; not
+        recommended for coord-using runs.
 
     Works for:
       - standard GRU runs
@@ -1916,6 +1935,17 @@ def sweep_tau(
 
     train_labels = load_labels(train_labels_path)
     train_samples = enumerate_samples(manifest_rows, train_labels)
+
+    # Capture the fixed-test-cohort basename set at training-τ before
+    # `train_samples` is narrowed to just the train split. Empty when
+    # `restrict_to_train_universe` is False; in that case the per-τ
+    # intersection step below is a no-op.
+    train_universe_test_basenames: set[str] = set()
+    if restrict_to_train_universe:
+        train_universe_test_basenames = {
+            s["basename"] for s in train_samples if s["split"] == "test"
+        }
+
     train_split = [s for s in train_samples if s["split"] == "train"]
 
     train_split, _ = filter_samples_with_existing_files(
@@ -1945,6 +1975,21 @@ def sweep_tau(
         labels = load_labels(labels_path)
         samples = enumerate_samples(manifest_rows, labels)
         test_samples = [s for s in samples if s["split"] == "test"]
+
+        # Fixed-test-cohort intersection: keep only basenames that were also
+        # in the training-τ test cohort (class-{0,1,2} at training-τ). No-op
+        # when restrict_to_train_universe is False.
+        if restrict_to_train_universe:
+            before_universe = len(test_samples)
+            test_samples = [
+                s for s in test_samples
+                if s["basename"] in train_universe_test_basenames
+            ]
+            if verbose and len(test_samples) < before_universe:
+                print(
+                    f"  τ={tau_ms}ms: restricted to fixed train-τ test cohort "
+                    f"({len(test_samples)}/{before_universe} retained)"
+                )
 
         test_samples, dropped = filter_samples_with_existing_files(
             test_samples,
@@ -2168,9 +2213,31 @@ def sweep_tau_coordination_safe(
     coordination_csv_path: str | None = None,
     coordination_feature_cols: list[str] | None = None,
     missing_coordination: str = "zeros",
+    restrict_to_train_universe: bool = True,
 ) -> dict[int, dict]:
     """
     Evaluate one trained coordination model across tau label files.
+
+    Test-cohort semantics — `restrict_to_train_universe` (default True):
+        When True, the per-τ test cohort is intersected with the set of
+        test-split basenames whose class at training-τ was in {0,1,2}.
+        This produces a fixed test cohort across τs (with the per-τ
+        eligibility filter still applied — a basename whose class shifts
+        out of {0,1,2} at some τ is excluded at that τ). For coord-using
+        runs this is the difference between scientifically meaningful
+        τ-curves and curves contaminated by silent zero-substitution
+        (preflight Problem B / Problem A; see
+        turn_taking_analysis/docs/preflight_problems.md). Coord features
+        are guaranteed available for every basename in this cohort
+        because the extractor scoped to the same training universe.
+
+        When False, restores the prior per-τ-recomputed cohort: each τ
+        independently enumerates its own class-{0,1,2} test set, which
+        may include windows whose τ=400 class was {3,4,5} — those have
+        no coord CSV row / WCC file, and the loader silently
+        substitutes (1, F) zeros (summary, no stack hazard) or trips
+        torch.stack on (1, 23) vs (21, 23) (continuous, hard crash).
+        Provided for backwards compatibility; not recommended.
 
     Works for:
       - coordination summary GRU/neural_concat
@@ -2238,6 +2305,17 @@ def sweep_tau_coordination_safe(
 
     train_labels = load_labels(cfg["labels_path"])
     train_samples = enumerate_samples(manifest_rows, train_labels)
+
+    # Capture the fixed-test-cohort basename set at training-τ before
+    # `train_samples` is reassigned to just the train split below. Empty
+    # when `restrict_to_train_universe` is False; in that case the per-τ
+    # intersection step below is a no-op.
+    train_universe_test_basenames: set[str] = set()
+    if restrict_to_train_universe:
+        train_universe_test_basenames = {
+            s["basename"] for s in train_samples if s["split"] == "test"
+        }
+
     train_samples = [s for s in train_samples if s["split"] == "train"]
 
     if has_file_stream:
@@ -2266,6 +2344,23 @@ def sweep_tau_coordination_safe(
         labels = load_labels(labels_path)
         samples = enumerate_samples(manifest_rows, labels)
         test_samples = [s for s in samples if s["split"] == "test"]
+
+        # Fixed-test-cohort intersection: keep only basenames that were also
+        # in the training-τ test cohort (class-{0,1,2} at training-τ). No-op
+        # when restrict_to_train_universe is False. For coord runs this
+        # guarantees every retained basename has an extracted coord feature
+        # (the extractor scoped to the same universe).
+        if restrict_to_train_universe:
+            before_universe = len(test_samples)
+            test_samples = [
+                s for s in test_samples
+                if s["basename"] in train_universe_test_basenames
+            ]
+            if verbose and len(test_samples) < before_universe:
+                print(
+                    f"  τ={tau_ms}ms: restricted to fixed train-τ test cohort "
+                    f"({len(test_samples)}/{before_universe} retained)"
+                )
 
         if has_file_stream:
             before = len(test_samples)
