@@ -52,6 +52,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
 from tqdm.auto import tqdm
+import math
 
 # =============================================================================
 # Constants
@@ -188,49 +189,82 @@ def make_modality_registry_coordination(entries: dict[str, dict]) -> dict[str, d
     """
     Validate and normalize a modality registry.
 
-    Standard modalities need:
-        {'dir': str, 'feature_dim': int, 'frame_rate_hz': float}
-
-    Coordination pseudo-modality can use:
+    Standard modalities:
         {
-          'kind': 'coordination',
-          'feature_dim': 19,
-          'frame_rate_hz': 0.0
+            "kind": "spliced",
+            "dir": str,
+            "feature_dim": int,
+            "frame_rate_hz": float,
         }
 
-    Coordination is loaded from a CSV lookup, not from per-window .npy files.
+    Coordination summary modality:
+        {
+            "kind": "coordination",
+            "coordination_mode": "summary",
+            "feature_dim": 19,
+        }
+
+    Coordination continuous modality:
+        {
+            "kind": "coordination",
+            "coordination_mode": "continuous",
+            "dir": str,
+            "feature_dim": F_wcc,
+            "frame_rate_hz": optional float,
+        }
     """
     normalized: dict[str, dict] = {}
 
     for name, cfg in entries.items():
-        required = {"feature_dim"}
-        missing = required - set(cfg)
-        if missing:
-            raise ValueError(
-                f"modality '{name}' missing keys: {sorted(missing)}"
-            )
+        if "feature_dim" not in cfg:
+            raise ValueError(f"modality {name!r} missing key: 'feature_dim'")
 
         kind = cfg.get("kind", "spliced")
 
         if kind == "coordination":
+            mode = cfg.get("coordination_mode", "summary")
+            if mode not in {"summary", "continuous"}:
+                raise ValueError(
+                    f"coordination modality {name!r} has invalid "
+                    f"coordination_mode={mode!r}; use 'summary' or 'continuous'"
+                )
+
+            if mode == "continuous":
+                if "dir" not in cfg:
+                    raise ValueError(
+                        f"continuous coordination modality {name!r} needs 'dir'"
+                    )
+                if not os.path.isdir(cfg["dir"]):
+                    raise FileNotFoundError(
+                        f"continuous coordination dir does not exist: {cfg['dir']}"
+                    )
+
             normalized[name] = {
                 "kind": "coordination",
+                "coordination_mode": mode,
                 "dir": str(cfg.get("dir", "")),
                 "feature_dim": int(cfg["feature_dim"]),
                 "frame_rate_hz": float(cfg.get("frame_rate_hz", 0.0)),
             }
             continue
 
+        if kind != "spliced":
+            raise ValueError(
+                f"modality {name!r} has invalid kind={kind!r}; "
+                f"use 'spliced' or 'coordination'"
+            )
+
         if "dir" not in cfg:
-            raise ValueError(f"modality '{name}' missing key: 'dir'")
+            raise ValueError(f"modality {name!r} missing key: 'dir'")
 
         if not os.path.isdir(cfg["dir"]):
             raise FileNotFoundError(
-                f"modality '{name}' dir does not exist: {cfg['dir']}"
+                f"modality {name!r} dir does not exist: {cfg['dir']}"
             )
 
         normalized[name] = {
             "kind": "spliced",
+            "coordination_mode": None,
             "dir": str(cfg["dir"]),
             "feature_dim": int(cfg["feature_dim"]),
             "frame_rate_hz": float(cfg.get("frame_rate_hz", 0.0)),
@@ -498,17 +532,13 @@ class TurnTakingDataset(Dataset):
     
 class TurnTakingDatasetCoordination(Dataset):
     """
-    Per-sample loader.
-
-    Supports:
+    Per-sample loader supporting:
       - standard spliced modalities: CPC, OpenFace, etc.
-      - coordination pseudo-modality loaded from CSV lookup
+      - coordination summary pseudo-modality from CSV: (1, F)
+      - continuous coordination pseudo-modality from .npy: (T_wcc, F_wcc)
 
-    For coordination:
-      stream config should be:
-          {'modality': 'coordination_openface', 'role': 'speaker'}
-
-      The loaded tensor has shape (1, F), where F = number of coordination features.
+    For coordination streams, use role='speaker' because the coordination
+    features are already speaker-oriented.
     """
 
     _VALID_ROLES = frozenset({"speaker", "listener"})
@@ -519,9 +549,12 @@ class TurnTakingDatasetCoordination(Dataset):
         streams: list[dict],
         modality_registry: dict[str, dict],
         coordination_lookup: dict | None = None,
-        coordination_feature_dim: int = COORDINATION_FEATURE_DIM,
+        coordination_feature_dim: int | None = None,
         missing_coordination: str = "zeros",
     ):
+        if missing_coordination not in {"zeros", "error"}:
+            raise ValueError("missing_coordination must be 'zeros' or 'error'")
+
         for s in streams:
             role = s.get("role")
             if role not in self._VALID_ROLES:
@@ -537,23 +570,18 @@ class TurnTakingDatasetCoordination(Dataset):
                     f"registered modalities: {sorted(modality_registry)}"
                 )
 
-            if modality_registry[mod].get("kind", "spliced") == "coordination":
-                if role != "speaker":
-                    raise ValueError(
-                        "coordination features are speaker-oriented. "
-                        "Use role='speaker' for coordination streams."
-                    )
-
-        if missing_coordination not in {"zeros", "error"}:
-            raise ValueError(
-                "missing_coordination must be either 'zeros' or 'error'"
-            )
+            cfg = modality_registry[mod]
+            if cfg.get("kind", "spliced") == "coordination" and role != "speaker":
+                raise ValueError(
+                    "coordination features are speaker-oriented. "
+                    "Use role='speaker' for coordination streams."
+                )
 
         self.samples = samples
         self.streams = streams
         self.registry = modality_registry
         self.coordination_lookup = coordination_lookup or {}
-        self.coordination_feature_dim = int(coordination_feature_dim)
+        self.coordination_feature_dim = coordination_feature_dim
         self.missing_coordination = missing_coordination
 
         self._resolved = []
@@ -562,12 +590,13 @@ class TurnTakingDatasetCoordination(Dataset):
             role = s["role"]
             cfg = self.registry[mod]
             kind = cfg.get("kind", "spliced")
-            self._resolved.append((kind, cfg, role))
+            mode = cfg.get("coordination_mode", None)
+            self._resolved.append((kind, mode, cfg, role, mod))
 
     def __len__(self) -> int:
         return len(self.samples)
 
-    def _load_coordination(self, sample: dict) -> torch.Tensor:
+    def _load_summary_coordination(self, sample: dict, feature_dim: int) -> torch.Tensor:
         speaker_fid = sample["speaker_file_id"]
         speaker_pid = speaker_fid.split("_")[-1]
 
@@ -582,29 +611,76 @@ class TurnTakingDatasetCoordination(Dataset):
 
         if arr is None:
             if self.missing_coordination == "error":
-                raise KeyError(f"Missing coordination features for key={key}")
+                raise KeyError(f"Missing summary coordination features for key={key}")
 
-            arr = np.zeros(
-                (1, self.coordination_feature_dim),
-                dtype=np.float32,
+            arr = np.zeros((1, feature_dim), dtype=np.float32)
+
+        arr = arr.astype(np.float32, copy=False)
+
+        if arr.ndim == 1:
+            arr = arr[None, :]
+
+        if arr.ndim != 2:
+            raise ValueError(
+                f"Summary coordination must have shape (1, F), got {arr.shape}"
             )
+
+        if arr.shape[-1] != feature_dim:
+            raise ValueError(
+                f"Summary coordination feature dim mismatch: "
+                f"expected F={feature_dim}, got shape={arr.shape}"
+            )
+
+        return torch.from_numpy(arr)
+
+    def _load_continuous_coordination(self, sample: dict, cfg: dict) -> torch.Tensor:
+        feature_dim = int(cfg["feature_dim"])
+        target_t = int(round(cfg.get("frame_rate_hz", 0.0) * WINDOW_S))
+
+        arr = _load_continuous_coordination_file(
+            base_dir=cfg["dir"],
+            sample=sample,
+            feature_dim=feature_dim,
+            target_t=target_t,
+            missing_coordination=self.missing_coordination,
+        )
 
         return torch.from_numpy(arr.astype(np.float32, copy=False))
 
     def __getitem__(self, idx: int):
-        s = self.samples[idx]
+        sample = self.samples[idx]
 
-        speaker_fid = s["speaker_file_id"]
-        listener_fid = s["listener_file_id"]
-        start_s, end_s = s["start_s"], s["end_s"]
+        speaker_fid = sample["speaker_file_id"]
+        listener_fid = sample["listener_file_id"]
+        start_s, end_s = sample["start_s"], sample["end_s"]
 
         tensors: list[torch.Tensor] = []
 
-        for kind, cfg, role in self._resolved:
+        for kind, mode, cfg, role, mod in self._resolved:
             if kind == "coordination":
-                tensors.append(self._load_coordination(s))
-                continue
+                if mode == "summary":
+                    feature_dim = (
+                        int(self.coordination_feature_dim)
+                        if self.coordination_feature_dim is not None
+                        else int(cfg["feature_dim"])
+                    )
+                    tensors.append(
+                        self._load_summary_coordination(sample, feature_dim)
+                    )
+                    continue
 
+                if mode == "continuous":
+                    tensors.append(
+                        self._load_continuous_coordination(sample, cfg)
+                    )
+                    continue
+
+                raise ValueError(
+                    f"coordination modality {mod!r} missing valid "
+                    f"coordination_mode; got {mode!r}"
+                )
+
+            # Standard spliced modality.
             mod_dir = cfg["dir"]
             fid = speaker_fid if role == "speaker" else listener_fid
             fname = splice_filename_for(start_s, end_s, fid)
@@ -613,15 +689,24 @@ class TurnTakingDatasetCoordination(Dataset):
 
             arr = _load_feature_file(path_no_ext)
 
+            if arr.ndim == 1:
+                arr = arr[None, :]
+
             target_t = int(round(cfg.get("frame_rate_hz", 0.0) * WINDOW_S))
             feature_dim = int(cfg["feature_dim"])
 
             if target_t > 0:
                 arr = _fix_seq_len(arr, target_t=target_t, feature_dim=feature_dim)
 
-            tensors.append(torch.from_numpy(arr))
+            if arr.shape[-1] != feature_dim:
+                raise ValueError(
+                    f"{mod} feature dim mismatch for {path_no_ext}: "
+                    f"expected F={feature_dim}, got shape={arr.shape}"
+                )
 
-        return tensors, s["label"]
+            tensors.append(torch.from_numpy(arr.astype(np.float32, copy=False)))
+
+        return tensors, sample["label"]
 
 def _collate_streams(batch):
     """Stack each stream across the batch. Returns (list_of_stacked, labels)."""
@@ -645,6 +730,36 @@ def make_dataloader(
 ) -> DataLoader:
     """Build a DataLoader over a sample list."""
     ds = TurnTakingDataset(samples, streams, modality_registry)
+    return DataLoader(
+        ds,
+        batch_size=batch_size,
+        shuffle=shuffle,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        collate_fn=_collate_streams,
+    )
+
+def make_dataloader_coordination(
+    samples: list[dict],
+    streams: list[dict],
+    modality_registry: dict[str, dict],
+    batch_size: int,
+    shuffle: bool,
+    num_workers: int = 0,
+    pin_memory: bool = False,
+    coordination_lookup: dict | None = None,
+    coordination_feature_dim: int | None = None,
+    missing_coordination: str = "zeros",
+) -> DataLoader:
+    ds = TurnTakingDatasetCoordination(
+        samples=samples,
+        streams=streams,
+        modality_registry=modality_registry,
+        coordination_lookup=coordination_lookup,
+        coordination_feature_dim=coordination_feature_dim,
+        missing_coordination=missing_coordination,
+    )
+
     return DataLoader(
         ds,
         batch_size=batch_size,
@@ -728,35 +843,6 @@ class EarlyFusionGRU(nn.Module):
         _, h_n = self.gru(x)
         return self.fc2(self.drop(self.relu(self.fc1(h_n[-1]))))
 
-def make_dataloader_coordination(
-    samples: list[dict],
-    streams: list[dict],
-    modality_registry: dict[str, dict],
-    batch_size: int,
-    shuffle: bool,
-    num_workers: int = 0,
-    pin_memory: bool = False,
-    coordination_lookup: dict | None = None,
-    coordination_feature_dim: int = COORDINATION_FEATURE_DIM,
-    missing_coordination: str = "zeros",
-) -> DataLoader:
-    ds = TurnTakingDatasetCoordination(
-        samples,
-        streams,
-        modality_registry,
-        coordination_lookup=coordination_lookup,
-        coordination_feature_dim=coordination_feature_dim,
-        missing_coordination=missing_coordination,
-    )
-
-    return DataLoader(
-        ds,
-        batch_size=batch_size,
-        shuffle=shuffle,
-        num_workers=num_workers,
-        pin_memory=pin_memory,
-        collate_fn=_collate_streams,
-    )
 
 class NeuralConcatFusion(nn.Module):
     """N-stream multi-branch GRU with hidden-state concatenation.
@@ -808,6 +894,145 @@ class NeuralConcatFusion(nn.Module):
         h = torch.cat(last_hidden, dim=-1)  # (B, hidden_size * N)
         return self.fc2(self.drop(self.relu(self.fc1(h))))
 
+class SelfAttentionFusion(nn.Module):
+    """
+    Multi-stream self-attention fusion.
+
+    Each stream gets:
+      1. Linear projection from raw feature_dim -> attention_dim
+      2. N stacked TransformerEncoderLayer blocks
+      3. Temporal pooling into one hidden vector
+
+    Then all stream vectors are concatenated and passed to an FC classifier.
+
+    This handles:
+      - CPC streams:          (B, T_cpc, F_cpc)
+      - OpenFace streams:     (B, T_of, F_of)
+      - summary coordination: (B, 1, F_summary)
+      - continuous WCC:       (B, T_wcc, F_wcc)
+
+    SELF-ATTN(x) = TRANSFORMER(q=x, k=x, v=x) according to VAP paper
+    In PyTorch, TransformerEncoderLayer implements this self-attention pattern.
+    """
+
+    def __init__(
+        self,
+        feat_dims: list[int],
+        attention_dim: int = 64,
+        num_heads: int | list[int] = 4,
+        num_layers: int = 2,
+        num_classes: int = NUM_CLASSES,
+        dropout: float = 0.3,
+        pooling: str = "mean",
+    ):
+        super().__init__()
+
+        if len(feat_dims) < 1:
+            raise ValueError("SelfAttentionFusion needs at least one stream")
+
+        if pooling not in {"mean", "last"}:
+            raise ValueError("pooling must be 'mean' or 'last'")
+
+        self.feat_dims = list(feat_dims)
+        self.attention_dim = int(attention_dim)
+        self.num_layers = int(num_layers)
+        self.pooling = pooling
+
+        if isinstance(num_heads, int):
+            heads_per_stream = [num_heads] * len(feat_dims)
+        else:
+            heads_per_stream = list(num_heads)
+            if len(heads_per_stream) != len(feat_dims):
+                raise ValueError(
+                    f"num_heads list must match number of streams: "
+                    f"{len(heads_per_stream)} vs {len(feat_dims)}"
+                )
+
+        for h in heads_per_stream:
+            if self.attention_dim % h != 0:
+                raise ValueError(
+                    f"attention_dim={self.attention_dim} must be divisible "
+                    f"by num_heads={h}"
+                )
+
+        self.input_projs = nn.ModuleList([
+            nn.Linear(d, self.attention_dim) for d in feat_dims
+        ])
+
+
+        self.transformers = nn.ModuleList() #one branch per stream
+        for h in heads_per_stream:
+            layer = nn.TransformerEncoderLayer( #one transformer per head per stream
+                d_model=self.attention_dim,
+                nhead=h,
+                dim_feedforward=self.attention_dim * 4,
+                dropout=dropout,
+                activation="gelu",
+                batch_first=True,
+                norm_first=True,
+            )
+            encoder = nn.TransformerEncoder( #stack num_layers transformers
+                encoder_layer=layer,
+                num_layers=self.num_layers,
+            )
+            self.transformers.append(encoder) #add stream-specific encoder to the list.
+
+        #just initializing the layers here to call when they are being used
+        self.fc1 = nn.Linear(self.attention_dim * len(feat_dims), attention_dim)
+        self.relu = nn.ReLU()
+        self.drop = nn.Dropout(dropout)
+        self.fc2 = nn.Linear(attention_dim, num_classes) 
+
+    def _pool(self, z: torch.Tensor) -> torch.Tensor:
+        """
+        z: (B, T, D)
+        returns: (B, D)
+        """
+        if self.pooling == "last":
+            return z[:, -1, :]
+        return z.mean(dim=1)
+
+    def forward(self, xs):
+        if not isinstance(xs, (list, tuple)):
+            xs = [xs]
+
+        if len(xs) != len(self.feat_dims):
+            raise ValueError(
+                f"SelfAttentionFusion expects {len(self.feat_dims)} streams; "
+                f"got {len(xs)}"
+            )
+
+        pooled = []
+
+        #loop through each stream and grab correct modules
+        for x, proj, encoder, expected_dim in zip(
+            xs,
+            self.input_projs,
+            self.transformers,
+            self.feat_dims,
+        ):
+            if x.ndim != 3:
+                raise ValueError(
+                    f"Each stream must have shape (B, T, F); got {x.shape}"
+                )
+
+            if x.shape[-1] != expected_dim:
+                raise ValueError(
+                    f"Stream feature dim mismatch: expected F={expected_dim}, "
+                    f"got shape={x.shape}"
+                )
+
+            # Project raw modality features into shared attention dimension.
+            z = proj(x)  # (B, T, attention_dim)
+
+            # Self-attention: q = k = v = z internally.
+            z = encoder(z)  # (B, T, attention_dim) #encode each stream
+
+            pooled.append(self._pool(z))
+
+        h = torch.cat(pooled, dim=-1)
+        return self.fc2(self.drop(self.relu(self.fc1(h))))
+    
 # =============================================================================
 # Training / evaluation
 # =============================================================================
@@ -1059,14 +1284,19 @@ def build_model(
     num_classes: int = NUM_CLASSES,
     dropout: float = 0.3,
     num_layers_early: int = 3,
+    attention_dim: int | None = None,
+    attention_heads: int | list[int] = 4,
+    attention_layers: int = 2,
+    attention_pooling: str = "mean",
 ) -> nn.Module:
-    """Dispatch to the right model class based on fusion family + stream count.
+    """
+    Dispatch to the right model class.
 
-    Hyperparams:
-      hidden_size, dropout  — applied to all fusion families.
-      num_layers_early      — GRU stack depth for EarlyFusionGRU only;
-                              unimodal and neural-concat use single-layer
-                              GRUs to match the practicum's configuration.
+    Supported fusion:
+      - unimodal
+      - early
+      - neural_concat
+      - self_attention
     """
     if fusion == "unimodal":
         if len(stream_dims) != 1:
@@ -1074,20 +1304,43 @@ def build_model(
                 f"unimodal fusion needs exactly 1 stream; got {len(stream_dims)}"
             )
         return GRUClassifier(
-            stream_dims[0], hidden_size, num_classes, dropout=dropout,
+            stream_dims[0],
+            hidden_size,
+            num_classes,
+            dropout=dropout,
         )
+
     if fusion == "early":
         return EarlyFusionGRU(
-            sum(stream_dims), hidden_size, num_classes,
-            num_layers=num_layers_early, dropout=dropout,
+            sum(stream_dims),
+            hidden_size,
+            num_classes,
+            num_layers=num_layers_early,
+            dropout=dropout,
         )
+
     if fusion == "neural_concat":
         return NeuralConcatFusion(
-            stream_dims, hidden_size, num_classes, dropout=dropout,
+            stream_dims,
+            hidden_size,
+            num_classes,
+            dropout=dropout,
         )
+
+    if fusion in {"self_attention", "attention"}:
+        return SelfAttentionFusion(
+            feat_dims=stream_dims,
+            attention_dim=attention_dim or hidden_size,
+            num_heads=attention_heads,
+            num_layers=attention_layers,
+            num_classes=num_classes,
+            dropout=dropout,
+            pooling=attention_pooling,
+        )
+
     raise ValueError(
         f"unknown fusion family {fusion!r}; supported: "
-        f"unimodal, early, neural_concat"
+        f"unimodal, early, neural_concat, self_attention"
     )
 
 def resolve_device(prefer: str = "auto") -> torch.device:
@@ -1120,24 +1373,19 @@ def run_experiment(
     seed: int = 42,
     max_samples_per_split: int | None = None,
     verbose: bool = True,
+
+    # self-attention options
+    attention_dim: int | None = None,
+    attention_heads: int | list[int] = 4,
+    attention_layers: int = 2,
+    attention_pooling: str = "mean",
 ) -> dict:
-    """Train one experiment end-to-end.
+    """
+    Train one non-coordination experiment end-to-end.
 
-    Args:
-      streams: list of {'modality': <name>, 'role': 'speaker'|'listener'}.
-      fusion: 'unimodal' | 'early' | 'neural_concat'.
-      labels_path: path to labels_tau_XXXX.json (picks training τ).
-      hidden_size, dropout: applied to every fusion family.
-      num_layers_early: GRU stack depth for EarlyFusionGRU only
-        (unimodal and neural-concat use single-layer GRUs per practicum).
-      epochs, batch_size, learning_rate, patience: standard training
-        hyperparameters. Defaults match the practicum (30 / 32 / 1e-3 / 4).
-      max_samples_per_split: if set, truncate each split to at most this
-        many samples after a seed-deterministic shuffle (dry-run mode).
-
-    Returns:
-      dict with keys: name, config, samples_summary, train_history,
-        test_eval, model_state (best-val weights), stream_dims, device.
+    Supports:
+      - standard GRU: unimodal / early / neural_concat
+      - SSA: self_attention over non-coordination streams
     """
     torch.manual_seed(seed)
     np.random.seed(seed)
@@ -1163,12 +1411,14 @@ def run_experiment(
                 streams,
                 modality_registry,
             )
-
             filtered_by_split[split_name] = kept
             total_dropped += len(dropped)
 
             if verbose and dropped:
-                print(f"  dropped {len(dropped)} {split_name} samples missing feature files")
+                print(
+                    f"  dropped {len(dropped)} {split_name} samples "
+                    f"missing feature files"
+                )
                 if dropped[0][1]:
                     print("  example missing:", dropped[0][1][0])
 
@@ -1176,72 +1426,107 @@ def run_experiment(
         samples = [s for sample_list in by_split.values() for s in sample_list]
 
     if max_samples_per_split is not None:
-        # Shuffle each split BEFORE truncating so the cap pulls a random
-        # subset rather than the first-N samples in label-iteration
-        # order. Without the shuffle, the first N samples all come from
-        # the first 1–2 interactions in the labels JSON — wildly non-
-        # representative class distribution and useless for dry-run
-        # validation. Deterministic given `seed`.
         rng = random.Random(seed)
         for split in list(by_split.keys()):
             rng.shuffle(by_split[split])
             by_split[split] = by_split[split][:max_samples_per_split]
-        samples = [s for split_samples_list in by_split.values()
-                   for s in split_samples_list]
+        samples = [
+            s
+            for split_samples_list in by_split.values()
+            for s in split_samples_list
+        ]
 
-    stream_dims = [modality_registry[s["modality"]]["feature_dim"]
-                   for s in streams]
+    stream_dims = [int(modality_registry[s["modality"]]["feature_dim"]) for s in streams]
 
     if verbose:
         print(f"=== Experiment: {name} ===")
-        print(f"  streams:   {streams}")
-        print(f"  fusion:    {fusion}")
-        print(f"  device:    {device_t}")
+        print(f"  streams:     {streams}")
+        print(f"  fusion:      {fusion}")
+        print(f"  stream_dims: {stream_dims}")
+        print(f"  device:      {device_t}")
+
         summary = summarize_samples(samples)
-        print(f"  samples:   total={summary['total']}  "
-              f"per_split={summary['per_split']}")
+        print(
+            f"  samples:     total={summary['total']} "
+            f"per_split={summary['per_split']}"
+        )
         for sp, dist in summary["per_split_class"].items():
-            print(f"             {sp:5s} class-dist: {dist}")
+            print(f"               {sp:5s} class-dist: {dist}")
 
     train_loader = make_dataloader(
-        by_split.get("train", []), streams, modality_registry,
-        batch_size=batch_size, shuffle=True, num_workers=num_workers,
+        by_split.get("train", []),
+        streams,
+        modality_registry,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=num_workers,
     )
+
     val_loader = make_dataloader(
-        by_split.get("val", []), streams, modality_registry,
-        batch_size=batch_size, shuffle=False, num_workers=num_workers,
+        by_split.get("val", []),
+        streams,
+        modality_registry,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
     )
+
     test_loader = make_dataloader(
-        by_split.get("test", []), streams, modality_registry,
-        batch_size=batch_size, shuffle=False, num_workers=num_workers,
+        by_split.get("test", []),
+        streams,
+        modality_registry,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
     )
 
     model = build_model(
-        fusion, stream_dims,
+        fusion,
+        stream_dims,
         hidden_size=hidden_size,
         dropout=dropout,
         num_layers_early=num_layers_early,
+        attention_dim=attention_dim,
+        attention_heads=attention_heads,
+        attention_layers=attention_layers,
+        attention_pooling=attention_pooling,
     ).to(device_t)
+
     class_weights = compute_class_weights(by_split.get("train", [])).to(device_t)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     if verbose:
         n_params = sum(p.numel() for p in model.parameters())
-        print(f"  model:     {type(model).__name__}  ({n_params:,} params)")
-        print(f"  class_w:   {class_weights.cpu().tolist()}")
-        print(f"  epochs:    up to {epochs} (patience={patience})")
-        print(f"  dropout:   {dropout}  num_layers_early: {num_layers_early}")
+        print(f"  model:       {type(model).__name__} ({n_params:,} params)")
+        print(f"  class_w:     {class_weights.cpu().tolist()}")
+        print(f"  epochs:      up to {epochs} (patience={patience})")
+        print(f"  dropout:     {dropout}")
+        if fusion in {"self_attention", "attention"}:
+            print(
+                f"  attention:   dim={attention_dim or hidden_size}, "
+                f"heads={attention_heads}, layers={attention_layers}, "
+                f"pooling={attention_pooling}"
+            )
         print()
 
     model, history = train_model(
-        model, train_loader, val_loader, criterion, optimizer,
-        epochs=epochs, patience=patience, device=device_t, verbose=verbose,
+        model,
+        train_loader,
+        val_loader,
+        criterion,
+        optimizer,
+        epochs=epochs,
+        patience=patience,
+        device=device_t,
+        verbose=verbose,
     )
 
     if verbose:
         print(f"\n  final test eval ({name}):")
+
     test_eval = evaluate(model, test_loader, criterion, device_t)
+
     if verbose:
         print(f"    macro_f1 = {test_eval['macro_f1']:.4f}")
         print(f"    per-class F1 = {test_eval['per_class_f1']}")
@@ -1259,6 +1544,10 @@ def run_experiment(
             "learning_rate": learning_rate,
             "patience": patience,
             "labels_path": labels_path,
+            "attention_dim": attention_dim,
+            "attention_heads": attention_heads,
+            "attention_layers": attention_layers,
+            "attention_pooling": attention_pooling,
         },
         "stream_dims": stream_dims,
         "device": str(device_t),
@@ -1301,24 +1590,19 @@ def run_experiment_coordination(
     coordination_csv_path: str | None = None,
     coordination_feature_cols: list[str] = COORDINATION_FEATURE_COLUMNS,
     missing_coordination: str = "zeros",
+
+    # self-attention options
+    attention_dim: int | None = None,
+    attention_heads: int | list[int] = 4,
+    attention_layers: int = 2,
+    attention_pooling: str = "mean",
 ) -> dict:
-    """Train one experiment end-to-end.
+    """
+    Train one experiment end-to-end with optional coordination streams.
 
-    Args:
-      streams: list of {'modality': <name>, 'role': 'speaker'|'listener'}.
-      fusion: 'unimodal' | 'early' | 'neural_concat'.
-      labels_path: path to labels_tau_XXXX.json (picks training τ).
-      hidden_size, dropout: applied to every fusion family.
-      num_layers_early: GRU stack depth for EarlyFusionGRU only
-        (unimodal and neural-concat use single-layer GRUs per practicum).
-      epochs, batch_size, learning_rate, patience: standard training
-        hyperparameters. Defaults match the practicum (30 / 32 / 1e-3 / 4).
-      max_samples_per_split: if set, truncate each split to at most this
-        many samples after a seed-deterministic shuffle (dry-run mode).
-
-    Returns:
-      dict with keys: name, config, samples_summary, train_history,
-        test_eval, model_state (best-val weights), stream_dims, device.
+    Coordination streams can be:
+      - summary: loaded from CSV lookup, shape (1, F)
+      - continuous: loaded from .npy, shape (T_wcc, F_wcc)
     """
     torch.manual_seed(seed)
     np.random.seed(seed)
@@ -1363,84 +1647,168 @@ def run_experiment_coordination(
 
     coordination_feature_dim = len(coordination_feature_cols)
 
+    has_file_stream = any(
+        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
+        for s in streams
+    )
+
+    has_summary_coordination = any(
+        modality_registry[s["modality"]].get("kind", "spliced") == "coordination"
+        and modality_registry[s["modality"]].get("coordination_mode", "summary") == "summary"
+        for s in streams
+    )
+
+    has_continuous_coordination = any(
+        modality_registry[s["modality"]].get("kind", "spliced") == "coordination"
+        and modality_registry[s["modality"]].get("coordination_mode") == "continuous"
+        for s in streams
+    )
+
+    # Filter missing file-backed streams: CPC/OpenFace/etc.
+    # Continuous coordination files are handled by the dataset because they are
+    # coordination pseudo-streams and can use missing_coordination='zeros' or 'error'.
+    if has_file_stream:
+        filtered_by_split = {}
+        total_dropped = 0
+
+        for split_name, samples_for_split in by_split.items():
+            kept, dropped = filter_samples_with_existing_files(
+                samples_for_split,
+                streams,
+                modality_registry,
+            )
+
+            filtered_by_split[split_name] = kept
+            total_dropped += len(dropped)
+
+            if verbose and dropped:
+                print(
+                    f"  dropped {len(dropped)} {split_name} samples "
+                    f"missing feature files"
+                )
+                if dropped[0][1]:
+                    print("  example missing:", dropped[0][1][0])
+
+        by_split = filtered_by_split
+        samples = [s for sample_list in by_split.values() for s in sample_list]
+
+    # Summary coordination needs CSV. Continuous coordination does not.
+    if has_summary_coordination:
+        if coordination_csv_path is None:
+            raise ValueError(
+                "At least one summary coordination stream is configured, "
+                "but coordination_csv_path=None."
+            )
+
+        coordination_lookup = load_coordination_features(
+            coordination_csv_path,
+            feature_cols=coordination_feature_cols,
+        )
+        summary_coordination_dim = len(coordination_feature_cols)
+    else:
+        coordination_lookup = {}
+        summary_coordination_dim = None
+
     if max_samples_per_split is not None:
-        # Shuffle each split BEFORE truncating so the cap pulls a random
-        # subset rather than the first-N samples in label-iteration
-        # order. Without the shuffle, the first N samples all come from
-        # the first 1–2 interactions in the labels JSON — wildly non-
-        # representative class distribution and useless for dry-run
-        # validation. Deterministic given `seed`.
         rng = random.Random(seed)
         for split in list(by_split.keys()):
             rng.shuffle(by_split[split])
             by_split[split] = by_split[split][:max_samples_per_split]
-        samples = [s for split_samples_list in by_split.values()
-                   for s in split_samples_list]
+        samples = [
+            s
+            for split_samples_list in by_split.values()
+            for s in split_samples_list
+        ]
 
     stream_dims = []
     for s in streams:
         cfg = modality_registry[s["modality"]]
         if cfg.get("kind", "spliced") == "coordination":
-            stream_dims.append(coordination_feature_dim)
+            mode = cfg.get("coordination_mode", "summary")
+            if mode == "summary":
+                stream_dims.append(summary_coordination_dim or int(cfg["feature_dim"]))
+            elif mode == "continuous":
+                stream_dims.append(int(cfg["feature_dim"]))
+            else:
+                raise ValueError(f"Unknown coordination mode: {mode!r}")
         else:
-            stream_dims.append(cfg["feature_dim"])
+            stream_dims.append(int(cfg["feature_dim"]))
+
+    has_coordination = has_summary_coordination or has_continuous_coordination
+
+    if has_coordination and fusion == "early":
+        raise ValueError(
+            "Early fusion with coordination is not supported by default. "
+            "Summary coordination has T=1 and continuous WCC usually has a "
+            "different T than CPC/OpenFace. Use fusion='neural_concat' or "
+            "fusion='self_attention'."
+        )
 
     if verbose:
         print(f"=== Experiment: {name} ===")
         print(f"  streams:   {streams}")
         print(f"  fusion:    {fusion}")
+        print(f"  stream_dims: {stream_dims}")
         print(f"  device:    {device_t}")
+        print(f"  summary_coordination:    {has_summary_coordination}")
+        print(f"  continuous_coordination: {has_continuous_coordination}")
+
         summary = summarize_samples(samples)
-        print(f"  samples:   total={summary['total']}  "
-              f"per_split={summary['per_split']}")
+        print(
+            f"  samples:   total={summary['total']}  "
+            f"per_split={summary['per_split']}"
+        )
         for sp, dist in summary["per_split_class"].items():
             print(f"             {sp:5s} class-dist: {dist}")
 
-
-    ### RESTRICT COORDINATION ANALYSIS TO NEURAL CONCAT
-    has_coordination = any(
-        modality_registry[s["modality"]].get("kind", "spliced") == "coordination"
-        for s in streams
-    )
-
-    if has_coordination and fusion == "early":
-        raise ValueError(
-            "Early fusion with coordination features is not supported by default "
-            "because coordination features are clip-level vectors with shape (1, F), "
-            "while CPC/OpenFace streams are temporal sequences. Use fusion='neural_concat', "
-            "or explicitly enable repeat_coordination_for_early=True."
-        )
-    
     train_loader = make_dataloader_coordination(
-        by_split.get("train", []), streams, modality_registry,
-        batch_size=batch_size, shuffle=True, num_workers=num_workers,
+        by_split.get("train", []),
+        streams,
+        modality_registry,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=num_workers,
         coordination_lookup=coordination_lookup,
-        coordination_feature_dim=coordination_feature_dim,
+        coordination_feature_dim=summary_coordination_dim,
         missing_coordination=missing_coordination,
     )
 
     val_loader = make_dataloader_coordination(
-        by_split.get("val", []), streams, modality_registry,
-        batch_size=batch_size, shuffle=False, num_workers=num_workers,
+        by_split.get("val", []),
+        streams,
+        modality_registry,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
         coordination_lookup=coordination_lookup,
-        coordination_feature_dim=coordination_feature_dim,
+        coordination_feature_dim=summary_coordination_dim,
         missing_coordination=missing_coordination,
     )
 
     test_loader = make_dataloader_coordination(
-        by_split.get("test", []), streams, modality_registry,
-        batch_size=batch_size, shuffle=False, num_workers=num_workers,
+        by_split.get("test", []),
+        streams,
+        modality_registry,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
         coordination_lookup=coordination_lookup,
-        coordination_feature_dim=coordination_feature_dim,
+        coordination_feature_dim=summary_coordination_dim,
         missing_coordination=missing_coordination,
     )
 
     model = build_model(
-        fusion, stream_dims,
+        fusion,
+        stream_dims,
         hidden_size=hidden_size,
         dropout=dropout,
         num_layers_early=num_layers_early,
+        attention_dim=attention_dim,
+        attention_heads=attention_heads,
+        attention_layers=attention_layers,
+        attention_pooling=attention_pooling,
     ).to(device_t)
+
     class_weights = compute_class_weights(by_split.get("train", [])).to(device_t)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
@@ -1450,18 +1818,32 @@ def run_experiment_coordination(
         print(f"  model:     {type(model).__name__}  ({n_params:,} params)")
         print(f"  class_w:   {class_weights.cpu().tolist()}")
         print(f"  epochs:    up to {epochs} (patience={patience})")
-        print(f"  dropout:   {dropout}  num_layers_early: {num_layers_early}")
+        print(f"  dropout:   {dropout}")
+        if fusion in {"self_attention", "attention"}:
+            print(
+                f"  attention: dim={attention_dim or hidden_size}, "
+                f"heads={attention_heads}, layers={attention_layers}, "
+                f"pooling={attention_pooling}"
+            )
         print()
 
     model, history = train_model(
-        model, train_loader, val_loader, criterion, optimizer,
-        epochs=epochs, patience=patience, device=device_t, verbose=verbose,
+        model,
+        train_loader,
+        val_loader,
+        criterion,
+        optimizer,
+        epochs=epochs,
+        patience=patience,
+        device=device_t,
+        verbose=verbose,
     )
 
     if verbose:
         print(f"\n  final test eval ({name}):")
+
     test_eval = evaluate(model, test_loader, criterion, device_t)
-    #test_eval = evaluate(model, test_loader, criterion, device_t, show_progress=True) #adding progress bar
+
     if verbose:
         print(f"    macro_f1 = {test_eval['macro_f1']:.4f}")
         print(f"    per-class F1 = {test_eval['per_class_f1']}")
@@ -1479,6 +1861,13 @@ def run_experiment_coordination(
             "learning_rate": learning_rate,
             "patience": patience,
             "labels_path": labels_path,
+            "coordination_csv_path": coordination_csv_path,
+            "coordination_feature_cols": coordination_feature_cols,
+            "missing_coordination": missing_coordination,
+            "attention_dim": attention_dim,
+            "attention_heads": attention_heads,
+            "attention_layers": attention_layers,
+            "attention_pooling": attention_pooling,
         },
         "stream_dims": stream_dims,
         "device": str(device_t),
@@ -1498,7 +1887,6 @@ def run_experiment_coordination(
 # =============================================================================
 # τ-sweep: re-evaluate trained weights against each per-τ label file
 # =============================================================================
-
 def sweep_tau(
     *,
     experiment_result: dict,
@@ -1513,7 +1901,10 @@ def sweep_tau(
     seed: int = 42,
     verbose: bool = True,
 ) -> dict[int, dict]:
-    """Rebuild test loaders at each τ, re-evaluate the trained model.
+    """
+    Evaluate on trained non-coordination model across tau label files.
+
+    Rebuild test loaders at each τ, re-evaluate the trained model.
 
     Returns: {tau_ms: {'macro_f1': float, 'per_class_f1': dict,
                        'loss': float, 'n_samples': int}}.
@@ -1527,6 +1918,10 @@ def sweep_tau(
     Keeping the criterion consistent with the training objective means
     the per-τ loss numbers are directly interpretable as "how well did
     the optimization target transfer to this τ."
+
+    Works for:
+      - standard GRU runs
+      - SSA self_attention runs
     """
     cfg = experiment_result["config"]
     streams = cfg["streams"]
@@ -1536,78 +1931,102 @@ def sweep_tau(
     num_layers_early = cfg.get("num_layers_early", 3)
     train_labels_path = cfg["labels_path"]
     stream_dims = experiment_result["stream_dims"]
+
     device_t = resolve_device(device) if isinstance(device, str) else device
 
-    # Rebuild the model with the SAME architectural hyperparams as
-    # training so the state dict loads cleanly (in particular,
-    # num_layers_early affects the shape of the GRU's parameter tensors
-    # for EarlyFusionGRU).
     model = build_model(
-        fusion, stream_dims,
+        fusion,
+        stream_dims,
         hidden_size=hidden_size,
         dropout=dropout,
         num_layers_early=num_layers_early,
+        attention_dim=cfg.get("attention_dim"),
+        attention_heads=cfg.get("attention_heads", 4),
+        attention_layers=cfg.get("attention_layers", 2),
+        attention_pooling=cfg.get("attention_pooling", "mean"),
     ).to(device_t)
+
     model.load_state_dict(experiment_result["model_state"])
 
-    # Reconstruct the training criterion — class-weighted CE from the
-    # train split at training-τ. This matches what `run_experiment`
-    # optimized against, so per-τ loss numbers are comparable to
-    # per-epoch train_loss in the training history.
     train_labels = load_labels(train_labels_path)
     train_samples = enumerate_samples(manifest_rows, train_labels)
     train_split = [s for s in train_samples if s["split"] == "train"]
+
+    train_split, _ = filter_samples_with_existing_files(
+        train_split,
+        streams,
+        modality_registry,
+    )
+
     if not train_split:
         raise ValueError(
-            f"sweep_tau: no train-split samples derivable from "
-            f"{train_labels_path}; cannot reconstruct class-weighted "
-            f"criterion. Did the manifest change between training "
-            f"and the τ-sweep?"
+            f"sweep_tau: no train-split samples from {train_labels_path}"
         )
+
     class_weights = compute_class_weights(train_split).to(device_t)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
 
     out: dict[int, dict] = {}
-    rng = random.Random(seed)
+
     for tau_ms in tau_grid_ms:
         labels_path = os.path.join(labels_dir, f"labels_tau_{tau_ms:04d}.json")
+
         if not os.path.exists(labels_path):
             if verbose:
                 print(f"  τ={tau_ms}ms: labels file missing at {labels_path}; skipping")
             continue
+
         labels = load_labels(labels_path)
         samples = enumerate_samples(manifest_rows, labels)
         test_samples = [s for s in samples if s["split"] == "test"]
+
+        test_samples, dropped = filter_samples_with_existing_files(
+            test_samples,
+            streams,
+            modality_registry,
+        )
+
+        if verbose and dropped:
+            print(f"  τ={tau_ms}ms: dropped {len(dropped)} missing-file samples")
+            if dropped[0][1]:
+                print("  example missing:", dropped[0][1][0])
+
         if max_samples_per_split is not None:
-            # Shuffle before truncating so the dry-run subset is
-            # representative (same rationale as run_experiment). Uses
-            # a per-τ-stable seed so different τs see the same subset
-            # of test samples where possible (basenames that exist at
-            # every τ stay aligned across τs).
             rng_tau = random.Random(seed)
             rng_tau.shuffle(test_samples)
             test_samples = test_samples[:max_samples_per_split]
+
         if not test_samples:
             if verbose:
                 print(f"  τ={tau_ms}ms: no test samples; skipping")
             continue
+
         loader = make_dataloader(
-            test_samples, streams, modality_registry,
-            batch_size=batch_size, shuffle=False, num_workers=num_workers,
+            test_samples,
+            streams,
+            modality_registry,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=num_workers,
         )
+
         ev = evaluate(model, loader, criterion, device_t)
+
         out[tau_ms] = {
             "macro_f1": ev["macro_f1"],
             "per_class_f1": ev["per_class_f1"],
             "loss": ev["loss"],
             "n_samples": len(test_samples),
         }
-        if verbose:
-            print(f"  τ={tau_ms:>4}ms  n={len(test_samples):>5}  "
-                  f"loss={ev['loss']:.4f}  macroF1={ev['macro_f1']:.4f}  "
-                  f"per-class={ev['per_class_f1']}")
-    return out
 
+        if verbose:
+            print(
+                f"  τ={tau_ms:>4}ms  n={len(test_samples):>5}  "
+                f"loss={ev['loss']:.4f}  macroF1={ev['macro_f1']:.4f}  "
+                f"per-class={ev['per_class_f1']}"
+            )
+
+    return out
 
 def sweep_tau_coordination(
     *,
@@ -1769,34 +2188,73 @@ def sweep_tau_coordination(
 
 def sweep_tau_coordination_safe(
     *,
-    experiment_result,
-    modality_registry,
-    manifest_rows,
-    labels_dir,
-    tau_grid_ms=DEFAULT_TAU_GRID_MS,
-    batch_size=32,
-    num_workers=0,
-    device="auto",
-    max_samples_per_split=None,
-    seed=42,
-    verbose=True,
-    coordination_csv_path=None,
-    coordination_feature_cols=None,
-    missing_coordination="zeros",
-):
+    experiment_result: dict,
+    modality_registry: dict[str, dict],
+    manifest_rows: list[dict],
+    labels_dir: str,
+    tau_grid_ms: tuple[int, ...] = DEFAULT_TAU_GRID_MS,
+    batch_size: int = 32,
+    num_workers: int = 0,
+    device: torch.device | str = "auto",
+    max_samples_per_split: int | None = None,
+    seed: int = 42,
+    verbose: bool = True,
+    coordination_csv_path: str | None = None,
+    coordination_feature_cols: list[str] | None = None,
+    missing_coordination: str = "zeros",
+) -> dict[int, dict]:
+    """
+    Evaluate one trained coordination model across tau label files.
+
+    Works for:
+      - coordination summary GRU/neural_concat
+      - CSA continuous coordination self_attention
+    """
     cfg = experiment_result["config"]
     streams = cfg["streams"]
     fusion = cfg["fusion"]
+
     device_t = resolve_device(device) if isinstance(device, str) else device
 
-    coordination_csv_path = coordination_csv_path or experiment_result.get("coordination_csv_path") or cfg.get("coordination_csv_path")
-    coordination_feature_cols = coordination_feature_cols or experiment_result.get("coordination_feature_cols") or fl.COORDINATION_FEATURE_COLUMNS
-    missing_coordination = experiment_result.get("missing_coordination", missing_coordination)
+    coordination_csv_path = (
+        coordination_csv_path
+        if coordination_csv_path is not None
+        else cfg.get("coordination_csv_path")
+    )
 
-    coordination_lookup = load_coordination_features(
-        coordination_csv_path,
-        feature_cols=coordination_feature_cols,
-    ) if coordination_csv_path is not None else {}
+    coordination_feature_cols = (
+        coordination_feature_cols
+        if coordination_feature_cols is not None
+        else cfg.get("coordination_feature_cols", COORDINATION_FEATURE_COLUMNS)
+    )
+
+    missing_coordination = cfg.get("missing_coordination", missing_coordination)
+
+    has_summary_coordination = any(
+        modality_registry[s["modality"]].get("kind", "spliced") == "coordination"
+        and modality_registry[s["modality"]].get("coordination_mode", "summary") == "summary"
+        for s in streams
+    )
+
+    has_file_stream = any(
+        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
+        for s in streams
+    )
+
+    if has_summary_coordination:
+        if coordination_csv_path is None:
+            raise ValueError(
+                "Summary coordination stream needs coordination_csv_path."
+            )
+
+        coordination_lookup = load_coordination_features(
+            coordination_csv_path,
+            feature_cols=coordination_feature_cols,
+        )
+        coordination_feature_dim = len(coordination_feature_cols)
+    else:
+        coordination_lookup = {}
+        coordination_feature_dim = None
 
     model = build_model(
         fusion,
@@ -1804,33 +2262,39 @@ def sweep_tau_coordination_safe(
         hidden_size=cfg["hidden_size"],
         dropout=cfg.get("dropout", 0.3),
         num_layers_early=cfg.get("num_layers_early", 3),
+        attention_dim=cfg.get("attention_dim"),
+        attention_heads=cfg.get("attention_heads", 4),
+        attention_layers=cfg.get("attention_layers", 2),
+        attention_pooling=cfg.get("attention_pooling", "mean"),
     ).to(device_t)
+
     model.load_state_dict(experiment_result["model_state"])
 
     train_labels = load_labels(cfg["labels_path"])
     train_samples = enumerate_samples(manifest_rows, train_labels)
+    train_samples = [s for s in train_samples if s["split"] == "train"]
 
-    # Match training behavior: filter missing file-backed streams
-    train_samples, _ = filter_samples_with_existing_files(
-        [s for s in train_samples if s["split"] == "train"],
-        streams,
-        modality_registry,
-    )
+    if has_file_stream:
+        train_samples, _ = filter_samples_with_existing_files(
+            train_samples,
+            streams,
+            modality_registry,
+        )
+
+    if not train_samples:
+        raise ValueError("No train samples available for class-weight reconstruction.")
 
     class_weights = compute_class_weights(train_samples).to(device_t)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
 
-    has_file_stream = any(
-        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
-        for s in streams
-    )
-
-    out = {}
+    out: dict[int, dict] = {}
 
     for tau_ms in tau_grid_ms:
         labels_path = os.path.join(labels_dir, f"labels_tau_{tau_ms:04d}.json")
+
         if not os.path.exists(labels_path):
-            print(f"  τ={tau_ms}ms: missing labels, skipping")
+            if verbose:
+                print(f"  τ={tau_ms}ms: missing labels, skipping")
             continue
 
         labels = load_labels(labels_path)
@@ -1844,9 +2308,13 @@ def sweep_tau_coordination_safe(
                 streams,
                 modality_registry,
             )
-            if verbose:
-                print(f"  τ={tau_ms}ms: kept {len(test_samples)}/{before}, dropped {len(dropped)} missing-file samples")
-                if dropped and dropped[0][1]:
+
+            if verbose and dropped:
+                print(
+                    f"  τ={tau_ms}ms: kept {len(test_samples)}/{before}, "
+                    f"dropped {len(dropped)} missing-file samples"
+                )
+                if dropped[0][1]:
                     print("    example missing:", dropped[0][1][0])
 
         if max_samples_per_split is not None:
@@ -1855,7 +2323,8 @@ def sweep_tau_coordination_safe(
             test_samples = test_samples[:max_samples_per_split]
 
         if not test_samples:
-            print(f"  τ={tau_ms}ms: no test samples, skipping")
+            if verbose:
+                print(f"  τ={tau_ms}ms: no test samples, skipping")
             continue
 
         loader = make_dataloader_coordination(
@@ -1864,9 +2333,9 @@ def sweep_tau_coordination_safe(
             modality_registry,
             batch_size=batch_size,
             shuffle=False,
-            num_workers=0,  # force stable debugging
+            num_workers=num_workers,
             coordination_lookup=coordination_lookup,
-            coordination_feature_dim=len(coordination_feature_cols),
+            coordination_feature_dim=coordination_feature_dim,
             missing_coordination=missing_coordination,
         )
 
@@ -1879,14 +2348,14 @@ def sweep_tau_coordination_safe(
             "n_samples": len(test_samples),
         }
 
-        print(
-            f"  τ={tau_ms:>4}ms  n={len(test_samples):>5}  "
-            f"loss={ev['loss']:.4f}  macroF1={ev['macro_f1']:.4f}  "
-            f"per-class={ev['per_class_f1']}"
-        )
+        if verbose:
+            print(
+                f"  τ={tau_ms:>4}ms  n={len(test_samples):>5}  "
+                f"loss={ev['loss']:.4f}  macroF1={ev['macro_f1']:.4f}  "
+                f"per-class={ev['per_class_f1']}"
+            )
 
     return out
-
 
 ##########################
 # COORDINATION ANALYSIS
@@ -2019,3 +2488,89 @@ def filter_samples_with_existing_files(samples, streams, modality_registry):
             dropped.append((s, missing))
 
     return kept, dropped
+
+
+############
+# continuous coodrination helpers
+###########
+
+def _format_coord_window_filename(start_s: float, end_s: float, speaker_fid: str) -> str:
+    """
+    Continuous coordination filename convention:
+        0000.00-0002.00_V00_S0691_I00000482_P0500.npy
+    """
+    return f"{start_s:07.2f}-{end_s:07.2f}_{speaker_fid}.npy"
+
+
+def _coordination_continuous_candidates(
+    base_dir: str,
+    sample: dict,
+) -> list[str]:
+    """
+    Try a few reasonable layouts so the loader is robust.
+
+    Preferred:
+        base_dir / speaker_fid / 0000.00-0002.00_speaker_fid.npy
+
+    Also tries:
+        base_dir / interaction_id / filename
+        base_dir / filename
+    """
+    speaker_fid = sample["speaker_file_id"]
+    interaction_id = sample["interaction_id"]
+    fname = _format_coord_window_filename(
+        sample["start_s"],
+        sample["end_s"],
+        speaker_fid,
+    )
+
+    return [
+        os.path.join(base_dir, speaker_fid, fname),
+        os.path.join(base_dir, interaction_id, fname),
+        os.path.join(base_dir, fname),
+    ]
+
+
+def _load_continuous_coordination_file(
+    base_dir: str,
+    sample: dict,
+    feature_dim: int,
+    target_t: int = 0,
+    missing_coordination: str = "zeros",
+) -> np.ndarray:
+    candidates = _coordination_continuous_candidates(base_dir, sample)
+
+    path = next((p for p in candidates if os.path.exists(p)), None)
+
+    if path is None:
+        if missing_coordination == "error":
+            raise FileNotFoundError(
+                "Missing continuous coordination file. Tried:\n"
+                + "\n".join(candidates)
+            )
+
+        # Conservative fallback: one timestep of zeros.
+        return np.zeros((1, feature_dim), dtype=np.float32)
+
+    arr = np.load(path).astype(np.float32, copy=False)
+
+    # Allow saved shape (F,) but normalize to (1, F)
+    if arr.ndim == 1:
+        arr = arr[None, :]
+
+    if arr.ndim != 2:
+        raise ValueError(
+            f"Continuous coordination file must have shape (T, F), "
+            f"got {arr.shape} at {path}"
+        )
+
+    if arr.shape[-1] != feature_dim:
+        raise ValueError(
+            f"Continuous coordination feature dim mismatch at {path}: "
+            f"expected F={feature_dim}, got shape={arr.shape}"
+        )
+
+    if target_t > 0:
+        arr = _fix_seq_len(arr, target_t=target_t, feature_dim=feature_dim)
+
+    return arr
