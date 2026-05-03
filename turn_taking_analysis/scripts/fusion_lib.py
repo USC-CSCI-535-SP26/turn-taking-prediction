@@ -1033,6 +1033,288 @@ class SelfAttentionFusion(nn.Module):
         h = torch.cat(pooled, dim=-1)
         return self.fc2(self.drop(self.relu(self.fc1(h))))
     
+# Cross-attention fusion
+
+class _SinusoidalPositionalEncoding(nn.Module):
+    """Sinusoidal positional encoding added at the input projection step.
+
+    At the input rather than inside any attention block so the same
+    positional signal covers both self-attention (in SelfCrossAttentionFusion)
+    and cross-attention. No learned parameters.
+    """
+
+    def __init__(self, d_model: int, max_len: int = 512):
+        super().__init__()
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(0, max_len).unsqueeze(1).float()
+        div_term = torch.exp(
+            torch.arange(0, d_model, 2).float() * -(math.log(10000.0) / d_model)
+        )
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        # Buffer (not parameter): moves with .to(device), not trained
+        self.register_buffer("pe", pe.unsqueeze(0))  # (1, max_len, d_model)
+
+    def forward(self, T: int) -> torch.Tensor:
+        """Return (1, T, d_model); broadcasts across batch when added."""
+        return self.pe[:, :T, :]
+
+
+class _CrossAttentionBlock(nn.Module):
+    """Bidirectional cross-modality attention block.
+
+    Each stream attends to the other. Pre-norm + residual. No FFN inside
+    the block (FFN doubles param count and we are extremely data-poor at
+    ~492 samples — easy to add later if the model is underfitting).
+
+    Both directions consume the pre-norm versions of both inputs, so the
+    cross-attention is parallel/symmetric — avoids an arbitrary "which
+    modality updates first" ordering choice.
+
+    nn.MultiheadAttention handles unequal Q vs K/V sequence lengths
+    natively, so visual (e.g. 60 timesteps at 30Hz) and acoustic (e.g.
+    200 timesteps at CPC's 100Hz) flow through without resampling.
+    """
+
+    def __init__(self, d_model: int, n_heads: int = 4, dropout: float = 0.1):
+        super().__init__()
+        if d_model % n_heads != 0:
+            raise ValueError(
+                f"d_model={d_model} must be divisible by n_heads={n_heads}"
+            )
+        self.norm_a = nn.LayerNorm(d_model)
+        self.norm_b = nn.LayerNorm(d_model)
+        # a attends to b: query = a, key/value = b
+        self.attn_a2b = nn.MultiheadAttention(
+            embed_dim=d_model, num_heads=n_heads,
+            dropout=dropout, batch_first=True,
+        )
+        # b attends to a: query = b, key/value = a
+        self.attn_b2a = nn.MultiheadAttention(
+            embed_dim=d_model, num_heads=n_heads,
+            dropout=dropout, batch_first=True,
+        )
+        self.resid_drop = nn.Dropout(dropout)
+
+    def forward(self, a: torch.Tensor, b: torch.Tensor):
+        a_n = self.norm_a(a)
+        b_n = self.norm_b(b)
+        a_ca, _ = self.attn_a2b(query=a_n, key=b_n, value=b_n,
+                                need_weights=False)
+        b_ca, _ = self.attn_b2a(query=b_n, key=a_n, value=a_n,
+                                need_weights=False)
+        a_out = a + self.resid_drop(a_ca)
+        b_out = b + self.resid_drop(b_ca)
+        return a_out, b_out
+
+
+class CrossAttentionFusion(nn.Module):
+    """2-stream cross-attention fusion model (no self-attention).
+
+    Streams are projected to a shared attention_dim, given sinusoidal
+    positional encoding, cross-attended to one another, pooled over time,
+    and concatenated for the FC head.
+
+    Stream identity is positional. feat_dims[0] = visual, feat_dims[1] =
+    acoustic. Order must match the experiment-config `streams` list and
+    the order at forward time.
+
+    This is the "cross-attention only" ablation. For the combined
+    "self-attention then cross-attention" model use
+    SelfCrossAttentionFusion.
+    """
+
+    def __init__(
+        self,
+        feat_dims: list[int],
+        attention_dim: int = 64,
+        num_heads: int = 4,
+        num_classes: int = NUM_CLASSES,
+        dropout: float = 0.3,
+        pooling: str = "mean",
+        max_len: int = 512,
+    ):
+        super().__init__()
+        if len(feat_dims) != 2:
+            raise ValueError(
+                f"CrossAttentionFusion expects exactly 2 streams "
+                f"(visual + acoustic); got {len(feat_dims)}."
+            )
+        if pooling not in {"mean", "last"}:
+            raise ValueError("pooling must be 'mean' or 'last'")
+        self.feat_dims = list(feat_dims)
+        self.attention_dim = int(attention_dim)
+        self.pooling = pooling
+        d = self.attention_dim
+        # Per-stream input projection to shared attention_dim
+        self.input_projs = nn.ModuleList([
+            nn.Linear(feat_dims[0], d),
+            nn.Linear(feat_dims[1], d),
+        ])
+        # Positional encoding shared across both streams
+        self.pos_enc = _SinusoidalPositionalEncoding(d, max_len=max_len)
+        # Single cross-attention block, bidirectional.
+        self.cross_attn = _CrossAttentionBlock(
+            d_model=d, n_heads=num_heads, dropout=dropout,
+        )
+        # FC head: same shape pattern as NeuralConcatFusion / SelfAttentionFusion
+        self.fc1 = nn.Linear(d * 2, d)
+        self.relu = nn.ReLU()
+        self.drop = nn.Dropout(dropout)
+        self.fc2 = nn.Linear(d, num_classes)
+
+    def _pool(self, z: torch.Tensor) -> torch.Tensor:
+        """z: (B, T, D) -> (B, D)."""
+        if self.pooling == "last":
+            return z[:, -1, :]
+        return z.mean(dim=1)
+
+    def forward(self, xs):
+        if not isinstance(xs, (list, tuple)) or len(xs) != 2:
+            raise ValueError(
+                f"CrossAttentionFusion expects 2 streams; got "
+                f"{len(xs) if isinstance(xs, (list, tuple)) else 'non-list'}"
+            )
+        a, b = xs  # (B, T_a, feat_a), (B, T_b, feat_b)
+        # Same per-stream shape validation as SelfAttentionFusion does
+        for x, expected_dim, idx in zip(xs, self.feat_dims, ("a", "b")):
+            if x.ndim != 3:
+                raise ValueError(
+                    f"Stream {idx} must have shape (B, T, F); got {x.shape}"
+                )
+            if x.shape[-1] != expected_dim:
+                raise ValueError(
+                    f"Stream {idx} feature dim mismatch: expected "
+                    f"F={expected_dim}, got shape={x.shape}"
+                )
+        # Project + add positional encoding (broadcasts over batch)
+        a = self.input_projs[0](a) + self.pos_enc(a.size(1))
+        b = self.input_projs[1](b) + self.pos_enc(b.size(1))
+        # Bidirectional cross-attention
+        a, b = self.cross_attn(a, b)
+        # Pool, concat, classify
+        h = torch.cat([self._pool(a), self._pool(b)], dim=-1)  # (B, 2 * d)
+        return self.fc2(self.drop(self.relu(self.fc1(h))))
+
+
+class SelfCrossAttentionFusion(nn.Module):
+    """2-stream self-attention then cross-attention fusion model.
+
+    Pipeline:
+      1. Per-stream Linear projection -> attention_dim
+      2. Add sinusoidal positional encoding
+      3. Per-stream TransformerEncoder (self-attention) with num_layers blocks
+      4. Bidirectional cross-attention between the two streams
+      5. Mean/last pool over time, concat, FC head
+
+    Serial composition of within-modality self-attention and across-modality cross-attention. 
+    The self-attention portion mirrors SelfAttentionFusion (same TransformerEncoderLayer
+    setup) so the two are directly comparable.
+
+    Stream identity is positional: feat_dims[0] = visual, feat_dims[1] =
+    acoustic.
+    """
+
+    def __init__(
+        self,
+        feat_dims: list[int],
+        attention_dim: int = 64,
+        num_heads: int = 4,
+        num_layers: int = 2,
+        num_classes: int = NUM_CLASSES,
+        dropout: float = 0.3,
+        pooling: str = "mean",
+        max_len: int = 512,
+    ):
+        super().__init__()
+        if len(feat_dims) != 2:
+            raise ValueError(
+                f"SelfCrossAttentionFusion expects exactly 2 streams "
+                f"(visual + acoustic); got {len(feat_dims)}."
+            )
+        if pooling not in {"mean", "last"}:
+            raise ValueError("pooling must be 'mean' or 'last'")
+        if attention_dim % num_heads != 0:
+            raise ValueError(
+                f"attention_dim={attention_dim} must be divisible by "
+                f"num_heads={num_heads}"
+            )
+        self.feat_dims = list(feat_dims)
+        self.attention_dim = int(attention_dim)
+        self.num_layers = int(num_layers)
+        self.pooling = pooling
+        d = self.attention_dim
+
+        # Per-stream input projection
+        self.input_projs = nn.ModuleList([
+            nn.Linear(feat_dims[0], d),
+            nn.Linear(feat_dims[1], d),
+        ])
+        self.pos_enc = _SinusoidalPositionalEncoding(d, max_len=max_len)
+
+        # Per-stream self-attention (TransformerEncoder)
+        self.self_attn = nn.ModuleList()
+        for _ in range(2):
+            layer = nn.TransformerEncoderLayer(
+                d_model=d,
+                nhead=num_heads,
+                dim_feedforward=d * 4,
+                dropout=dropout,
+                activation="gelu",
+                batch_first=True,
+                norm_first=True,
+            )
+            self.self_attn.append(
+                nn.TransformerEncoder(encoder_layer=layer,
+                                      num_layers=self.num_layers)
+            )
+
+        # Cross-attention block
+        self.cross_attn = _CrossAttentionBlock(
+            d_model=d, n_heads=num_heads, dropout=dropout,
+        )
+
+        # FC head
+        self.fc1 = nn.Linear(d * 2, d)
+        self.relu = nn.ReLU()
+        self.drop = nn.Dropout(dropout)
+        self.fc2 = nn.Linear(d, num_classes)
+
+    def _pool(self, z: torch.Tensor) -> torch.Tensor:
+        if self.pooling == "last":
+            return z[:, -1, :]
+        return z.mean(dim=1)
+
+    def forward(self, xs):
+        if not isinstance(xs, (list, tuple)) or len(xs) != 2:
+            raise ValueError(
+                f"SelfCrossAttentionFusion expects 2 streams; got "
+                f"{len(xs) if isinstance(xs, (list, tuple)) else 'non-list'}"
+            )
+        for x, expected_dim, idx in zip(xs, self.feat_dims, ("a", "b")):
+            if x.ndim != 3:
+                raise ValueError(
+                    f"Stream {idx} must have shape (B, T, F); got {x.shape}"
+                )
+            if x.shape[-1] != expected_dim:
+                raise ValueError(
+                    f"Stream {idx} feature dim mismatch: expected "
+                    f"F={expected_dim}, got shape={x.shape}"
+                )
+
+        a, b = xs
+        # Project + positional encoding.
+        a = self.input_projs[0](a) + self.pos_enc(a.size(1))
+        b = self.input_projs[1](b) + self.pos_enc(b.size(1))
+        # Self-attention per stream.
+        a = self.self_attn[0](a)
+        b = self.self_attn[1](b)
+        # Cross-attention between streams.
+        a, b = self.cross_attn(a, b)
+        # Pool, concat, classify.
+        h = torch.cat([self._pool(a), self._pool(b)], dim=-1)
+        return self.fc2(self.drop(self.relu(self.fc1(h))))
+
 # =============================================================================
 # Training / evaluation
 # =============================================================================
@@ -1338,9 +1620,41 @@ def build_model(
             pooling=attention_pooling,
         )
 
+    if fusion in {"cross_attention", "cross_attn"}:
+        # 2-stream cross-attention only (no self-attention)
+        head_count = (
+            attention_heads[0] if isinstance(attention_heads, list)
+            else attention_heads
+        )
+        return CrossAttentionFusion(
+            feat_dims=stream_dims,
+            attention_dim=attention_dim or hidden_size,
+            num_heads=head_count,
+            num_classes=num_classes,
+            dropout=dropout,
+            pooling=attention_pooling,
+        )
+
+    if fusion in {"self_cross_attention", "self_cross_attn"}:
+        # 2-stream self-attention then cross-attention (combined)
+        head_count = (
+            attention_heads[0] if isinstance(attention_heads, list)
+            else attention_heads
+        )
+        return SelfCrossAttentionFusion(
+            feat_dims=stream_dims,
+            attention_dim=attention_dim or hidden_size,
+            num_heads=head_count,
+            num_layers=attention_layers,
+            num_classes=num_classes,
+            dropout=dropout,
+            pooling=attention_pooling,
+        )
+
     raise ValueError(
         f"unknown fusion family {fusion!r}; supported: "
-        f"unimodal, early, neural_concat, self_attention"
+        f"unimodal, early, neural_concat, self_attention, "
+        f"cross_attention, self_cross_attention"
     )
 
 def resolve_device(prefer: str = "auto") -> torch.device:
@@ -1502,7 +1816,9 @@ def run_experiment(
         print(f"  class_w:     {class_weights.cpu().tolist()}")
         print(f"  epochs:      up to {epochs} (patience={patience})")
         print(f"  dropout:     {dropout}")
-        if fusion in {"self_attention", "attention"}:
+        if fusion in {"self_attention", "attention",
+                      "cross_attention", "cross_attn",
+                      "self_cross_attention", "self_cross_attn"}:
             print(
                 f"  attention:   dim={attention_dim or hidden_size}, "
                 f"heads={attention_heads}, layers={attention_layers}, "
@@ -1819,7 +2135,9 @@ def run_experiment_coordination(
         print(f"  class_w:   {class_weights.cpu().tolist()}")
         print(f"  epochs:    up to {epochs} (patience={patience})")
         print(f"  dropout:   {dropout}")
-        if fusion in {"self_attention", "attention"}:
+        if fusion in {"self_attention", "attention",
+                      "cross_attention", "cross_attn",
+                      "self_cross_attention", "self_cross_attn"}:
             print(
                 f"  attention: dim={attention_dim or hidden_size}, "
                 f"heads={attention_heads}, layers={attention_layers}, "
