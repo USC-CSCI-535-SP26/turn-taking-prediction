@@ -527,7 +527,6 @@ class TurnTakingDataset(Dataset):
                 arr = _fix_seq_len(arr, target_t=target_t, feature_dim=feature_dim)
 
             tensors.append(torch.from_numpy(arr))
-
         return tensors, s["label"]
     
 class TurnTakingDatasetCoordination(Dataset):
