@@ -1613,11 +1613,6 @@ def run_experiment_coordination(
     samples = enumerate_samples(manifest_rows, labels)
     by_split = split_samples(samples)
 
-    has_file_stream = any(
-        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
-        for s in streams
-    )
-
     has_summary_coordination = any(
         modality_registry[s["modality"]].get("kind", "spliced") == "coordination"
         and modality_registry[s["modality"]].get("coordination_mode", "summary") == "summary"
@@ -1630,33 +1625,33 @@ def run_experiment_coordination(
         for s in streams
     )
 
-    # Filter missing file-backed streams: CPC/OpenFace/etc.
-    # Continuous coordination files are handled by the dataset because they are
-    # coordination pseudo-streams and can use missing_coordination='zeros' or 'error'.
-    if has_file_stream:
-        filtered_by_split = {}
-        total_dropped = 0
+    # Filter samples whose required feature files don't exist on disk. The
+    # filter now covers spliced AND continuous-coord streams (it skips
+    # summary coord, whose zero-fallback is shape-safe). Missing-file samples
+    # are silently dropped before they can reach the loader.
+    filtered_by_split = {}
+    total_dropped = 0
 
-        for split_name, samples_for_split in by_split.items():
-            kept, dropped = filter_samples_with_existing_files(
-                samples_for_split,
-                streams,
-                modality_registry,
+    for split_name, samples_for_split in by_split.items():
+        kept, dropped = filter_samples_with_existing_files(
+            samples_for_split,
+            streams,
+            modality_registry,
+        )
+
+        filtered_by_split[split_name] = kept
+        total_dropped += len(dropped)
+
+        if verbose and dropped:
+            print(
+                f"  dropped {len(dropped)} {split_name} samples "
+                f"missing feature files"
             )
+            if dropped[0][1]:
+                print("  example missing:", dropped[0][1][0])
 
-            filtered_by_split[split_name] = kept
-            total_dropped += len(dropped)
-
-            if verbose and dropped:
-                print(
-                    f"  dropped {len(dropped)} {split_name} samples "
-                    f"missing feature files"
-                )
-                if dropped[0][1]:
-                    print("  example missing:", dropped[0][1][0])
-
-        by_split = filtered_by_split
-        samples = [s for sample_list in by_split.values() for s in sample_list]
+    by_split = filtered_by_split
+    samples = [s for sample_list in by_split.values() for s in sample_list]
 
     # Summary coordination needs CSV. Continuous coordination does not.
     if has_summary_coordination:
@@ -1866,7 +1861,6 @@ def sweep_tau(
     max_samples_per_split: int | None = None,
     seed: int = 42,
     verbose: bool = True,
-    restrict_to_train_universe: bool = True,
 ) -> dict[int, dict]:
     """
     Evaluate on trained non-coordination model across tau label files.
@@ -1886,23 +1880,10 @@ def sweep_tau(
     the per-τ loss numbers are directly interpretable as "how well did
     the optimization target transfer to this τ."
 
-    Test-cohort semantics — `restrict_to_train_universe` (default True):
-        When True, the per-τ test cohort is intersected with the set of
-        test-split basenames whose class at training-τ was in {0,1,2}.
-        This produces a fixed test cohort across τs (with the per-τ
-        eligibility filter still applied — a basename whose class shifts
-        out of {0,1,2} at some τ is excluded at that τ). Matches the
-        "only labels change per τ" framing above and closes the silent-
-        zero-substitution issue when coordination feature extraction
-        only covered the τ=400 training universe (preflight Problem B /
-        Problem A; see turn_taking_analysis/docs/preflight_problems.md).
-
-        When False, restores the prior per-τ-recomputed cohort: each τ
-        independently enumerates its own class-{0,1,2} test set, which
-        may include windows that were class-{3,4,5} at training-τ and
-        therefore have no extracted coord feature. Provided for
-        backwards compatibility with prior τ-curve numbers; not
-        recommended for coord-using runs.
+    Per-τ test cohort: each τ independently enumerates its own class-{0,1,2}
+    test set, then `filter_samples_with_existing_files` drops any sample
+    whose required feature files don't exist on disk (the filter now covers
+    both spliced and continuous-coord streams).
 
     Works for:
       - standard GRU runs
@@ -1935,17 +1916,6 @@ def sweep_tau(
 
     train_labels = load_labels(train_labels_path)
     train_samples = enumerate_samples(manifest_rows, train_labels)
-
-    # Capture the fixed-test-cohort basename set at training-τ before
-    # `train_samples` is narrowed to just the train split. Empty when
-    # `restrict_to_train_universe` is False; in that case the per-τ
-    # intersection step below is a no-op.
-    train_universe_test_basenames: set[str] = set()
-    if restrict_to_train_universe:
-        train_universe_test_basenames = {
-            s["basename"] for s in train_samples if s["split"] == "test"
-        }
-
     train_split = [s for s in train_samples if s["split"] == "train"]
 
     train_split, _ = filter_samples_with_existing_files(
@@ -1975,21 +1945,6 @@ def sweep_tau(
         labels = load_labels(labels_path)
         samples = enumerate_samples(manifest_rows, labels)
         test_samples = [s for s in samples if s["split"] == "test"]
-
-        # Fixed-test-cohort intersection: keep only basenames that were also
-        # in the training-τ test cohort (class-{0,1,2} at training-τ). No-op
-        # when restrict_to_train_universe is False.
-        if restrict_to_train_universe:
-            before_universe = len(test_samples)
-            test_samples = [
-                s for s in test_samples
-                if s["basename"] in train_universe_test_basenames
-            ]
-            if verbose and len(test_samples) < before_universe:
-                print(
-                    f"  τ={tau_ms}ms: restricted to fixed train-τ test cohort "
-                    f"({len(test_samples)}/{before_universe} retained)"
-                )
 
         test_samples, dropped = filter_samples_with_existing_files(
             test_samples,
@@ -2213,31 +2168,17 @@ def sweep_tau_coordination_safe(
     coordination_csv_path: str | None = None,
     coordination_feature_cols: list[str] | None = None,
     missing_coordination: str = "zeros",
-    restrict_to_train_universe: bool = True,
 ) -> dict[int, dict]:
     """
     Evaluate one trained coordination model across tau label files.
 
-    Test-cohort semantics — `restrict_to_train_universe` (default True):
-        When True, the per-τ test cohort is intersected with the set of
-        test-split basenames whose class at training-τ was in {0,1,2}.
-        This produces a fixed test cohort across τs (with the per-τ
-        eligibility filter still applied — a basename whose class shifts
-        out of {0,1,2} at some τ is excluded at that τ). For coord-using
-        runs this is the difference between scientifically meaningful
-        τ-curves and curves contaminated by silent zero-substitution
-        (preflight Problem B / Problem A; see
-        turn_taking_analysis/docs/preflight_problems.md). Coord features
-        are guaranteed available for every basename in this cohort
-        because the extractor scoped to the same training universe.
-
-        When False, restores the prior per-τ-recomputed cohort: each τ
-        independently enumerates its own class-{0,1,2} test set, which
-        may include windows whose τ=400 class was {3,4,5} — those have
-        no coord CSV row / WCC file, and the loader silently
-        substitutes (1, F) zeros (summary, no stack hazard) or trips
-        torch.stack on (1, 23) vs (21, 23) (continuous, hard crash).
-        Provided for backwards compatibility; not recommended.
+    Per-τ behavior: each τ independently enumerates its own class-{0,1,2}
+    test set, then `filter_samples_with_existing_files` drops any sample
+    whose required feature files don't exist on disk. The filter now
+    covers continuous-coord streams, so a sample whose τ=400 class was
+    {3,4,5} (no WCC file written by the extractor) is dropped before it
+    can reach the loader — preventing the (1, F) zero-fallback vs real
+    (T, F) torch.stack mismatch that previously crashed CSA τ-sweeps.
 
     Works for:
       - coordination summary GRU/neural_concat
@@ -2266,11 +2207,6 @@ def sweep_tau_coordination_safe(
     has_summary_coordination = any(
         modality_registry[s["modality"]].get("kind", "spliced") == "coordination"
         and modality_registry[s["modality"]].get("coordination_mode", "summary") == "summary"
-        for s in streams
-    )
-
-    has_file_stream = any(
-        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
         for s in streams
     )
 
@@ -2305,25 +2241,14 @@ def sweep_tau_coordination_safe(
 
     train_labels = load_labels(cfg["labels_path"])
     train_samples = enumerate_samples(manifest_rows, train_labels)
-
-    # Capture the fixed-test-cohort basename set at training-τ before
-    # `train_samples` is reassigned to just the train split below. Empty
-    # when `restrict_to_train_universe` is False; in that case the per-τ
-    # intersection step below is a no-op.
-    train_universe_test_basenames: set[str] = set()
-    if restrict_to_train_universe:
-        train_universe_test_basenames = {
-            s["basename"] for s in train_samples if s["split"] == "test"
-        }
-
     train_samples = [s for s in train_samples if s["split"] == "train"]
 
-    if has_file_stream:
-        train_samples, _ = filter_samples_with_existing_files(
-            train_samples,
-            streams,
-            modality_registry,
-        )
+    # Filter covers spliced AND continuous-coord streams. Always called.
+    train_samples, _ = filter_samples_with_existing_files(
+        train_samples,
+        streams,
+        modality_registry,
+    )
 
     if not train_samples:
         raise ValueError("No train samples available for class-weight reconstruction.")
@@ -2345,38 +2270,20 @@ def sweep_tau_coordination_safe(
         samples = enumerate_samples(manifest_rows, labels)
         test_samples = [s for s in samples if s["split"] == "test"]
 
-        # Fixed-test-cohort intersection: keep only basenames that were also
-        # in the training-τ test cohort (class-{0,1,2} at training-τ). No-op
-        # when restrict_to_train_universe is False. For coord runs this
-        # guarantees every retained basename has an extracted coord feature
-        # (the extractor scoped to the same universe).
-        if restrict_to_train_universe:
-            before_universe = len(test_samples)
-            test_samples = [
-                s for s in test_samples
-                if s["basename"] in train_universe_test_basenames
-            ]
-            if verbose and len(test_samples) < before_universe:
-                print(
-                    f"  τ={tau_ms}ms: restricted to fixed train-τ test cohort "
-                    f"({len(test_samples)}/{before_universe} retained)"
-                )
+        before = len(test_samples)
+        test_samples, dropped = filter_samples_with_existing_files(
+            test_samples,
+            streams,
+            modality_registry,
+        )
 
-        if has_file_stream:
-            before = len(test_samples)
-            test_samples, dropped = filter_samples_with_existing_files(
-                test_samples,
-                streams,
-                modality_registry,
+        if verbose and dropped:
+            print(
+                f"  τ={tau_ms}ms: kept {len(test_samples)}/{before}, "
+                f"dropped {len(dropped)} missing-file samples"
             )
-
-            if verbose and dropped:
-                print(
-                    f"  τ={tau_ms}ms: kept {len(test_samples)}/{before}, "
-                    f"dropped {len(dropped)} missing-file samples"
-                )
-                if dropped[0][1]:
-                    print("    example missing:", dropped[0][1][0])
+            if dropped[0][1]:
+                print("    example missing:", dropped[0][1][0])
 
         if max_samples_per_split is not None:
             rng_tau = random.Random(seed)
@@ -2516,6 +2423,24 @@ def _fix_seq_len(arr: np.ndarray, target_t: int, feature_dim: int) -> np.ndarray
     return np.concatenate([arr, pad], axis=0)
 
 def filter_samples_with_existing_files(samples, streams, modality_registry):
+    """Drop samples whose required feature files don't exist on disk.
+
+    Per-stream behavior:
+      * Spliced (`kind="spliced"`): require the spliced .npy (or .json
+        fallback for coord-aware loaders) to exist at the expected path.
+        Missing → drop the sample.
+      * Coordination summary (`kind="coordination", mode="summary"`): no
+        per-window file (the lookup is CSV-keyed). Missing keys under
+        `missing_coordination='zeros'` return `(1, F)` zeros which
+        shape-matches a real summary row, so `torch.stack` succeeds. Skip
+        — no drop needed.
+      * Coordination continuous (`kind="coordination", mode="continuous"`):
+        per-window WCC file. Missing under `'zeros'` returns `(1, F)`
+        zeros which DOES NOT shape-match real `(T_wcc, F_wcc)` →
+        `torch.stack` crashes. Missing under `'error'` raises
+        `FileNotFoundError`. **Drop the sample so it never reaches the
+        loader.**
+    """
     kept, dropped = [], []
 
     for s in samples:
@@ -2525,8 +2450,21 @@ def filter_samples_with_existing_files(samples, streams, modality_registry):
         for stream in streams:
             mod = stream["modality"]
             cfg = modality_registry[mod]
+            kind = cfg.get("kind", "spliced")
 
-            if cfg.get("kind", "spliced") == "coordination":
+            if kind == "coordination":
+                mode = cfg.get("coordination_mode", "summary")
+                if mode == "summary":
+                    # No per-window file; CSV-keyed; zero fallback is shape-safe.
+                    continue
+                if mode == "continuous":
+                    candidates = _coordination_continuous_candidates(cfg["dir"], s)
+                    if not any(os.path.exists(p) for p in candidates):
+                        ok = False
+                        # Record the first candidate as the representative
+                        # missing path (mirrors the loader's first-existing-
+                        # path resolution).
+                        missing.append(candidates[0] if candidates else "")
                 continue
 
             role = stream["role"]
@@ -2665,6 +2603,59 @@ def _load_continuous_coordination_file(
 PREFLIGHT_FUSION_FAMILIES = frozenset(
     {"unimodal", "early", "neural_concat", "self_attention", "attention"}
 )
+
+# Error kinds with NO runtime safety net — they cause an actual crash
+# (RuntimeError, ValueError, KeyError, FileNotFoundError, etc.) at training
+# or evaluation time. The preflight FAIL verdict gates on the presence of any
+# of these.
+HARD_ERROR_KINDS = frozenset({
+    "feature_dim_mismatch",      # _fix_seq_len raises (or downstream GRU input_size)
+    "header_read_failed",        # np.load raises
+    "summary_csv_key_missing",   # _load_summary_coordination raises KeyError ('error')
+    "shape_divergence",          # _load_summary_coordination raises ValueError
+    "audit_internal_error",      # preflight bug; rest of report can't be trusted
+})
+
+# Error kinds with a documented runtime safety net that silently handles the
+# divergence. They surface in the per-experiment report under `soft_warnings`
+# for visibility, but do NOT gate the FAIL verdict.
+SOFT_ERROR_KINDS = frozenset({
+    "T_mismatch",                # _fix_seq_len coerces leading dim to target_t
+    "missing_file",              # filter_samples_with_existing_files drops it
+})
+
+
+def _is_hard_error(err: dict) -> bool:
+    """Classify an error record as hard (gates FAIL) or soft (warning only).
+
+    Runtime safety nets — exhaustive list of what's silently handled:
+
+      * `_fix_seq_len` (`fusion_lib.py:_fix_seq_len`) — for any stream with
+        `frame_rate_hz > 0`, the dataset trims/zero-pads the leading dim to
+        `target_t = round(frame_rate_hz * WINDOW_S)` before stacking. So any
+        `T_mismatch` recorded by the audit is silently coerced at runtime.
+
+      * `filter_samples_with_existing_files` (`fusion_lib.py:filter_samples_
+        with_existing_files`) — called by `run_experiment`,
+        `run_experiment_coordination`, `sweep_tau`, and
+        `sweep_tau_coordination_safe` before the per-batch loader spins up.
+        Samples with a missing feature file (spliced OR continuous coord)
+        are dropped entirely. Summary coord has no per-window file (the
+        lookup is CSV-keyed) and its zero fallback is shape-safe, so the
+        filter skips summary coord — no drop needed there.
+
+    Anything else — feature_dim mismatch, header parse failures, summary-coord
+    CSV key missing under `'error'` policy, summary-coord shape divergence,
+    audit-internal errors — has no safety net and is flagged HARD.
+    """
+    error_kind = err.get("error_kind", "")
+    if error_kind in HARD_ERROR_KINDS:
+        return True
+    if error_kind in SOFT_ERROR_KINDS:
+        return False
+    # Unknown kinds: be conservative and treat as hard so a future addition
+    # surfaces loudly.
+    return True
 
 
 def _participant_from_file_id(file_id: str) -> str:
@@ -3040,7 +3031,7 @@ def _audit_stream_shapes(
                             ablation_kind=ablation_kind,
                             stream_idx=stream_idx,
                             stream_cfg=s,
-                            sample=sample,
+                                sample=sample,
                             error_kind="summary_csv_key_missing",
                             error_message=(
                                 f"coordination CSV has no row for key={key}; "
@@ -3215,15 +3206,13 @@ def _audit_stream_shapes(
                 effective_shapes.add((expected_T_from_rate, raw_shape[-1]))
             else:
                 effective_shapes.add(raw_shape)
-        # Continuous coord with 'zeros' policy: missing files inject an
-        # UNCOERCED (1, F) at runtime regardless of frame_rate_hz.
-        if (
-            kind == "coordination"
-            and mode == "continuous"
-            and missing_coordination == "zeros"
-            and missing_count > 0
-        ):
-            effective_shapes.add((1, feature_dim))
+        # Note: continuous-coord missing files under 'zeros' policy used to
+        # be injected here as `(1, F)` to flag a stack hazard. That hazard
+        # is now closed at the filter layer — `filter_samples_with_existing_
+        # files` drops missing-coord samples before they reach the loader,
+        # so the (1, F) zero fallback never hits torch.stack at runtime.
+        # The per-stream `stack_hazard` flag now fires only on real shape
+        # divergence within the surviving samples.
         stack_hazard = len(effective_shapes) > 1
 
         stream_summaries.append({
@@ -3341,17 +3330,35 @@ def preflight_experiments(
     For each experiment in `experiments`:
       1) Static config validation (no data, no model build).
       2) Header-only shape audit over every sample × stream pair.
-         Walks the union of samples that the runner OR τ-sweep might load,
-         which is broader than what the runner alone uses at training-τ:
-         the audit drops the training-class filter and accepts the full
-         valid label range (0..5). Reasoning: the τ-sweep re-enumerates at
-         each τ, and a window's class can shift across τs — a sample that
-         is non-training at training-τ may be training-class at another τ.
-         File existence and shape are τ-invariant, so auditing the full
-         class universe at training-τ covers every sample any τ might load.
-         Missing-file errors that the runner would silently drop or
-         substitute are surfaced.
+         Walks the runtime training universe — class-{0,1,2} samples at the
+         training-τ label file. The runtime's `filter_samples_with_existing_
+         files` (now covering both spliced and continuous-coord streams)
+         drops missing-file samples before the loader is invoked at both
+         training and τ-sweep time, so missing-file errors recorded by the
+         audit are downgraded to "soft warnings" rather than FAILs.
       3) Synthetic CPU forward through the built model.
+
+    FAIL criterion (after the per-experiment audit):
+        passed = not config_errors
+                 AND not hard_errors
+                 AND not any_stream_stack_hazard
+                 AND synthetic_forward_error is None
+
+    Hard vs soft error classification (see `_is_hard_error` for the
+    exhaustive table) — runtime safety nets that downgrade an error to
+    "soft warning" rather than FAIL:
+      * `T_mismatch` — `_fix_seq_len` trims/zero-pads the leading dim to
+        `target_t` whenever `frame_rate_hz > 0`. Recorded as soft.
+      * `missing_file` (any stream) — `filter_samples_with_existing_files`
+        drops the offending sample before it reaches any loader call, in
+        both training and τ-sweep paths. The filter covers spliced AND
+        continuous-coord streams (it correctly skips summary coord, whose
+        zero fallback shape-matches real). Recorded as soft.
+      * Everything else (feature_dim mismatch, header read failure,
+        summary-coord CSV key missing under `'error'`, summary-coord shape
+        divergence, audit-internal error, any per-stream
+        `stack_hazard=True` from real shape divergence) — no runtime
+        safety net. Recorded as hard.
 
     Continues across ALL errors and reports them all. Each error record carries
     full provenance (interaction_id, speaker/listener file_id + participant,
@@ -3374,34 +3381,42 @@ def preflight_experiments(
               exp_name: {
                   "status": "PASS" | "FAIL",
                   "config_errors":             [str, ...],
+                  # Backward-compatible breakdown by error_kind (raw):
                   "shape_errors":              [error_record, ...],
                   "missing_file_errors":       [error_record, ...],
+                  # Severity breakdown (new):
+                  "hard_errors":               [error_record, ...],
+                  "soft_warnings":             [error_record, ...],
+                  "any_stream_stack_hazard":   bool,
                   "synthetic_forward_error":   str | None,
                   "stream_summaries":          [{...}, ...],
               },
               ...
           },
-          "summary": {totals},
+          "summary": {
+              "total_experiments", "passed", "failed",
+              "total_config_errors",
+              "total_shape_errors", "total_missing_files",       # raw
+              "total_hard_errors", "total_soft_warnings",         # severity
+              "total_stack_hazards",
+              "total_synthetic_forward_failures",
+          },
         }
     """
     # Resolve sample list once; all experiments at the same ablation share it
     # (they all read the same training-τ labels file).
     #
-    # Class-filter override: pass the FULL valid label range (0..5) instead of
-    # the default training-class subset {0,1,2}. The runner pipeline enumerates
-    # samples FRESH at each τ in the τ-sweep (sweep_tau, sweep_tau_coordination,
-    # sweep_tau_coordination_safe each call enumerate_samples per-τ). A window
-    # whose class is non-training (3=INTERRUPT / 4=FAILED / 5=LAPSE) at
-    # training-τ may be a training class at some other τ, in which case it
-    # WILL be loaded by the τ-sweep at that τ. Since feature-file existence
-    # and shape are τ-invariant, auditing the full class range at training-τ
-    # gives the universe of samples any τ might load — closing the
-    # τ-coverage gap that would otherwise let τ-sweep-only stack errors slip
-    # past the preflight (the screenshotted bug class).
+    # Use the default class filter `{0,1,2}` — the audit's universe matches
+    # the runtime's training universe. An earlier version of this preflight
+    # passed `training_classes=VALID_LABEL_INTS` to expand the audit to the
+    # full `{0..5}` label range; that expansion is no longer needed because
+    # the runtime's `filter_samples_with_existing_files` now drops samples
+    # with missing files (including continuous-coord) before the loader is
+    # invoked, so any τ-sweep sample whose τ=400 class was {3,4,5} (and
+    # therefore has no extracted coord file) is silently dropped at runtime
+    # rather than crashing torch.stack.
     labels = load_labels(labels_path)
-    samples = enumerate_samples(
-        manifest_rows, labels, training_classes=VALID_LABEL_INTS,
-    )
+    samples = enumerate_samples(manifest_rows, labels)
 
     if max_samples_per_split is not None:
         rng = random.Random(seed)
@@ -3440,8 +3455,14 @@ def preflight_experiments(
         "passed": 0,
         "failed": 0,
         "total_config_errors": 0,
+        # Raw breakdown by error_kind (backward-compatible, includes both
+        # hard and soft):
         "total_shape_errors": 0,
         "total_missing_files": 0,
+        # Severity breakdown:
+        "total_hard_errors": 0,
+        "total_soft_warnings": 0,
+        "total_stack_hazards": 0,
         "total_synthetic_forward_failures": 0,
     }
 
@@ -3524,22 +3545,45 @@ def preflight_experiments(
                 attention_pooling=attention_pooling,
             )
 
+        # Backward-compatible breakdown by error_kind (raw) — preserves the
+        # report shape callers may already be reading.
         shape_errors = [e for e in audit["errors"]
                         if e.get("error_kind") != "missing_file"]
         missing_file_errors = [e for e in audit["errors"]
                                if e.get("error_kind") == "missing_file"]
 
+        # New breakdown by runtime severity. Hard errors gate FAIL; soft
+        # warnings surface for visibility but indicate a runtime safety net
+        # silently handles the divergence (see `_is_hard_error` for the
+        # exhaustive classification table).
+        hard_errors = [e for e in audit["errors"] if _is_hard_error(e)]
+        soft_warnings = [e for e in audit["errors"] if not _is_hard_error(e)]
+
+        # Stack hazard at any audited stream is itself a FAIL trigger even if
+        # no individual error record fires (e.g. divergent observed shapes
+        # across samples that the loader can't reconcile).
+        any_stream_stack_hazard = any(
+            ss.get("stack_hazard", False)
+            for ss in audit["stream_summaries"]
+        )
+
         passed = (
             not config_errors
-            and not audit["errors"]
+            and not hard_errors
+            and not any_stream_stack_hazard
             and synthetic_forward_error is None
         )
 
         per_exp_reports[exp_name] = {
             "status": "PASS" if passed else "FAIL",
             "config_errors": config_errors,
+            # Backward-compat raw breakdown:
             "shape_errors": shape_errors,
             "missing_file_errors": missing_file_errors,
+            # Severity breakdown:
+            "hard_errors": hard_errors,
+            "soft_warnings": soft_warnings,
+            "any_stream_stack_hazard": any_stream_stack_hazard,
             "synthetic_forward_error": synthetic_forward_error,
             "stream_summaries": audit["stream_summaries"],
         }
@@ -3549,6 +3593,9 @@ def preflight_experiments(
         totals["total_config_errors"] += len(config_errors)
         totals["total_shape_errors"] += len(shape_errors)
         totals["total_missing_files"] += len(missing_file_errors)
+        totals["total_hard_errors"] += len(hard_errors)
+        totals["total_soft_warnings"] += len(soft_warnings)
+        totals["total_stack_hazards"] += int(any_stream_stack_hazard)
         totals["total_synthetic_forward_failures"] += int(
             synthetic_forward_error is not None
         )
@@ -3557,8 +3604,9 @@ def preflight_experiments(
             verdict = "PASS" if passed else "FAIL"
             print(
                 f"[preflight] {ablation_kind}/{exp_name}: {verdict} "
-                f"(cfg_err={len(config_errors)}, shape_err={len(shape_errors)}, "
-                f"missing={len(missing_file_errors)}, "
+                f"(cfg_err={len(config_errors)}, "
+                f"hard={len(hard_errors)}, soft={len(soft_warnings)}, "
+                f"stack_hazard={'YES' if any_stream_stack_hazard else 'no'}, "
                 f"synth_fwd={'ok' if synthetic_forward_error is None else 'FAIL'})"
             )
 
