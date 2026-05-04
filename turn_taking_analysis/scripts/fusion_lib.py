@@ -2071,53 +2071,10 @@ def run_experiment_coordination(
     samples = enumerate_samples(manifest_rows, labels)
     by_split = split_samples(samples)
 
-    has_file_stream = any(
-        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
-        for s in streams
-    )
-
-    if has_file_stream:
-        filtered_by_split = {}
-        total_dropped = 0
-
-    for split_name, samples_for_split in by_split.items():
-        kept, dropped = filter_samples_with_existing_files(
-            samples_for_split,
-            streams,
-            modality_registry,
-        )
-
-        filtered_by_split[split_name] = kept
-        total_dropped += len(dropped)
-
-        if verbose and dropped:
-            print(
-                f"  dropped {len(dropped)} {split_name} samples "
-                f"missing feature files"
-            )
-            if dropped[0][1]:
-                print("  example missing:", dropped[0][1][0])
-
-    by_split = filtered_by_split
-    samples = [s for sample_list in by_split.values() for s in sample_list]
-
-    # Summary coordination needs CSV. Continuous coordination does not.
-    if has_summary_coordination:
-        if coordination_csv_path is None:
-            raise ValueError(
-                "At least one summary coordination stream is configured, "
-                "but coordination_csv_path=None."
-            )
-
-        coordination_lookup = load_coordination_features(
-            coordination_csv_path,
-            feature_cols=coordination_feature_cols,
-        )
-        summary_coordination_dim = len(coordination_feature_cols)
-    else:
-        coordination_lookup = {}
-        summary_coordination_dim = None
-
+    # Stream-kind flags drive every conditional below: which CSV to load,
+    # which file-existence filter to apply, and which dataloader path the
+    # downstream code follows. Compute once at the top so later references
+    # are guaranteed to see initialized values.
     has_file_stream = any(
         modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
         for s in streams
@@ -3122,7 +3079,14 @@ def _load_continuous_coordination_file(
 # =============================================================================
 
 PREFLIGHT_FUSION_FAMILIES = frozenset(
-    {"unimodal", "early", "neural_concat", "self_attention", "attention"}
+    {
+        "unimodal",
+        "early",
+        "neural_concat",
+        "self_attention", "attention",
+        "cross_attention", "cross_attn",
+        "self_cross_attention", "self_cross_attn",
+    }
 )
 
 # Error kinds with NO runtime safety net — they cause an actual crash
