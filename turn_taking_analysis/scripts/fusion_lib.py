@@ -538,6 +538,11 @@ class TurnTakingDatasetCoordination(Dataset):
 
     For coordination streams, use role='speaker' because the coordination
     features are already speaker-oriented.
+      - coordination summary pseudo-modality from CSV: (1, F)
+      - continuous coordination pseudo-modality from .npy: (T_wcc, F_wcc)
+
+    For coordination streams, use role='speaker' because the coordination
+    features are already speaker-oriented.
     """
 
     _VALID_ROLES = frozenset({"speaker", "listener"})
@@ -548,7 +553,7 @@ class TurnTakingDatasetCoordination(Dataset):
         streams: list[dict],
         modality_registry: dict[str, dict],
         coordination_lookup: dict | None = None,
-        coordination_feature_dim: int | None = None,
+        coordination_feature_dim: int = COORDINATION_FEATURE_DIM,
         missing_coordination: str = "zeros",
     ):
         if missing_coordination not in {"zeros", "error"}:
@@ -1032,6 +1037,427 @@ class SelfAttentionFusion(nn.Module):
         h = torch.cat(pooled, dim=-1)
         return self.fc2(self.drop(self.relu(self.fc1(h))))
     
+class SelfAttentionFusion(nn.Module):
+    """
+    Multi-stream self-attention fusion.
+
+    Each stream gets:
+      1. Linear projection from raw feature_dim -> attention_dim
+      2. N stacked TransformerEncoderLayer blocks
+      3. Temporal pooling into one hidden vector
+
+    Then all stream vectors are concatenated and passed to an FC classifier.
+
+    This handles:
+      - CPC streams:          (B, T_cpc, F_cpc)
+      - OpenFace streams:     (B, T_of, F_of)
+      - summary coordination: (B, 1, F_summary)
+      - continuous WCC:       (B, T_wcc, F_wcc)
+
+    SELF-ATTN(x) = TRANSFORMER(q=x, k=x, v=x) according to VAP paper
+    In PyTorch, TransformerEncoderLayer implements this self-attention pattern.
+    """
+
+    def __init__(
+        self,
+        feat_dims: list[int],
+        attention_dim: int = 64,
+        num_heads: int | list[int] = 4,
+        num_layers: int = 2,
+        num_classes: int = NUM_CLASSES,
+        dropout: float = 0.3,
+        pooling: str = "mean",
+    ):
+        super().__init__()
+
+        if len(feat_dims) < 1:
+            raise ValueError("SelfAttentionFusion needs at least one stream")
+
+        if pooling not in {"mean", "last"}:
+            raise ValueError("pooling must be 'mean' or 'last'")
+
+        self.feat_dims = list(feat_dims)
+        self.attention_dim = int(attention_dim)
+        self.num_layers = int(num_layers)
+        self.pooling = pooling
+
+        if isinstance(num_heads, int):
+            heads_per_stream = [num_heads] * len(feat_dims)
+        else:
+            heads_per_stream = list(num_heads)
+            if len(heads_per_stream) != len(feat_dims):
+                raise ValueError(
+                    f"num_heads list must match number of streams: "
+                    f"{len(heads_per_stream)} vs {len(feat_dims)}"
+                )
+
+        for h in heads_per_stream:
+            if self.attention_dim % h != 0:
+                raise ValueError(
+                    f"attention_dim={self.attention_dim} must be divisible "
+                    f"by num_heads={h}"
+                )
+
+        self.input_projs = nn.ModuleList([
+            nn.Linear(d, self.attention_dim) for d in feat_dims
+        ])
+
+
+        self.transformers = nn.ModuleList() #one branch per stream
+        for h in heads_per_stream:
+            layer = nn.TransformerEncoderLayer( #one transformer per head per stream
+                d_model=self.attention_dim,
+                nhead=h,
+                dim_feedforward=self.attention_dim * 4,
+                dropout=dropout,
+                activation="gelu",
+                batch_first=True,
+                norm_first=True,
+            )
+            encoder = nn.TransformerEncoder( #stack num_layers transformers
+                encoder_layer=layer,
+                num_layers=self.num_layers,
+            )
+            self.transformers.append(encoder) #add stream-specific encoder to the list.
+
+        #just initializing the layers here to call when they are being used
+        self.fc1 = nn.Linear(self.attention_dim * len(feat_dims), attention_dim)
+        self.relu = nn.ReLU()
+        self.drop = nn.Dropout(dropout)
+        self.fc2 = nn.Linear(attention_dim, num_classes) 
+
+    def _pool(self, z: torch.Tensor) -> torch.Tensor:
+        """
+        z: (B, T, D)
+        returns: (B, D)
+        """
+        if self.pooling == "last":
+            return z[:, -1, :]
+        return z.mean(dim=1)
+
+    def forward(self, xs):
+        if not isinstance(xs, (list, tuple)):
+            xs = [xs]
+
+        if len(xs) != len(self.feat_dims):
+            raise ValueError(
+                f"SelfAttentionFusion expects {len(self.feat_dims)} streams; "
+                f"got {len(xs)}"
+            )
+
+        pooled = []
+
+        #loop through each stream and grab correct modules
+        for x, proj, encoder, expected_dim in zip(
+            xs,
+            self.input_projs,
+            self.transformers,
+            self.feat_dims,
+        ):
+            if x.ndim != 3:
+                raise ValueError(
+                    f"Each stream must have shape (B, T, F); got {x.shape}"
+                )
+
+            if x.shape[-1] != expected_dim:
+                raise ValueError(
+                    f"Stream feature dim mismatch: expected F={expected_dim}, "
+                    f"got shape={x.shape}"
+                )
+
+            # Project raw modality features into shared attention dimension.
+            z = proj(x)  # (B, T, attention_dim)
+
+            # Self-attention: q = k = v = z internally.
+            z = encoder(z)  # (B, T, attention_dim) #encode each stream
+
+            pooled.append(self._pool(z))
+
+        h = torch.cat(pooled, dim=-1)
+        return self.fc2(self.drop(self.relu(self.fc1(h))))
+    
+# Cross-attention fusion
+
+class _SinusoidalPositionalEncoding(nn.Module):
+    """Sinusoidal positional encoding added at the input projection step.
+
+    At the input rather than inside any attention block so the same
+    positional signal covers both self-attention (in SelfCrossAttentionFusion)
+    and cross-attention. No learned parameters.
+    """
+
+    def __init__(self, d_model: int, max_len: int = 512):
+        super().__init__()
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(0, max_len).unsqueeze(1).float()
+        div_term = torch.exp(
+            torch.arange(0, d_model, 2).float() * -(math.log(10000.0) / d_model)
+        )
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        # Buffer (not parameter): moves with .to(device), not trained
+        self.register_buffer("pe", pe.unsqueeze(0))  # (1, max_len, d_model)
+
+    def forward(self, T: int) -> torch.Tensor:
+        """Return (1, T, d_model); broadcasts across batch when added."""
+        return self.pe[:, :T, :]
+
+
+class _CrossAttentionBlock(nn.Module):
+    """Bidirectional cross-modality attention block.
+
+    Each stream attends to the other. Pre-norm + residual. No FFN inside
+    the block (FFN doubles param count and we are extremely data-poor at
+    ~492 samples — easy to add later if the model is underfitting).
+
+    Both directions consume the pre-norm versions of both inputs, so the
+    cross-attention is parallel/symmetric — avoids an arbitrary "which
+    modality updates first" ordering choice.
+
+    nn.MultiheadAttention handles unequal Q vs K/V sequence lengths
+    natively, so visual (e.g. 60 timesteps at 30Hz) and acoustic (e.g.
+    200 timesteps at CPC's 100Hz) flow through without resampling.
+    """
+
+    def __init__(self, d_model: int, n_heads: int = 4, dropout: float = 0.1):
+        super().__init__()
+        if d_model % n_heads != 0:
+            raise ValueError(
+                f"d_model={d_model} must be divisible by n_heads={n_heads}"
+            )
+        self.norm_a = nn.LayerNorm(d_model)
+        self.norm_b = nn.LayerNorm(d_model)
+        # a attends to b: query = a, key/value = b
+        self.attn_a2b = nn.MultiheadAttention(
+            embed_dim=d_model, num_heads=n_heads,
+            dropout=dropout, batch_first=True,
+        )
+        # b attends to a: query = b, key/value = a
+        self.attn_b2a = nn.MultiheadAttention(
+            embed_dim=d_model, num_heads=n_heads,
+            dropout=dropout, batch_first=True,
+        )
+        self.resid_drop = nn.Dropout(dropout)
+
+    def forward(self, a: torch.Tensor, b: torch.Tensor):
+        a_n = self.norm_a(a)
+        b_n = self.norm_b(b)
+        a_ca, _ = self.attn_a2b(query=a_n, key=b_n, value=b_n,
+                                need_weights=False)
+        b_ca, _ = self.attn_b2a(query=b_n, key=a_n, value=a_n,
+                                need_weights=False)
+        a_out = a + self.resid_drop(a_ca)
+        b_out = b + self.resid_drop(b_ca)
+        return a_out, b_out
+
+
+class CrossAttentionFusion(nn.Module):
+    """2-stream cross-attention fusion model (no self-attention).
+
+    Streams are projected to a shared attention_dim, given sinusoidal
+    positional encoding, cross-attended to one another, pooled over time,
+    and concatenated for the FC head.
+
+    Stream identity is positional. feat_dims[0] = visual, feat_dims[1] =
+    acoustic. Order must match the experiment-config `streams` list and
+    the order at forward time.
+
+    This is the "cross-attention only" ablation. For the combined
+    "self-attention then cross-attention" model use
+    SelfCrossAttentionFusion.
+    """
+
+    def __init__(
+        self,
+        feat_dims: list[int],
+        attention_dim: int = 64,
+        num_heads: int = 4,
+        num_classes: int = NUM_CLASSES,
+        dropout: float = 0.3,
+        pooling: str = "mean",
+        max_len: int = 512,
+    ):
+        super().__init__()
+        if len(feat_dims) != 2:
+            raise ValueError(
+                f"CrossAttentionFusion expects exactly 2 streams "
+                f"(visual + acoustic); got {len(feat_dims)}."
+            )
+        if pooling not in {"mean", "last"}:
+            raise ValueError("pooling must be 'mean' or 'last'")
+        self.feat_dims = list(feat_dims)
+        self.attention_dim = int(attention_dim)
+        self.pooling = pooling
+        d = self.attention_dim
+        # Per-stream input projection to shared attention_dim
+        self.input_projs = nn.ModuleList([
+            nn.Linear(feat_dims[0], d),
+            nn.Linear(feat_dims[1], d),
+        ])
+        # Positional encoding shared across both streams
+        self.pos_enc = _SinusoidalPositionalEncoding(d, max_len=max_len)
+        # Single cross-attention block, bidirectional.
+        self.cross_attn = _CrossAttentionBlock(
+            d_model=d, n_heads=num_heads, dropout=dropout,
+        )
+        # FC head: same shape pattern as NeuralConcatFusion / SelfAttentionFusion
+        self.fc1 = nn.Linear(d * 2, d)
+        self.relu = nn.ReLU()
+        self.drop = nn.Dropout(dropout)
+        self.fc2 = nn.Linear(d, num_classes)
+
+    def _pool(self, z: torch.Tensor) -> torch.Tensor:
+        """z: (B, T, D) -> (B, D)."""
+        if self.pooling == "last":
+            return z[:, -1, :]
+        return z.mean(dim=1)
+
+    def forward(self, xs):
+        if not isinstance(xs, (list, tuple)) or len(xs) != 2:
+            raise ValueError(
+                f"CrossAttentionFusion expects 2 streams; got "
+                f"{len(xs) if isinstance(xs, (list, tuple)) else 'non-list'}"
+            )
+        a, b = xs  # (B, T_a, feat_a), (B, T_b, feat_b)
+        # Same per-stream shape validation as SelfAttentionFusion does
+        for x, expected_dim, idx in zip(xs, self.feat_dims, ("a", "b")):
+            if x.ndim != 3:
+                raise ValueError(
+                    f"Stream {idx} must have shape (B, T, F); got {x.shape}"
+                )
+            if x.shape[-1] != expected_dim:
+                raise ValueError(
+                    f"Stream {idx} feature dim mismatch: expected "
+                    f"F={expected_dim}, got shape={x.shape}"
+                )
+        # Project + add positional encoding (broadcasts over batch)
+        a = self.input_projs[0](a) + self.pos_enc(a.size(1))
+        b = self.input_projs[1](b) + self.pos_enc(b.size(1))
+        # Bidirectional cross-attention
+        a, b = self.cross_attn(a, b)
+        # Pool, concat, classify
+        h = torch.cat([self._pool(a), self._pool(b)], dim=-1)  # (B, 2 * d)
+        return self.fc2(self.drop(self.relu(self.fc1(h))))
+
+
+class SelfCrossAttentionFusion(nn.Module):
+    """2-stream self-attention then cross-attention fusion model.
+
+    Pipeline:
+      1. Per-stream Linear projection -> attention_dim
+      2. Add sinusoidal positional encoding
+      3. Per-stream TransformerEncoder (self-attention) with num_layers blocks
+      4. Bidirectional cross-attention between the two streams
+      5. Mean/last pool over time, concat, FC head
+
+    Serial composition of within-modality self-attention and across-modality cross-attention. 
+    The self-attention portion mirrors SelfAttentionFusion (same TransformerEncoderLayer
+    setup) so the two are directly comparable.
+
+    Stream identity is positional: feat_dims[0] = visual, feat_dims[1] =
+    acoustic.
+    """
+
+    def __init__(
+        self,
+        feat_dims: list[int],
+        attention_dim: int = 64,
+        num_heads: int = 4,
+        num_layers: int = 2,
+        num_classes: int = NUM_CLASSES,
+        dropout: float = 0.3,
+        pooling: str = "mean",
+        max_len: int = 512,
+    ):
+        super().__init__()
+        if len(feat_dims) != 2:
+            raise ValueError(
+                f"SelfCrossAttentionFusion expects exactly 2 streams "
+                f"(visual + acoustic); got {len(feat_dims)}."
+            )
+        if pooling not in {"mean", "last"}:
+            raise ValueError("pooling must be 'mean' or 'last'")
+        if attention_dim % num_heads != 0:
+            raise ValueError(
+                f"attention_dim={attention_dim} must be divisible by "
+                f"num_heads={num_heads}"
+            )
+        self.feat_dims = list(feat_dims)
+        self.attention_dim = int(attention_dim)
+        self.num_layers = int(num_layers)
+        self.pooling = pooling
+        d = self.attention_dim
+
+        # Per-stream input projection
+        self.input_projs = nn.ModuleList([
+            nn.Linear(feat_dims[0], d),
+            nn.Linear(feat_dims[1], d),
+        ])
+        self.pos_enc = _SinusoidalPositionalEncoding(d, max_len=max_len)
+
+        # Per-stream self-attention (TransformerEncoder)
+        self.self_attn = nn.ModuleList()
+        for _ in range(2):
+            layer = nn.TransformerEncoderLayer(
+                d_model=d,
+                nhead=num_heads,
+                dim_feedforward=d * 4,
+                dropout=dropout,
+                activation="gelu",
+                batch_first=True,
+                norm_first=True,
+            )
+            self.self_attn.append(
+                nn.TransformerEncoder(encoder_layer=layer,
+                                      num_layers=self.num_layers)
+            )
+
+        # Cross-attention block
+        self.cross_attn = _CrossAttentionBlock(
+            d_model=d, n_heads=num_heads, dropout=dropout,
+        )
+
+        # FC head
+        self.fc1 = nn.Linear(d * 2, d)
+        self.relu = nn.ReLU()
+        self.drop = nn.Dropout(dropout)
+        self.fc2 = nn.Linear(d, num_classes)
+
+    def _pool(self, z: torch.Tensor) -> torch.Tensor:
+        if self.pooling == "last":
+            return z[:, -1, :]
+        return z.mean(dim=1)
+
+    def forward(self, xs):
+        if not isinstance(xs, (list, tuple)) or len(xs) != 2:
+            raise ValueError(
+                f"SelfCrossAttentionFusion expects 2 streams; got "
+                f"{len(xs) if isinstance(xs, (list, tuple)) else 'non-list'}"
+            )
+        for x, expected_dim, idx in zip(xs, self.feat_dims, ("a", "b")):
+            if x.ndim != 3:
+                raise ValueError(
+                    f"Stream {idx} must have shape (B, T, F); got {x.shape}"
+                )
+            if x.shape[-1] != expected_dim:
+                raise ValueError(
+                    f"Stream {idx} feature dim mismatch: expected "
+                    f"F={expected_dim}, got shape={x.shape}"
+                )
+
+        a, b = xs
+        # Project + positional encoding.
+        a = self.input_projs[0](a) + self.pos_enc(a.size(1))
+        b = self.input_projs[1](b) + self.pos_enc(b.size(1))
+        # Self-attention per stream.
+        a = self.self_attn[0](a)
+        b = self.self_attn[1](b)
+        # Cross-attention between streams.
+        a, b = self.cross_attn(a, b)
+        # Pool, concat, classify.
+        h = torch.cat([self._pool(a), self._pool(b)], dim=-1)
+        return self.fc2(self.drop(self.relu(self.fc1(h))))
+
 # =============================================================================
 # Training / evaluation
 # =============================================================================
@@ -1291,6 +1717,7 @@ def build_model(
     """
     Dispatch to the right model class.
 
+
     Supported fusion:
       - unimodal
       - early
@@ -1308,7 +1735,6 @@ def build_model(
             num_classes,
             dropout=dropout,
         )
-
     if fusion == "early":
         return EarlyFusionGRU(
             sum(stream_dims),
@@ -1317,10 +1743,9 @@ def build_model(
             num_layers=num_layers_early,
             dropout=dropout,
         )
-
     if fusion == "neural_concat":
         return NeuralConcatFusion(
-            stream_dims,
+            stream_dims, 
             hidden_size,
             num_classes,
             dropout=dropout,
@@ -1337,9 +1762,41 @@ def build_model(
             pooling=attention_pooling,
         )
 
+    if fusion in {"cross_attention", "cross_attn"}:
+        # 2-stream cross-attention only (no self-attention)
+        head_count = (
+            attention_heads[0] if isinstance(attention_heads, list)
+            else attention_heads
+        )
+        return CrossAttentionFusion(
+            feat_dims=stream_dims,
+            attention_dim=attention_dim or hidden_size,
+            num_heads=head_count,
+            num_classes=num_classes,
+            dropout=dropout,
+            pooling=attention_pooling,
+        )
+
+    if fusion in {"self_cross_attention", "self_cross_attn"}:
+        # 2-stream self-attention then cross-attention (combined)
+        head_count = (
+            attention_heads[0] if isinstance(attention_heads, list)
+            else attention_heads
+        )
+        return SelfCrossAttentionFusion(
+            feat_dims=stream_dims,
+            attention_dim=attention_dim or hidden_size,
+            num_heads=head_count,
+            num_layers=attention_layers,
+            num_classes=num_classes,
+            dropout=dropout,
+            pooling=attention_pooling,
+        )
+
     raise ValueError(
         f"unknown fusion family {fusion!r}; supported: "
-        f"unimodal, early, neural_concat, self_attention"
+        f"unimodal, early, neural_concat, self_attention, self_attention, "
+        f"cross_attention, self_cross_attention"
     )
 
 def resolve_device(prefer: str = "auto") -> torch.device:
@@ -1380,7 +1837,7 @@ def run_experiment(
     attention_pooling: str = "mean",
 ) -> dict:
     """
-    Train one non-coordination experiment end-to-end.
+    Train one non-coordination non-coordination experiment end-to-end.
 
     Supports:
       - standard GRU: unimodal / early / neural_concat
@@ -1416,6 +1873,7 @@ def run_experiment(
             if verbose and dropped:
                 print(
                     f"  dropped {len(dropped)} {split_name} samples "
+                    f""
                     f"missing feature files"
                 )
                 if dropped[0][1]:
@@ -1436,21 +1894,23 @@ def run_experiment(
         ]
 
     stream_dims = [int(modality_registry[s["modality"]]["feature_dim"]) for s in streams]
-
     if verbose:
         print(f"=== Experiment: {name} ===")
-        print(f"  streams:     {streams}")
-        print(f"  fusion:      {fusion}")
+        print(f"  streams:       {streams}")
+        print(f"  fusion:        {fusion}")
         print(f"  stream_dims: {stream_dims}")
-        print(f"  device:      {device_t}")
-
+        print(f"  device:        {device_t}")
         summary = summarize_samples(samples)
         print(
             f"  samples:     total={summary['total']} "
             f"per_split={summary['per_split']}"
         )
+        print(
+            f"  samples:     total={summary['total']} "
+            f"per_split={summary['per_split']}"
+        )
         for sp, dist in summary["per_split_class"].items():
-            print(f"               {sp:5s} class-dist: {dist}")
+            print(f"                 {sp:5s} class-dist: {dist}")
 
     train_loader = make_dataloader(
         by_split.get("train", []),
@@ -1460,7 +1920,6 @@ def run_experiment(
         shuffle=True,
         num_workers=num_workers,
     )
-
     val_loader = make_dataloader(
         by_split.get("val", []),
         streams,
@@ -1469,7 +1928,6 @@ def run_experiment(
         shuffle=False,
         num_workers=num_workers,
     )
-
     test_loader = make_dataloader(
         by_split.get("test", []),
         streams,
@@ -1490,7 +1948,6 @@ def run_experiment(
         attention_layers=attention_layers,
         attention_pooling=attention_pooling,
     ).to(device_t)
-
     class_weights = compute_class_weights(by_split.get("train", [])).to(device_t)
     criterion = nn.CrossEntropyLoss(weight=class_weights)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
@@ -1501,9 +1958,11 @@ def run_experiment(
         print(f"  class_w:     {class_weights.cpu().tolist()}")
         print(f"  epochs:      up to {epochs} (patience={patience})")
         print(f"  dropout:     {dropout}")
-        if fusion in {"self_attention", "attention"}:
+        if fusion in {"self_attention", "attention",
+                      "cross_attention", "cross_attn",
+                      "self_cross_attention", "self_cross_attn"}:
             print(
-                f"  attention:   dim={attention_dim or hidden_size}, "
+                f"attention:   dim={attention_dim or hidden_size}, "
                 f"heads={attention_heads}, layers={attention_layers}, "
                 f"pooling={attention_pooling}"
             )
@@ -1612,24 +2071,14 @@ def run_experiment_coordination(
     samples = enumerate_samples(manifest_rows, labels)
     by_split = split_samples(samples)
 
-    has_summary_coordination = any(
-        modality_registry[s["modality"]].get("kind", "spliced") == "coordination"
-        and modality_registry[s["modality"]].get("coordination_mode", "summary") == "summary"
+    has_file_stream = any(
+        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
         for s in streams
     )
 
-    has_continuous_coordination = any(
-        modality_registry[s["modality"]].get("kind", "spliced") == "coordination"
-        and modality_registry[s["modality"]].get("coordination_mode") == "continuous"
-        for s in streams
-    )
-
-    # Filter samples whose required feature files don't exist on disk. The
-    # filter now covers spliced AND continuous-coord streams (it skips
-    # summary coord, whose zero-fallback is shape-safe). Missing-file samples
-    # are silently dropped before they can reach the loader.
-    filtered_by_split = {}
-    total_dropped = 0
+    if has_file_stream:
+        filtered_by_split = {}
+        total_dropped = 0
 
     for split_name, samples_for_split in by_split.items():
         kept, dropped = filter_samples_with_existing_files(
@@ -1651,6 +2100,68 @@ def run_experiment_coordination(
 
     by_split = filtered_by_split
     samples = [s for sample_list in by_split.values() for s in sample_list]
+
+    # Summary coordination needs CSV. Continuous coordination does not.
+    if has_summary_coordination:
+        if coordination_csv_path is None:
+            raise ValueError(
+                "At least one summary coordination stream is configured, "
+                "but coordination_csv_path=None."
+            )
+
+        coordination_lookup = load_coordination_features(
+            coordination_csv_path,
+            feature_cols=coordination_feature_cols,
+        )
+        summary_coordination_dim = len(coordination_feature_cols)
+    else:
+        coordination_lookup = {}
+        summary_coordination_dim = None
+
+    has_file_stream = any(
+        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
+        for s in streams
+    )
+
+    has_summary_coordination = any(
+        modality_registry[s["modality"]].get("kind", "spliced") == "coordination"
+        and modality_registry[s["modality"]].get("coordination_mode", "summary") == "summary"
+        for s in streams
+    )
+
+    has_continuous_coordination = any(
+        modality_registry[s["modality"]].get("kind", "spliced") == "coordination"
+        and modality_registry[s["modality"]].get("coordination_mode") == "continuous"
+        for s in streams
+    )
+
+    # Filter missing file-backed streams: CPC/OpenFace/etc.
+    # Continuous coordination files are handled by the dataset because they are
+    # coordination pseudo-streams and can use missing_coordination='zeros' or 'error'.
+    if has_file_stream:
+        filtered_by_split = {}
+        total_dropped = 0
+
+        for split_name, samples_for_split in by_split.items():
+            kept, dropped = filter_samples_with_existing_files(
+                samples_for_split,
+                streams,
+                modality_registry,
+            )
+
+            filtered_by_split[split_name] = kept
+            total_dropped += len(dropped)
+
+            if verbose and dropped:
+                print(
+                    f"  dropped {len(dropped)} {split_name} samples "
+                    f"missing feature files"
+                )
+                if dropped[0][1]:
+                    print("  example missing:", dropped[0][1][0])
+
+        by_split = filtered_by_split
+        samples = [s for sample_list in by_split.values() for s in sample_list]
 
     # Summary coordination needs CSV. Continuous coordination does not.
     if has_summary_coordination:
@@ -1779,7 +2290,9 @@ def run_experiment_coordination(
         print(f"  class_w:   {class_weights.cpu().tolist()}")
         print(f"  epochs:    up to {epochs} (patience={patience})")
         print(f"  dropout:   {dropout}")
-        if fusion in {"self_attention", "attention"}:
+        if fusion in {"self_attention", "attention",
+                      "cross_attention", "cross_attn",
+                      "self_cross_attention", "self_cross_attn"}:
             print(
                 f"  attention: dim={attention_dim or hidden_size}, "
                 f"heads={attention_heads}, layers={attention_layers}, "
@@ -1986,7 +2499,7 @@ def sweep_tau(
 
         if verbose:
             print(
-                f"  τ={tau_ms:>4}ms  n={len(test_samples):>5}  "
+                f"τ={tau_ms:>4}ms  n={len(test_samples):>5}  "
                 f"loss={ev['loss']:.4f}  macroF1={ev['macro_f1']:.4f}  "
                 f"per-class={ev['per_class_f1']}"
             )
@@ -2209,6 +2722,11 @@ def sweep_tau_coordination_safe(
         for s in streams
     )
 
+    has_file_stream = any(
+        modality_registry[s["modality"]].get("kind", "spliced") != "coordination"
+        for s in streams
+    )
+
     if has_summary_coordination:
         if coordination_csv_path is None:
             raise ValueError(
@@ -2242,12 +2760,15 @@ def sweep_tau_coordination_safe(
     train_samples = enumerate_samples(manifest_rows, train_labels)
     train_samples = [s for s in train_samples if s["split"] == "train"]
 
-    # Filter covers spliced AND continuous-coord streams. Always called.
-    train_samples, _ = filter_samples_with_existing_files(
-        train_samples,
-        streams,
-        modality_registry,
-    )
+    if has_file_stream:
+        train_samples, _ = filter_samples_with_existing_files(
+            train_samples,
+            streams,
+            modality_registry,
+        )
+
+    if not train_samples:
+        raise ValueError("No train samples available for class-weight reconstruction.")
 
     if not train_samples:
         raise ValueError("No train samples available for class-weight reconstruction.")
@@ -2269,20 +2790,21 @@ def sweep_tau_coordination_safe(
         samples = enumerate_samples(manifest_rows, labels)
         test_samples = [s for s in samples if s["split"] == "test"]
 
-        before = len(test_samples)
-        test_samples, dropped = filter_samples_with_existing_files(
-            test_samples,
-            streams,
-            modality_registry,
-        )
-
-        if verbose and dropped:
-            print(
-                f"  τ={tau_ms}ms: kept {len(test_samples)}/{before}, "
-                f"dropped {len(dropped)} missing-file samples"
+        if has_file_stream:
+            before = len(test_samples)
+            test_samples, dropped = filter_samples_with_existing_files(
+                test_samples,
+                streams,
+                modality_registry,
             )
-            if dropped[0][1]:
-                print("    example missing:", dropped[0][1][0])
+
+            if verbose and dropped:
+                print(
+                    f"  τ={tau_ms}ms: kept {len(test_samples)}/{before}, "
+                    f"dropped {len(dropped)} missing-file samples"
+                )
+                if dropped[0][1]:
+                    print("    example missing:", dropped[0][1][0])
 
         if max_samples_per_split is not None:
             rng_tau = random.Random(seed)
@@ -3617,3 +4139,90 @@ def preflight_experiments(
         "experiments": per_exp_reports,
         "summary": totals,
     }
+
+
+
+############
+# continuous coodrination helpers
+###########
+
+def _format_coord_window_filename(start_s: float, end_s: float, speaker_fid: str) -> str:
+    """
+    Continuous coordination filename convention:
+        0000.00-0002.00_V00_S0691_I00000482_P0500.npy
+    """
+    return f"{start_s:07.2f}-{end_s:07.2f}_{speaker_fid}.npy"
+
+
+def _coordination_continuous_candidates(
+    base_dir: str,
+    sample: dict,
+) -> list[str]:
+    """
+    Try a few reasonable layouts so the loader is robust.
+
+    Preferred:
+        base_dir / speaker_fid / 0000.00-0002.00_speaker_fid.npy
+
+    Also tries:
+        base_dir / interaction_id / filename
+        base_dir / filename
+    """
+    speaker_fid = sample["speaker_file_id"]
+    interaction_id = sample["interaction_id"]
+    fname = _format_coord_window_filename(
+        sample["start_s"],
+        sample["end_s"],
+        speaker_fid,
+    )
+
+    return [
+        os.path.join(base_dir, speaker_fid, fname),
+        os.path.join(base_dir, interaction_id, fname),
+        os.path.join(base_dir, fname),
+    ]
+
+
+def _load_continuous_coordination_file(
+    base_dir: str,
+    sample: dict,
+    feature_dim: int,
+    target_t: int = 0,
+    missing_coordination: str = "zeros",
+) -> np.ndarray:
+    candidates = _coordination_continuous_candidates(base_dir, sample)
+
+    path = next((p for p in candidates if os.path.exists(p)), None)
+
+    if path is None:
+        if missing_coordination == "error":
+            raise FileNotFoundError(
+                "Missing continuous coordination file. Tried:\n"
+                + "\n".join(candidates)
+            )
+
+        # Conservative fallback: one timestep of zeros.
+        return np.zeros((1, feature_dim), dtype=np.float32)
+
+    arr = np.load(path).astype(np.float32, copy=False)
+
+    # Allow saved shape (F,) but normalize to (1, F)
+    if arr.ndim == 1:
+        arr = arr[None, :]
+
+    if arr.ndim != 2:
+        raise ValueError(
+            f"Continuous coordination file must have shape (T, F), "
+            f"got {arr.shape} at {path}"
+        )
+
+    if arr.shape[-1] != feature_dim:
+        raise ValueError(
+            f"Continuous coordination feature dim mismatch at {path}: "
+            f"expected F={feature_dim}, got shape={arr.shape}"
+        )
+
+    if target_t > 0:
+        arr = _fix_seq_len(arr, target_t=target_t, feature_dim=feature_dim)
+
+    return arr
