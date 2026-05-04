@@ -27,3 +27,4 @@ turn_taking_analysis/scripts/smoke_test_notebook.py
 turn_taking_analysis/docs/speedup_recommendations_linux_cuda.md
 turn_taking_analysis/scripts/derisk_full_manifest_tests.py
 subset/
+.idea/
