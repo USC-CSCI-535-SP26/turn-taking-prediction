@@ -1,0 +1,177 @@
+{
+  "ablation": "ssa",
+  "run_id": "20260504_063058",
+  "timestamp": "2026-05-04T06:30:58.802546",
+  "manifest_path": "/home/kazuha/Documents/csci_535/project/csci535-project/turn_taking_analysis/manifests/manifest.csv",
+  "train_labels_path": "/home/kazuha/Documents/csci_535/project/csci535-project/turn_taking_analysis/model_input/labels/labels_tau_0400.json",
+  "train_tau_ms": 400,
+  "tau_grid_ms": [
+    100,
+    200,
+    400,
+    500,
+    800,
+    1600
+  ],
+  "modality_registry": {
+    "cpc": {
+      "kind": "spliced",
+      "coordination_mode": null,
+      "dir": "/home/kazuha/Documents/csci_535/project/csci535-project/turn_taking_analysis/subset/cpc",
+      "feature_dim": 256,
+      "frame_rate_hz": 100.0
+    },
+    "openface": {
+      "kind": "spliced",
+      "coordination_mode": null,
+      "dir": "/home/kazuha/Documents/csci_535/project/csci535-project/turn_taking_analysis/subset/openface_windows",
+      "feature_dim": 23,
+      "frame_rate_hz": 30.0
+    },
+    "coordination_openface": {
+      "kind": "coordination",
+      "coordination_mode": "summary",
+      "dir": "",
+      "feature_dim": 19,
+      "frame_rate_hz": 0.0
+    },
+    "coordination_openface_summary": {
+      "kind": "coordination",
+      "coordination_mode": "summary",
+      "dir": "",
+      "feature_dim": 19,
+      "frame_rate_hz": 0.0
+    },
+    "coordination_openface_continuous": {
+      "kind": "coordination",
+      "coordination_mode": "continuous",
+      "dir": "/home/kazuha/Documents/csci_535/project/csci535-project/turn_taking_analysis/subset/coordination/openface_continuous_arrays",
+      "feature_dim": 23,
+      "frame_rate_hz": 0.0
+    }
+  },
+  "global_hyperparams": {
+    "hidden_size": 64,
+    "dropout": 0.3,
+    "num_layers_early": 3,
+    "epochs": 30,
+    "batch_size": 32,
+    "learning_rate": 0.001,
+    "patience": 4,
+    "num_workers": 4,
+    "seed": 42,
+    "max_samples_per_split": null
+  },
+  "experiments": [
+    "cpc_both_attention",
+    "of_speaker_of_listener_attention",
+    "cpc_speaker_of_listener_attention",
+    "cpc_speaker_of_dyad_attention",
+    "full_dyad_attention"
+  ],
+  "experiment_summary": {
+    "cpc_both_attention": {
+      "fusion": "self_attention",
+      "streams": [
+        {
+          "modality": "cpc",
+          "role": "speaker"
+        },
+        {
+          "modality": "cpc",
+          "role": "listener"
+        }
+      ],
+      "n_params": 241283,
+      "best_epoch": 6,
+      "epochs_run": 10,
+      "test_macro_f1_at_train_tau": 0.7046968449364016
+    },
+    "of_speaker_of_listener_attention": {
+      "fusion": "self_attention",
+      "streams": [
+        {
+          "modality": "openface",
+          "role": "speaker"
+        },
+        {
+          "modality": "openface",
+          "role": "listener"
+        }
+      ],
+      "n_params": 211459,
+      "best_epoch": 4,
+      "epochs_run": 8,
+      "test_macro_f1_at_train_tau": 0.43677797343586006
+    },
+    "cpc_speaker_of_listener_attention": {
+      "fusion": "self_attention",
+      "streams": [
+        {
+          "modality": "cpc",
+          "role": "speaker"
+        },
+        {
+          "modality": "openface",
+          "role": "listener"
+        }
+      ],
+      "n_params": 226371,
+      "best_epoch": 7,
+      "epochs_run": 11,
+      "test_macro_f1_at_train_tau": 0.5371956429151199
+    },
+    "cpc_speaker_of_dyad_attention": {
+      "fusion": "self_attention",
+      "streams": [
+        {
+          "modality": "cpc",
+          "role": "speaker"
+        },
+        {
+          "modality": "openface",
+          "role": "listener"
+        },
+        {
+          "modality": "openface",
+          "role": "speaker"
+        }
+      ],
+      "n_params": 331971,
+      "best_epoch": 3,
+      "epochs_run": 7,
+      "test_macro_f1_at_train_tau": 0.5355743014974271
+    },
+    "full_dyad_attention": {
+      "fusion": "self_attention",
+      "streams": [
+        {
+          "modality": "cpc",
+          "role": "speaker"
+        },
+        {
+          "modality": "cpc",
+          "role": "listener"
+        },
+        {
+          "modality": "openface",
+          "role": "speaker"
+        },
+        {
+          "modality": "openface",
+          "role": "listener"
+        }
+      ],
+      "n_params": 452483,
+      "best_epoch": 5,
+      "epochs_run": 9,
+      "test_macro_f1_at_train_tau": 0.6883340016245042
+    }
+  },
+  "environment": {
+    "torch_version": "2.6.0+cu124",
+    "python_version": "3.13.12",
+    "device": "cuda",
+    "platform": "linux"
+  }
+}
