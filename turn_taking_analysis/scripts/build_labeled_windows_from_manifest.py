@@ -179,13 +179,13 @@ TAU_GRID_MS = (100, 200, 400, 500, 800, 1600)
 # predicates disjoint by construction — editing only the BC values
 # (plus BC_LEXICON) is enough to ablate the BC envelope, and the
 # substantive thresholds follow automatically.
-BC_MAX_DURATION_MS = 1000
+BC_MAX_DURATION_MS = 500
 # Upper bound for BC-qualifying clipped-utterance duration. 500 ms is the
 # canonical single-filler BC ceiling across English corpora (Ward 2000,
 # Gravano 2011). Prosodically BCs are 1–3 syllables; 500 ms ≈ 2 syllables
 # at normal rate.
 
-BC_MAX_WORD_COUNT = 3
+BC_MAX_WORD_COUNT = 2
 # Maximum word count for the "auto-qualify" leg of BC-qualifying. ≤ 2
 # words auto-qualify (catches "oh yeah", "mm okay", "I see", "no kidding").
 # Anything above this must additionally pass the all-BC-lexicon check.
@@ -280,7 +280,6 @@ BC_LEXICON = frozenset({
     #   Ruede, Müller, Stüker & Waibel 2017 (Interspeech, deep BC predictor)
     #   Lala, Inoue & Kawahara 2017
     "wow", "really", "gotcha",
-    "cool", "nice"
 })
 
 
