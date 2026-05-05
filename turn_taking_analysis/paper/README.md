@@ -1,18 +1,8 @@
-# Paper artifacts — data dictionary
+# Data dictionary
 
 This directory holds intermediate CSV files used to build the tables and
 figures in the CSCI-535 turn-taking paper. Each section below documents one
-CSV. New CSVs should follow the same format: a brief header explaining
-what the file contains, followed by a column-by-column dictionary.
-
-**Quick study context for readers new to the project.** The task is dyadic
-end-of-turn detection — 3-class classification (HOLD = floor holder keeps
-talking; YIELD = floor holder yields the floor; BACKCHANNEL = listener
-produces a brief acknowledgment) over windowed audio (CPC) + face
-(OpenFace) features. Metrics are reported per prediction horizon τ
-(milliseconds into the future the model has to anticipate). The training
-horizon is τ=400 ms.
-
+CSV. 
 ---
 
 ## `data_for_figs_tau_400.csv`
