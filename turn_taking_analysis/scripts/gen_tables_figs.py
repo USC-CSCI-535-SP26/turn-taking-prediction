@@ -43,6 +43,9 @@ PAPER_DIR    = PROJECT_ROOT / "paper"
 SWEEP_CSV    = PAPER_DIR / "data_for_figs_tau_sweep.csv"
 T400_CSV     = PAPER_DIR / "data_for_figs_tau_400.csv"
 FIGURES_DIR  = PAPER_DIR / "figures"
+TABLES_DIR                = PAPER_DIR / "tables"
+TABLES_TAU400_OVERALL_DIR = TABLES_DIR / "tau_400" / "overall"
+TABLES_TAU400_PER_AB_DIR  = TABLES_DIR / "tau_400" / "per_ablation_block"
 
 DEFAULT_DPI       = 300
 DEFAULT_FIGSIZE   = (13, 4.2)
@@ -52,6 +55,50 @@ TAU_TRAIN_MS      = 400  # vertical reference line (training horizon)
 PANEL_TITLES      = ["HOLD", "YIELD", "BCHAN"]
 PANEL_PREFIXES    = ["h",    "y",     "b"]
 
+# Per-ablation metadata for table generation: notebook iteration order
+# (matches the dict-literal order in fusion_experiments.ipynb so tables
+# row-order is consistent with the notebook), and the dir-name → CSV
+# ablation-label map.
+NOTEBOOK_ORDER_BY_ABLATION_DIR: dict[str, list[str]] = {
+    "standard": [
+        "cpc_both_early", "cpc_both_neural_concat",
+        "cpc_speaker_of_listener", "cpc_speaker_of_dyad", "full_dyad",
+    ],
+    "ssa": [
+        "cpc_both_attention", "of_speaker_of_listener_attention",
+        "cpc_speaker_of_listener_attention", "cpc_speaker_of_dyad_attention",
+        "full_dyad_attention",
+    ],
+    "sca": [
+        "cpc_speaker_of_listener_cross_attention",
+        "cpc_speaker_of_listener_self_cross_attention",
+    ],
+    "coordination": [
+        "cpc_speaker_plus_coordination",
+        "openface_with_coord_neural_concat",
+        "openface_BOTH_with_coord_neural_concat",
+        "cpc_speaker_of_listener_coord",
+        "cpc_speaker_both_faces_coord",
+        "full_dyad_plus_coordination",
+    ],
+    "csa": [
+        "cpc_speaker_coord_self_attention",
+        "cpc_speaker_cpc_listener_coord_self_attention",
+        "cpc_speaker_of_speaker_coord_self_attention",
+        "openface_coord_self_attention",
+        "cpc_speaker_of_listener_coord_self_attention",
+        "full_dyad_plus_coordination_self_attention",
+    ],
+}
+
+ABLATION_DIR_TO_LABEL: dict[str, str] = {
+    "standard":     "Standard",
+    "ssa":          "Standard + Self-Attention (SSA)",
+    "sca":          "Standard + Cross-Attention (SCA)",
+    "coordination": "Coordination",
+    "csa":          "Coordination + Self-Attention (CSA)",
+}
+
 
 # ---------------------------------------------------------------------------
 # CSV loading helpers
@@ -59,6 +106,11 @@ PANEL_PREFIXES    = ["h",    "y",     "b"]
 
 def _load_sweep_csv() -> list[dict]:
     with SWEEP_CSV.open() as f:
+        return list(csv.DictReader(f))
+
+
+def _load_t400_csv() -> list[dict]:
+    with T400_CSV.open() as f:
         return list(csv.DictReader(f))
 
 
@@ -252,14 +304,238 @@ def figure_per_class_recall_vs_tau(
 
 
 # ---------------------------------------------------------------------------
-# CLI: regenerate every default figure
+# LaTeX table helpers
+# ---------------------------------------------------------------------------
+
+def _fmt_metric_with_max_bold(value: float, is_row_max: bool, places: int = 3) -> str:
+    """`\\textbf{…}` if this is the column's row-wise max, else plain."""
+    s = f"{value:.{places}f}"
+    return f"\\textbf{{{s}}}" if is_row_max else s
+
+
+def _render_per_ablation_table(
+    *,
+    ablation_dir: str,
+    table_filename: str,
+    caption_template: str,
+    label_prefix: str,
+    metric_columns: list[tuple[str, str]],
+) -> Path:
+    """
+    Generic builder for per-ablation τ=400 tables.
+
+    Renders a booktabs LaTeX table to
+    `paper/tables/tau_400/per_ablation_block/<ablation_dir>/<table_filename>`,
+    with `Configuration` (= experiment_name) as the row-label column followed
+    by one centered metric column per `(csv_col, display_header)` entry in
+    `metric_columns`. Row-wise max in each metric column is bolded. Rows are
+    ordered by the notebook iteration order for that ablation.
+
+    Reused by `tables_per_ablation_macro`, `tables_per_ablation_f1_per_class`,
+    and `tables_per_ablation_recall_per_class` — they differ only in metric
+    columns, caption template, and output filename.
+    """
+    ablation_label = ABLATION_DIR_TO_LABEL[ablation_dir]
+    notebook_order = NOTEBOOK_ORDER_BY_ABLATION_DIR[ablation_dir]
+    order_idx = {k: i for i, k in enumerate(notebook_order)}
+
+    rows = [r for r in _load_t400_csv() if r["ablation"] == ablation_label]
+    rows.sort(key=lambda r: order_idx[r["experiment"]])
+
+    col_maxes = {
+        csv_col: max(float(r[csv_col]) for r in rows)
+        for csv_col, _ in metric_columns
+    }
+
+    column_spec = "l" + "c" * len(metric_columns)
+    headers     = ["Configuration"] + [hdr for _, hdr in metric_columns]
+
+    lines: list[str] = []
+    lines.append(r"\begin{table}[h]")
+    lines.append(rf"\caption{{{caption_template.format(ablation_label=ablation_label)}}}")
+    lines.append(rf"\label{{{label_prefix}_{ablation_dir}}}")
+    lines.append(rf"\begin{{tabular}}{{{column_spec}}}")
+    lines.append(r"\toprule")
+    lines.append(" & ".join(headers) + r" \\")
+    lines.append(r"\midrule")
+    for r in rows:
+        cells = [r["experiment_name"]]
+        for csv_col, _ in metric_columns:
+            v = float(r[csv_col])
+            cells.append(_fmt_metric_with_max_bold(v, v == col_maxes[csv_col]))
+        lines.append(" & ".join(cells) + r" \\")
+    lines.append(r"\bottomrule")
+    lines.append(r"\end{tabular}")
+    lines.append(r"\end{table}")
+    tex = "\n".join(lines) + "\n"
+
+    out_tex = TABLES_TAU400_PER_AB_DIR / ablation_dir / table_filename
+    out_tex.parent.mkdir(parents=True, exist_ok=True)
+    out_tex.write_text(tex)
+    print(f"wrote: {out_tex}")
+    return out_tex
+
+
+# ---------------------------------------------------------------------------
+# Public table generators (one function per table type)
+# ---------------------------------------------------------------------------
+
+def tables_per_ablation_macro(
+    ablation_dirs: Optional[list[str]] = None,
+) -> list[Path]:
+    """
+    Per-ablation `macro.tex` tables — one row per experiment in the ablation,
+    columns: Configuration, Macro-F1, Macro-TPR. Row-wise max in each metric
+    column is bolded. Rows in notebook iteration order.
+
+    `ablation_dirs` defaults to all 5 ablation block dir names.
+    Each output lands at:
+        paper/tables/tau_400/per_ablation_block/<dir>/macro.tex
+    """
+    ablation_dirs = ablation_dirs or list(NOTEBOOK_ORDER_BY_ABLATION_DIR.keys())
+    return [
+        _render_per_ablation_table(
+            ablation_dir=ab,
+            table_filename="macro.tex",
+            caption_template=(
+                r"Macro F1 and Recall at $\tau$=400~ms Across "
+                "{ablation_label} Configurations"
+            ),
+            label_prefix="tab:macro",
+            metric_columns=[
+                ("macro_f1",     "Macro-F1"),
+                ("macro_recall", "Macro-TPR"),
+            ],
+        )
+        for ab in ablation_dirs
+    ]
+
+
+def tables_per_ablation_f1_per_class(
+    ablation_dirs: Optional[list[str]] = None,
+) -> list[Path]:
+    """
+    Per-ablation `f1_per_class.tex` tables — one row per experiment in the
+    ablation, columns: Configuration, HOLD, YIELD, BCHAN (per-class F1).
+    Row-wise max in each metric column is bolded. Rows in notebook
+    iteration order.
+
+    `ablation_dirs` defaults to all 5 ablation block dir names.
+    Each output lands at:
+        paper/tables/tau_400/per_ablation_block/<dir>/f1_per_class.tex
+    """
+    ablation_dirs = ablation_dirs or list(NOTEBOOK_ORDER_BY_ABLATION_DIR.keys())
+    return [
+        _render_per_ablation_table(
+            ablation_dir=ab,
+            table_filename="f1_per_class.tex",
+            caption_template=(
+                r"Per-Class F1 at $\tau$=400~ms Across "
+                "{ablation_label} Configurations"
+            ),
+            label_prefix="tab:f1_per_class",
+            metric_columns=[
+                ("h_f1", "HOLD"),
+                ("y_f1", "YIELD"),
+                ("b_f1", "BCHAN"),
+            ],
+        )
+        for ab in ablation_dirs
+    ]
+
+
+def tables_per_ablation_recall_per_class(
+    ablation_dirs: Optional[list[str]] = None,
+) -> list[Path]:
+    """
+    Per-ablation `recall_per_class.tex` tables — one row per experiment in
+    the ablation, columns: Configuration, HOLD, YIELD, BCHAN (per-class
+    recall). Row-wise max in each metric column is bolded. Rows in
+    notebook iteration order.
+
+    `ablation_dirs` defaults to all 5 ablation block dir names.
+    Each output lands at:
+        paper/tables/tau_400/per_ablation_block/<dir>/recall_per_class.tex
+    """
+    ablation_dirs = ablation_dirs or list(NOTEBOOK_ORDER_BY_ABLATION_DIR.keys())
+    return [
+        _render_per_ablation_table(
+            ablation_dir=ab,
+            table_filename="recall_per_class.tex",
+            caption_template=(
+                r"Per-Class Recall at $\tau$=400~ms Across "
+                "{ablation_label} Configurations"
+            ),
+            label_prefix="tab:recall_per_class",
+            metric_columns=[
+                ("h_recall", "HOLD"),
+                ("y_recall", "YIELD"),
+                ("b_recall", "BCHAN"),
+            ],
+        )
+        for ab in ablation_dirs
+    ]
+
+
+def table_overall_macro_leaderboard(out_tex: Optional[Path] = None) -> Path:
+    """
+    Cross-ablation leaderboard at τ=400~ms with one row per experiment,
+    sorted by macro-F1 descending. Columns: Architecture, Configuration,
+    Macro-F1, Macro-TPR. Row-wise maxima in the two metric columns are
+    bolded.
+
+    Default output: paper/tables/tau_400/overall/macro_leaderboard.tex
+    """
+    rows = _load_t400_csv()
+
+    # Sort descending by macro_f1.
+    rows.sort(key=lambda r: -float(r["macro_f1"]))
+
+    f1s = [float(r["macro_f1"])     for r in rows]
+    rec = [float(r["macro_recall"]) for r in rows]
+    max_f1, max_rec = max(f1s), max(rec)
+
+    lines: list[str] = []
+    lines.append(r"\begin{table}[h]")
+    lines.append(r"\caption{Macro F1 and Recall at $\tau$=400~ms Across All Configurations}")
+    lines.append(r"\label{tab:overall_macro_leaderboard}")
+    lines.append(r"\begin{tabular}{llcc}")
+    lines.append(r"\toprule")
+    lines.append(r"Architecture & Configuration & Macro-F1 & Macro-TPR \\")
+    lines.append(r"\midrule")
+    for r, f1, rc in zip(rows, f1s, rec):
+        arch = r["arch"]
+        cfg  = r["experiment_name"]
+        lines.append(
+            f"{arch} & {cfg} & "
+            f"{_fmt_metric_with_max_bold(f1, f1 == max_f1)} & "
+            f"{_fmt_metric_with_max_bold(rc, rc == max_rec)} \\\\"
+        )
+    lines.append(r"\bottomrule")
+    lines.append(r"\end{tabular}")
+    lines.append(r"\end{table}")
+    tex = "\n".join(lines) + "\n"
+
+    out_tex = out_tex or (TABLES_TAU400_OVERALL_DIR / "macro_leaderboard.tex")
+    out_tex.parent.mkdir(parents=True, exist_ok=True)
+    out_tex.write_text(tex)
+    print(f"wrote: {out_tex}")
+    return out_tex
+
+
+# ---------------------------------------------------------------------------
+# CLI: regenerate every default figure / table
 # ---------------------------------------------------------------------------
 
 def regenerate_all() -> list[Path]:
-    """Regenerate every default figure with default args."""
+    """Regenerate every default figure and table with default args."""
     return [
         figure_per_class_f1_vs_tau(),
         figure_per_class_recall_vs_tau(),
+        table_overall_macro_leaderboard(),
+        *tables_per_ablation_macro(),
+        *tables_per_ablation_f1_per_class(),
+        *tables_per_ablation_recall_per_class(),
     ]
 
 
