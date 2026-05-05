@@ -59,6 +59,20 @@ heatmaps, τ-robustness analysis, etc.).
 Row order: ablation (notebook order: standard → ssa → sca → coordination → csa)
 → experiment (notebook order within ablation) → τ ascending.
 
+**Per-experiment τ-curve summaries.** The two `auc_*` columns are
+per-experiment scalars summarizing each metric's τ-curve. Each is computed
+as the trapezoidal area under the curve of the named metric vs `tau_ms`,
+integrated linearly over the τ-grid (`numpy.trapezoid(metric_values,
+tau_ms_values)`). The integration is over **linear** `tau_ms` (not
+`log(tau_ms)`), so unequal x-spacing is reflected in the area: a unit of
+performance change between τ=800 and τ=1600 ms contributes more to the
+AUC than the same unit between τ=100 and τ=200 ms. The same per-experiment
+AUC value is repeated on every row for that experiment, for joinability
+with per-(exp, τ) data. For Coordination ablation rows, both `auc_*`
+values are empty/NaN because that ablation runs at τ=400 ms only — a
+single-point curve has no area. Used to select the top-N experiments to
+display in cross-τ figures.
+
 ### Columns
 
 - **tau_ms** — the prediction horizon (ms) for this row.
@@ -125,3 +139,5 @@ Row order: ablation (notebook order: standard → ssa → sca → coordination �
 - **per_speaker_macro_f1_median** — median per-speaker macro-F1.
 - **accuracy** — overall test-set classification accuracy at this τ. Computed as `(cm_h_h + cm_y_y + cm_b_b) / n_test_samples`.
 - **balanced_accuracy** — mean of per-class recall, equivalent to `macro_recall`. Provided for convenience.
+- **auc_macro_f1** — area under the macro-F1 vs τ curve for this experiment, computed via `numpy.trapezoid(macro_f1_values, tau_ms_values)`. Per-experiment scalar; repeated on every row for that experiment. Empty/NaN for Coordination rows (single-point τ-curve has no area). Used to rank "top across the curve" performers for the τ-sweep macro-F1 figure.
+- **auc_macro_recall** — area under the macro-recall vs τ curve, same definition. Used as the selection metric for the τ-sweep recall figure.
