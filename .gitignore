@@ -8,7 +8,6 @@ __pycache__
 scripts/valence_arousal
 smplh_features
 smplh_features_poc
-turn_taking_analysis/docs/preflight_problems.md
 scripts/compose_classifier_input.ipynb
 .gitattributes
 535_project_data
@@ -21,10 +20,10 @@ interaction_transcripts/V00_S1288_I00000099/transcript_merged.jsonl
 interaction_transcripts/V00_S1288_I00000099/transcript_participant_a_V00_S1288_I00000099_P0071.jsonl
 interaction_transcripts/V00_S1288_I00000099/transcript_participant_b_V00_S1288_I00000099_P1119.jsonl
 scripts/download_interaction_transcripts.py
-turn_taking_analysis/docs/2025_paper.pdf
-turn_taking_analysis/docs/speedup_recommendations.md
+turn_taking_analysis/docs/
 turn_taking_analysis/scripts/smoke_test_notebook.py
-turn_taking_analysis/docs/speedup_recommendations_linux_cuda.md
 turn_taking_analysis/scripts/derisk_full_manifest_tests.py
 subset/
 .idea/
+csci535_code_submission
+turn_taking_analysis/paper/tables/tau_400/overall/preview
