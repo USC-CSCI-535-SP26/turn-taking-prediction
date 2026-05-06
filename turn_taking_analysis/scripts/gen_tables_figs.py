@@ -347,13 +347,20 @@ def _render_per_ablation_table(
         for csv_col, _ in metric_columns
     }
 
-    column_spec = "l" + "c" * len(metric_columns)
+    # Configuration column uses ragged-right p{4cm} so long experiment_name
+    # values wrap to multiple lines without justified spacing. Requires
+    # \usepackage{array} in the document preamble. Metric columns stay
+    # centered. \small + \arraystretch{1.20} keep the table inside one
+    # acmart sigconf column with comfortable inter-row spacing.
+    column_spec = r">{\raggedright\arraybackslash}p{4cm}" + "c" * len(metric_columns)
     headers     = ["Configuration"] + [hdr for _, hdr in metric_columns]
 
     lines: list[str] = []
     lines.append(r"\begin{table}[h]")
     lines.append(rf"\caption{{{caption_template.format(ablation_label=ablation_label)}}}")
     lines.append(rf"\label{{{label_prefix}_{ablation_dir}}}")
+    lines.append(r"\small")
+    lines.append(r"\renewcommand{\arraystretch}{1.20}")
     lines.append(rf"\begin{{tabular}}{{{column_spec}}}")
     lines.append(r"\toprule")
     lines.append(" & ".join(headers) + r" \\")
