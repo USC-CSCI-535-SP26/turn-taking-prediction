@@ -159,7 +159,6 @@ def _plot_per_class_vs_tau(
     metric_prefix: str,
     metric_label: str,
     out_png: Path,
-    fig_title: str,
     dpi: int = DEFAULT_DPI,
     figsize: tuple = DEFAULT_FIGSIZE,
 ) -> Path:
@@ -222,7 +221,8 @@ def _plot_per_class_vs_tau(
     fig.legend(handles, labels, loc="lower center", ncol=len(top_rows),
                bbox_to_anchor=(0.5, -0.12), frameon=False, fontsize=9,
                handletextpad=0.6, columnspacing=2.5)
-    fig.suptitle(fig_title, fontsize=12, y=1.02)
+    # No \suptitle: the figure is shown with a LaTeX \caption{} in the host
+    # paper, so an in-image title would be redundant.
     fig.tight_layout()
 
     out_png.parent.mkdir(parents=True, exist_ok=True)
@@ -264,7 +264,6 @@ def figure_per_class_f1_vs_tau(
         metric_prefix="f1",
         metric_label="F1",
         out_png=out_png,
-        fig_title=rf"Per-class F1 vs $\tau$ — Top {top_n} experiments by AUC of Macro-F1",
         dpi=dpi,
     )
 
@@ -298,7 +297,6 @@ def figure_per_class_recall_vs_tau(
         metric_prefix="recall",
         metric_label="Recall",
         out_png=out_png,
-        fig_title=rf"Per-class Recall vs $\tau$ — Top {top_n} experiments by AUC of Macro-TPR",
         dpi=dpi,
     )
 
