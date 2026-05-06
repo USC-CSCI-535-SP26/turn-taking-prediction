@@ -93,10 +93,10 @@ NOTEBOOK_ORDER_BY_ABLATION_DIR: dict[str, list[str]] = {
 
 ABLATION_DIR_TO_LABEL: dict[str, str] = {
     "standard":     "Standard",
-    "ssa":          "Standard + Self-Attention (SSA)",
-    "sca":          "Standard + Cross-Attention (SCA)",
+    "ssa":          "Standard + Self-Attention",
+    "sca":          "Standard + Cross-Attention",
     "coordination": "Coordination",
-    "csa":          "Coordination + Self-Attention (CSA)",
+    "csa":          "Coordination + Self-Attention",
 }
 
 
@@ -264,7 +264,7 @@ def figure_per_class_f1_vs_tau(
         metric_prefix="f1",
         metric_label="F1",
         out_png=out_png,
-        fig_title=rf"Per-class F1 vs $\tau$ — Top {top_n} experiments by AUC of macro-F1",
+        fig_title=rf"Per-class F1 vs $\tau$ — Top {top_n} experiments by AUC of Macro-F1",
         dpi=dpi,
     )
 
@@ -484,6 +484,61 @@ def tables_per_ablation_recall_per_class(
     ]
 
 
+def table_overall_ablation_suite(out_tex: Optional[Path] = None) -> Path:
+    """
+    Cross-ablation 'study design' table listing all 24 experiments.
+
+    Three columns from the τ=400 CSV: Block (= `ablation`), Streams (=
+    `experiment_name`), Architecture (= `arch`). The Block name appears once
+    per ablation (first row of the block); subsequent rows in the same block
+    leave it blank. A `\\midrule` separates each ablation block from the next.
+
+    Rows are emitted in notebook iteration order — ablations follow the
+    `NOTEBOOK_ORDER_BY_ABLATION_DIR` key order (standard → ssa → sca →
+    coordination → csa); experiments within each ablation follow the per-key
+    list order. This is a study-design table, not a results table — no
+    metric values appear.
+
+    Default output: paper/tables/tau_400/overall/ablation_suite.tex
+    """
+    by_exp = {r["experiment"]: r for r in _load_t400_csv()}
+
+    lines: list[str] = []
+    lines.append(r"\begin{table*}[h]")
+    lines.append(r"\caption{Ablation suite: 24 experiments across five ablation blocks.}")
+    lines.append(r"\label{tab:ablations}")
+    lines.append(r"\begin{tabular}{l l l}")
+    lines.append(r"\toprule")
+    lines.append(r"Block & Streams & Architecture \\")
+    lines.append(r"\midrule")
+
+    ablation_dirs = list(NOTEBOOK_ORDER_BY_ABLATION_DIR.keys())
+    for i, ab_dir in enumerate(ablation_dirs):
+        ab_label = ABLATION_DIR_TO_LABEL[ab_dir]
+        exp_keys = NOTEBOOK_ORDER_BY_ABLATION_DIR[ab_dir]
+        for j, exp_key in enumerate(exp_keys):
+            r = by_exp[exp_key]
+            block_cell = ab_label if j == 0 else ""
+            lines.append(
+                f"{block_cell} & {r['experiment_name']} & {r['arch']} " + r"\\"
+            )
+        # \midrule between blocks, but not after the last block (the
+        # \bottomrule serves as the closer there).
+        if i < len(ablation_dirs) - 1:
+            lines.append(r"\midrule")
+
+    lines.append(r"\bottomrule")
+    lines.append(r"\end{tabular}")
+    lines.append(r"\end{table*}")
+    tex = "\n".join(lines) + "\n"
+
+    out_tex = out_tex or (TABLES_TAU400_OVERALL_DIR / "ablation_suite.tex")
+    out_tex.parent.mkdir(parents=True, exist_ok=True)
+    out_tex.write_text(tex)
+    print(f"wrote: {out_tex}")
+    return out_tex
+
+
 def table_overall_macro_leaderboard(out_tex: Optional[Path] = None) -> Path:
     """
     Cross-ablation leaderboard at τ=400~ms with one row per experiment,
@@ -539,6 +594,7 @@ def regenerate_all() -> list[Path]:
     return [
         figure_per_class_f1_vs_tau(),
         figure_per_class_recall_vs_tau(),
+        table_overall_ablation_suite(),
         table_overall_macro_leaderboard(),
         *tables_per_ablation_macro(),
         *tables_per_ablation_f1_per_class(),

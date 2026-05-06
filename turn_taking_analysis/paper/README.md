@@ -16,9 +16,9 @@ Used to populate τ=400 ms tables and figures.
 ### Columns
 
 - **rank_macro_f1** — 1-indexed rank by `macro_f1` descending across all 24 experiments. Rows are stored in this order.
-- **ablation** — which ablation block the experiment belongs to: `Standard`, `Standard + Self-Attention (SSA)`, `Standard + Cross-Attention (SCA)`, `Coordination`, or `Coordination + Self-Attention (CSA)`.
+- **ablation** — which ablation block the experiment belongs to: `Standard`, `Standard + Self-Attention`, `Standard + Cross-Attention`, `Coordination`, or `Coordination + Self-Attention`. The corresponding on-disk run-dir names use the lowercase acronym form (`standard`, `ssa`, `sca`, `coordination`, `csa`).
 - **experiment** — original machine-readable experiment key from `fusion_experiments.ipynb` (e.g. `cpc_both_neural_concat`).
-- **experiment_name** — paper-friendly description of the streams (e.g. `Audio Dyad (Intermediate Fusion)`). Use this in table row labels.
+- **experiment_name** — paper-friendly description of the streams (e.g. `Audio Dyad`, `Full Dyad + WCC-Summary`, `Full Dyad + WCC-Continuous`). Use this in table row labels. Coordination features appear as `WCC-Summary` (19-scalar summary) or `WCC-Continuous` (the (21, 23) WCC array). Note: when two experiments in the same ablation share streams (e.g. `cpc_both_early` and `cpc_both_neural_concat` are both `Audio Dyad`), they collide on `experiment_name`; disambiguate via the `arch` column.
 - **config** — compact `MODALITY(roles)` notation for the stream set. `A` = speaker, `B` = listener. Modality tokens: `CPC` (audio), `OF` (OpenFace face), `Coord_sum` (19-dim scalar summary coordination features), `Coord_cont` (continuous windowed cross-correlation arrays). Example: `CPC(A+B) + OF(B) + Coord_sum(A)`.
 - **fusion** — the fusion-model class from `fusion_lib.py` used (e.g. `NeuralConcatFusion`, `SelfAttentionFusion`).
 - **arch** — paper-friendly architecture label derived from `fusion` (e.g. `Neural-Concat`, `Self-Attention`, `Cross-Attention`, `Self+Cross-Attention`, `Early Fusion`).
