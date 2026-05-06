@@ -1,34 +1,43 @@
-\begin{table}[h]
-\caption{Macro F1 and Recall at $\tau$=400~ms Across All Configurations}
+\begin{table*}[h]
+\centering
+\caption{Main Results --- Macro and Per-Class F1 and TPR for all 24 Experiments at $\tau$=400~ms}
 \label{tab:overall_macro_leaderboard}
-\begin{tabular}{llcc}
+\setlength{\tabcolsep}{2pt}
+\setlength{\cmidrulekern}{15pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l l c @{\hspace{6pt}} ccc @{\hspace{12pt}} c @{\hspace{6pt}} ccc}
 \toprule
-Architecture & Configuration & Macro-F1 & Macro-TPR \\
+ & & \multicolumn{4}{c}{\textbf{F1}} & \multicolumn{4}{c}{\textbf{TPR}} \\
+\cmidrule(lr){3-6} \cmidrule(lr){7-10}
+Architecture & Configuration & Macro & H & Y & BC & Macro & H & Y & BC \\
 \midrule
-Self-Attention & Full Dyad + WCC-Continuous & \textbf{0.707} & 0.722 \\
-Self-Attention & Audio Dyad & 0.705 & 0.728 \\
-Self-Attention & Audio Dyad + WCC-Continuous & 0.703 & 0.718 \\
-Neural-Concat & Audio Dyad & 0.697 & 0.739 \\
-Self-Attention & Full Dyad & 0.688 & 0.719 \\
-Neural-Concat & Full Dyad & 0.684 & 0.748 \\
-Early Fusion & Audio Dyad & 0.681 & \textbf{0.752} \\
-Neural-Concat & Full Dyad + WCC-Summary & 0.669 & 0.742 \\
-Cross-Attention & Speaker Audio + Listener Face & 0.581 & 0.623 \\
-Neural-Concat & Speaker Audio + Face Dyad & 0.568 & 0.672 \\
-Neural-Concat & Speaker Audio + Listener Face & 0.568 & 0.663 \\
-Self+Cross-Attention & Speaker Audio + Listener Face & 0.562 & 0.616 \\
-Neural-Concat & Speaker Audio + Face Dyad + WCC-Summary & 0.559 & 0.624 \\
-Neural-Concat & Speaker Audio + Listener Face + WCC-Summary & 0.555 & 0.674 \\
-Neural-Concat & Speaker Audio + WCC-Summary & 0.553 & 0.568 \\
-Self-Attention & Speaker Audio + WCC-Continuous & 0.544 & 0.572 \\
-Self-Attention & Speaker Audio + Listener Face & 0.537 & 0.646 \\
-Self-Attention & Speaker Audio + Speaker Face + WCC-Continuous & 0.536 & 0.550 \\
-Self-Attention & Speaker Audio + Face Dyad & 0.536 & 0.611 \\
-Self-Attention & Speaker Audio + Listener Face + WCC-Continuous & 0.530 & 0.624 \\
-Neural-Concat & Face Dyad + WCC-Summary & 0.477 & 0.570 \\
-Self-Attention & Face Dyad + WCC-Continuous & 0.437 & 0.519 \\
-Self-Attention & Face Dyad & 0.437 & 0.460 \\
-Neural-Concat & Speaker Face + WCC-Summary & 0.400 & 0.451 \\
+Self-Attention & Full Dyad + WCC-Continuous & \textbf{0.707} & 0.967 & 0.585 & 0.568 & 0.722 & 0.958 & 0.553 & 0.654 \\
+Self-Attention & Audio Dyad & 0.705 & 0.963 & \textbf{0.606} & 0.545 & 0.728 & 0.951 & 0.579 & 0.655 \\
+Self-Attention & Audio Dyad + WCC-Continuous & 0.703 & \textbf{0.968} & 0.570 & \textbf{0.572} & 0.718 & \textbf{0.962} & 0.559 & 0.633 \\
+Neural-Concat & Audio Dyad & 0.697 & 0.961 & 0.577 & 0.552 & 0.739 & 0.946 & 0.605 & 0.667 \\
+Self-Attention & Full Dyad & 0.688 & 0.964 & 0.541 & 0.560 & 0.719 & 0.952 & 0.551 & 0.655 \\
+Neural-Concat & Full Dyad & 0.684 & 0.959 & 0.548 & 0.545 & 0.748 & 0.939 & 0.640 & 0.664 \\
+Early Fusion & Audio Dyad & 0.681 & 0.961 & 0.575 & 0.506 & \textbf{0.752} & 0.942 & \textbf{0.731} & 0.583 \\
+Neural-Concat & Full Dyad + WCC-Summary & 0.669 & 0.952 & 0.540 & 0.515 & 0.742 & 0.925 & 0.601 & \textbf{0.699} \\
+Cross-Attention & Speaker Audio + Listener Face & 0.581 & 0.933 & 0.487 & 0.324 & 0.623 & 0.909 & 0.530 & 0.429 \\
+Neural-Concat & Speaker Audio + Face Dyad & 0.568 & 0.906 & 0.485 & 0.314 & 0.672 & 0.848 & 0.607 & 0.561 \\
+Neural-Concat & Speaker Audio + Listener Face & 0.568 & 0.901 & 0.478 & 0.324 & 0.663 & 0.839 & 0.526 & 0.622 \\
+Self+Cross-Attention & Speaker Audio + Listener Face & 0.562 & 0.927 & 0.444 & 0.316 & 0.616 & 0.896 & 0.508 & 0.444 \\
+Neural-Concat & Speaker Audio + Face Dyad + WCC-Summary & 0.559 & 0.912 & 0.462 & 0.302 & 0.624 & 0.868 & 0.510 & 0.493 \\
+Neural-Concat & Speaker Audio + Listener Face + WCC-Summary & 0.555 & 0.909 & 0.433 & 0.322 & 0.674 & 0.854 & 0.636 & 0.533 \\
+Neural-Concat & Speaker Audio + WCC-Summary & 0.553 & 0.932 & 0.403 & 0.325 & 0.568 & 0.912 & 0.352 & 0.439 \\
+Self-Attention & Speaker Audio + WCC-Continuous & 0.544 & 0.931 & 0.424 & 0.276 & 0.572 & 0.914 & 0.464 & 0.338 \\
+Self-Attention & Speaker Audio + Listener Face & 0.537 & 0.878 & 0.453 & 0.280 & 0.646 & 0.800 & 0.528 & 0.609 \\
+Self-Attention & Speaker Audio + Speaker Face + WCC-Continuous & 0.536 & 0.940 & 0.401 & 0.266 & 0.550 & 0.936 & 0.441 & 0.272 \\
+Self-Attention & Speaker Audio + Face Dyad & 0.536 & 0.897 & 0.432 & 0.278 & 0.611 & 0.841 & 0.482 & 0.510 \\
+Self-Attention & Speaker Audio + Listener Face + WCC-Continuous & 0.530 & 0.871 & 0.438 & 0.281 & 0.624 & 0.789 & 0.431 & 0.652 \\
+Neural-Concat & Face Dyad + WCC-Summary & 0.477 & 0.880 & 0.265 & 0.285 & 0.570 & 0.807 & 0.308 & 0.596 \\
+Self-Attention & Face Dyad + WCC-Continuous & 0.437 & 0.873 & 0.209 & 0.228 & 0.519 & 0.801 & 0.312 & 0.445 \\
+Self-Attention & Face Dyad & 0.437 & 0.922 & 0.111 & 0.278 & 0.460 & 0.901 & 0.077 & 0.401 \\
+Neural-Concat & Speaker Face + WCC-Summary & 0.400 & 0.866 & 0.132 & 0.201 & 0.451 & 0.804 & 0.172 & 0.376 \\
 \bottomrule
-\end{tabular}
-\end{table}
+\end{tabular}%
+}
+\par\vspace{2pt}
+\noindent\footnotesize\textit{Class abbreviations: H = HOLD, Y = YIELD, BC = BACKCHANNEL. Bolded values mark the row-wise maximum within each metric column. Configurations sorted by Macro-F1 descending.}
+\end{table*}

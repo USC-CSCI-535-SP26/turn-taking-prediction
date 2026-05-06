@@ -541,41 +541,108 @@ def table_overall_ablation_suite(out_tex: Optional[Path] = None) -> Path:
 
 def table_overall_macro_leaderboard(out_tex: Optional[Path] = None) -> Path:
     """
-    Cross-ablation leaderboard at τ=400~ms with one row per experiment,
-    sorted by macro-F1 descending. Columns: Architecture, Configuration,
-    Macro-F1, Macro-TPR. Row-wise maxima in the two metric columns are
-    bolded.
+    Cross-ablation results table at τ=400~ms with one row per experiment,
+    sorted by macro-F1 descending. Two-column-spanning (`table*`) layout
+    with multilevel header (F1 / TPR group bands), per-class metrics for
+    HOLD / YIELD / BCHAN under each group, and a `threeparttable`-attached
+    legend.
+
+    Layout choices (locked, V3-B from preview iteration):
+    - Title: ``Main Results --- Macro and Per-Class F1 and TPR for all 24
+      Experiments at $\\tau$=400~ms``.
+    - Columns: Macro-F1, H, Y, BC under the F1 group; Macro-TPR, H, Y, BC
+      under the TPR group; row-wise max bolded per column independently.
+    - Column spec: ``l l c @{\\hspace{6pt}} ccc @{\\hspace{12pt}} c
+      @{\\hspace{6pt}} ccc`` --- 6pt gap separates each Macro column from
+      its per-class block, 12pt gap separates the F1 group from the TPR
+      group.
+    - Group cmidrules use ``\\cmidrule(lr)`` with ``\\cmidrulekern`` set
+      locally to 15pt so the rule visibly anchors to label content rather
+      than bleeding into the F1↔TPR gap.
+    - ``threeparttable`` legend documents the H/Y/BC abbreviations + the
+      bolding convention + the sort order.
+
+    The host LaTeX document needs ``\\usepackage{booktabs}``,
+    ``\\usepackage{array}``, and ``\\usepackage{graphicx}`` in its
+    preamble (the last for ``\\resizebox``, used to fill the page width).
 
     Default output: paper/tables/tau_400/overall/macro_leaderboard.tex
     """
     rows = _load_t400_csv()
-
-    # Sort descending by macro_f1.
     rows.sort(key=lambda r: -float(r["macro_f1"]))
 
-    f1s = [float(r["macro_f1"])     for r in rows]
-    rec = [float(r["macro_recall"]) for r in rows]
-    max_f1, max_rec = max(f1s), max(rec)
+    metric_cols = [
+        "macro_f1", "h_f1", "y_f1", "b_f1",
+        "macro_recall", "h_recall", "y_recall", "b_recall",
+    ]
+    maxes = {c: max(float(r[c]) for r in rows) for c in metric_cols}
+
+    def cells_for(row: dict, cols: list[str]) -> list[str]:
+        out = []
+        for c in cols:
+            v = float(row[c])
+            out.append(_fmt_metric_with_max_bold(v, v == maxes[c]))
+        return out
+
+    title = (
+        r"Main Results --- Macro and Per-Class F1 and TPR for all 24 "
+        r"Experiments at $\tau$=400~ms"
+    )
+    col_spec = (
+        r"l l c @{\hspace{6pt}} ccc "
+        r"@{\hspace{12pt}} c @{\hspace{6pt}} ccc"
+    )
 
     lines: list[str] = []
-    lines.append(r"\begin{table}[h]")
-    lines.append(r"\caption{Macro F1 and Recall at $\tau$=400~ms Across All Configurations}")
+    lines.append(r"\begin{table*}[h]")
+    lines.append(r"\centering")
+    lines.append(rf"\caption{{{title}}}")
     lines.append(r"\label{tab:overall_macro_leaderboard}")
-    lines.append(r"\begin{tabular}{llcc}")
+    lines.append(r"\setlength{\tabcolsep}{2pt}")
+    lines.append(r"\setlength{\cmidrulekern}{15pt}")
+    # Resize the tabular to exactly \textwidth (full page width inside the
+    # table* float). Trailing % suppresses the inserted line-break space.
+    # We don't use threeparttable here because it conflicts with \resizebox;
+    # the legend below is rendered manually instead, in the same float, so
+    # it still travels with the table.
+    lines.append(r"\resizebox{\textwidth}{!}{%")
+    lines.append(rf"\begin{{tabular}}{{{col_spec}}}")
     lines.append(r"\toprule")
-    lines.append(r"Architecture & Configuration & Macro-F1 & Macro-TPR \\")
+    lines.append(
+        r" & & \multicolumn{4}{c}{\textbf{F1}} "
+        r"& \multicolumn{4}{c}{\textbf{TPR}} \\"
+    )
+    lines.append(r"\cmidrule(lr){3-6} \cmidrule(lr){7-10}")
+    lines.append(
+        r"Architecture & Configuration & Macro & H & Y & BC "
+        r"& Macro & H & Y & BC \\"
+    )
     lines.append(r"\midrule")
-    for r, f1, rc in zip(rows, f1s, rec):
-        arch = r["arch"]
-        cfg  = r["experiment_name"]
+    for r in rows:
+        c_f1  = cells_for(r, metric_cols[0:4])
+        c_tpr = cells_for(r, metric_cols[4:8])
         lines.append(
-            f"{arch} & {cfg} & "
-            f"{_fmt_metric_with_max_bold(f1, f1 == max_f1)} & "
-            f"{_fmt_metric_with_max_bold(rc, rc == max_rec)} \\\\"
+            f"{r['arch']} & {r['experiment_name']} & "
+            + " & ".join(c_f1)
+            + " & "
+            + " & ".join(c_tpr)
+            + r" \\"
         )
     lines.append(r"\bottomrule")
-    lines.append(r"\end{tabular}")
-    lines.append(r"\end{table}")
+    lines.append(r"\end{tabular}%")
+    lines.append(r"}")  # close \resizebox
+    # Manual legend (replaces threeparttable's tablenotes); travels with
+    # the float and renders in left-aligned footnotesize italic — visually
+    # equivalent to what threeparttable would have produced.
+    lines.append(r"\par\vspace{2pt}")
+    lines.append(
+        r"\noindent\footnotesize\textit{"
+        r"Class abbreviations: H = HOLD, Y = YIELD, BC = BACKCHANNEL. "
+        r"Bolded values mark the row-wise maximum within each metric column. "
+        r"Configurations sorted by Macro-F1 descending."
+        r"}"
+    )
+    lines.append(r"\end{table*}")
     tex = "\n".join(lines) + "\n"
 
     out_tex = out_tex or (TABLES_TAU400_OVERALL_DIR / "macro_leaderboard.tex")
