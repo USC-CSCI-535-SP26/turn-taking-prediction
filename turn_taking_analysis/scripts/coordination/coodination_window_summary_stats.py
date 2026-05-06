@@ -105,9 +105,9 @@ def load_coord_array(fp, max_lag=MAX_LAG):
     # Case 1: saved dict payload
     if isinstance(obj, np.ndarray) and obj.shape == () and isinstance(obj.item(), dict):
         payload = obj.item()
-        wcc = payload["wcc"]          # likely features x lags
+        wcc = payload["wcc"]          #saved as (21, 23)
         lags = payload["lags"]
-        arr = wcc.T                  # convert to lags x features
+        #arr = wcc.T                  # convert to lags x features
         return arr.astype(np.float32), lags.astype(int)
 
     # Case 2: saved array
