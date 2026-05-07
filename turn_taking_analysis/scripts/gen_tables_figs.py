@@ -19,6 +19,7 @@ Usage as a module:
     import gen_tables_figs as gtf
     gtf.figure_per_class_f1_vs_tau(top_n=3)
     gtf.figure_per_class_recall_vs_tau(top_n=5)
+    gtf.figure_macro_f1_vs_tau(top_n=3)
 """
 
 from __future__ import annotations
@@ -53,8 +54,9 @@ MIN_WINDOWS_PER_VIDEO_LABEL = 3
 METRICS_TO_PLOT = ["mean_peak_corr"]
 LABELS = [0, 1, 2]
 
-DEFAULT_DPI       = 300
-DEFAULT_FIGSIZE   = (13, 4.2)
+DEFAULT_DPI            = 300
+DEFAULT_FIGSIZE        = (13, 4.2)        # 3-panel per-class layout
+DEFAULT_FIGSIZE_SINGLE = (7, 4.2)         # single-panel macro-metric layout
 COLOR_CYCLE       = ["#1f77b4", "#d62728", "#2ca02c", "#9467bd", "#ff7f0e", "#8c564b"]
 TAU_TICKS_MS      = [100, 200, 400, 800, 1600]
 TAU_TRAIN_MS      = 400  # vertical reference line (training horizon)
@@ -238,6 +240,83 @@ def _plot_per_class_vs_tau(
     return out_png
 
 
+def _plot_macro_vs_tau(
+    top_rows: list[dict],
+    metric_col: str,
+    metric_label: str,
+    out_png: Path,
+    dpi: int = DEFAULT_DPI,
+    figsize: tuple = DEFAULT_FIGSIZE_SINGLE,
+) -> Path:
+    """
+    Single-panel macro metric vs τ plot, one line per experiment in top_rows.
+
+    Mirrors `_plot_per_class_vs_tau` (axis style, color cycle, two-line
+    legend label, training-horizon reference line) but renders one axis
+    instead of three since the metric is already a scalar per (experiment,
+    τ) — no HOLD/YIELD/BCHAN split.
+
+    Single-τ experiments (Coordination ablation) plot as scatter dots, not
+    lines, with a "(τ=400 only)" suffix in the legend.
+    """
+    sweep_rows = _load_sweep_csv()
+
+    exp_keys  = [r["experiment"] for r in top_rows]
+    exp_label = {
+        r["experiment"]: f"{r['arch']}\n{r['experiment_name']}" for r in top_rows
+    }
+
+    series: dict[str, list[dict]] = {}
+    for r in sweep_rows:
+        if r["experiment"] not in exp_keys:
+            continue
+        series.setdefault(r["experiment"], []).append({
+            "tau": int(r["tau_ms"]),
+            "v":   float(r[metric_col]),
+        })
+    for k in series:
+        series[k].sort(key=lambda d: d["tau"])
+
+    fig, ax = plt.subplots(1, 1, figsize=figsize)
+    color_for = {ek: COLOR_CYCLE[i % len(COLOR_CYCLE)] for i, ek in enumerate(exp_keys)}
+
+    for ek in exp_keys:
+        pts   = series[ek]
+        taus  = [p["tau"] for p in pts]
+        vals  = [p["v"]   for p in pts]
+        label = exp_label[ek]
+        if len(pts) == 1:
+            ax.scatter(taus, vals, s=80, color=color_for[ek],
+                       edgecolors="black", linewidths=0.8,
+                       label=f"{label} (τ=400 only)", zorder=3)
+        else:
+            ax.plot(taus, vals, marker="o", color=color_for[ek],
+                    label=label, linewidth=1.6, markersize=5)
+
+    ax.set_xscale("log")
+    ax.set_xticks(TAU_TICKS_MS)
+    ax.set_xticklabels([str(t) for t in TAU_TICKS_MS])
+    ax.minorticks_off()
+    ax.axvline(TAU_TRAIN_MS, color="grey", linestyle=":", linewidth=0.8, zorder=0)
+    ax.set_xlabel(r"$\tau$ (ms)")
+    ax.set_ylabel(metric_label)
+    ax.grid(True, alpha=0.25, zorder=0)
+
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncol=len(top_rows),
+               bbox_to_anchor=(0.5, -0.12), frameon=False, fontsize=9,
+               handletextpad=0.6, columnspacing=2.5)
+    # No \suptitle: the figure is shown with a LaTeX \caption{} in the host
+    # paper, so an in-image title would be redundant.
+    fig.tight_layout()
+
+    out_png.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_png, dpi=dpi, bbox_inches="tight")
+    plt.close(fig)
+    print(f"wrote: {out_png}")
+    return out_png
+
+
 # ---------------------------------------------------------------------------
 # Public figure generators (one function per figure type)
 # ---------------------------------------------------------------------------
@@ -302,6 +381,38 @@ def figure_per_class_recall_vs_tau(
         top_rows=ranked,
         metric_prefix="recall",
         metric_label="Recall",
+        out_png=out_png,
+        dpi=dpi,
+    )
+
+
+def figure_macro_f1_vs_tau(
+    top_n: int = 3,
+    out_png: Optional[Path] = None,
+    dpi: int = DEFAULT_DPI,
+) -> Path:
+    """
+    Macro-F1 vs τ for the top-N experiments ranked by AUC of macro-F1.
+
+    Single-panel layout (one line per experiment) with markers at every τ
+    in the grid. Vertical dotted line at τ=400 (training horizon).
+    Coordination experiments (single-τ) are excluded from the ranking pool
+    because their AUC is undefined.
+
+    Default output: paper/figures/macro_f1_top{N}_by_auc_macro_f1.png
+    """
+    sweep_rows = _load_sweep_csv()
+    summary    = _per_experiment_summary(sweep_rows)
+    ranked     = sorted(
+        [s for s in summary if s["auc_macro_f1"] is not None],
+        key=lambda s: -s["auc_macro_f1"],
+    )[:top_n]
+
+    out_png = out_png or (FIGURES_DIR / f"macro_f1_top{top_n}_by_auc_macro_f1.png")
+    return _plot_macro_vs_tau(
+        top_rows=ranked,
+        metric_col="macro_f1",
+        metric_label="Macro-F1",
         out_png=out_png,
         dpi=dpi,
     )
@@ -492,8 +603,8 @@ def table_overall_ablation_suite(out_tex: Optional[Path] = None) -> Path:
     """
     Cross-ablation 'study design' table listing all 24 experiments.
 
-    Three columns from the τ=400 CSV: Block (= `ablation`), Streams (=
-    `experiment_name`), Architecture (= `arch`). The Block name appears once
+    Three columns from the τ=400 CSV: Block (= `ablation`), Architecture (=
+    `arch`), Configuration (= `experiment_name`). The Block name appears once
     per ablation (first row of the block); subsequent rows in the same block
     leave it blank. A `\\midrule` separates each ablation block from the next.
 
@@ -509,11 +620,11 @@ def table_overall_ablation_suite(out_tex: Optional[Path] = None) -> Path:
 
     lines: list[str] = []
     lines.append(r"\begin{table*}[h]")
-    lines.append(r"\caption{Ablation suite: 24 experiments across five ablation blocks.}")
+    lines.append(r"\caption{Ablation Suite: 24 Experiments across Five Ablation Blocks}")
     lines.append(r"\label{tab:ablations}")
     lines.append(r"\begin{tabular}{l l l}")
     lines.append(r"\toprule")
-    lines.append(r"Block & Streams & Architecture \\")
+    lines.append(r"Block & Architecture & Configuration \\")
     lines.append(r"\midrule")
 
     ablation_dirs = list(NOTEBOOK_ORDER_BY_ABLATION_DIR.keys())
@@ -524,7 +635,7 @@ def table_overall_ablation_suite(out_tex: Optional[Path] = None) -> Path:
             r = by_exp[exp_key]
             block_cell = ab_label if j == 0 else ""
             lines.append(
-                f"{block_cell} & {r['experiment_name']} & {r['arch']} " + r"\\"
+                f"{block_cell} & {r['arch']} & {r['experiment_name']} " + r"\\"
             )
         # \midrule between blocks, but not after the last block (the
         # \bottomrule serves as the closer there).
@@ -777,6 +888,7 @@ def regenerate_all() -> list[Path]:
     return [
         figure_per_class_f1_vs_tau(),
         figure_per_class_recall_vs_tau(),
+        figure_macro_f1_vs_tau(),
         table_overall_ablation_suite(),
         table_overall_macro_leaderboard(),
         *tables_per_ablation_macro(),
