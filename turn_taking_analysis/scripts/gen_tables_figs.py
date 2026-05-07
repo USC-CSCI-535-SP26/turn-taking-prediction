@@ -798,89 +798,129 @@ def load_video_label_summary(
     return df
 
 
-def plot_strength_vs_lag(df, out_dir=COORDINATION_FIGURE_DIR):
+def plot_strength_vs_lag(
+    df,
+    out_png: Optional[Path] = None,
+    dpi: int = DEFAULT_DPI,
+    figsize: tuple = (7, 5),  # restored to pre-restyle aspect (was DEFAULT_FIGSIZE_SINGLE)
+) -> Optional[Path]:
     """
-    Scatter:
-        x = mean absolute best lag sec
-        y = mean peak correlation
-        color = label
+    Per-video scatter of `mean_peak_corr` against `mean_abs_best_lag_sec`,
+    colored by turn-taking class (HOLD / YIELD / BCHAN). Asks: are stronger
+    coordination periods also more synchronous?
 
-    Useful for asking:
-        Are stronger coordination periods more synchronous?
+    Styled to match the τ-sweep figures (COLOR_CYCLE, no in-image title,
+    bottom-anchored legend, grid α=0.25 at zorder=0).
+
+    Default output: paper/figures/coordination/strength_vs_lag_by_label.png
     """
     required = ["mean_abs_best_lag_sec", "mean_peak_corr", "label"]
     missing = [c for c in required if c not in df.columns]
-
     if missing:
         print(f"Missing columns for strength-vs-lag plot: {missing}; skipping.")
-        return
+        return None
 
     plot_df = df.dropna(subset=required).copy()
 
-    fig, ax = plt.subplots(figsize=(7, 5))
+    fig, ax = plt.subplots(figsize=figsize)
 
     for label in sorted(plot_df["label"].unique()):
         g = plot_df[plot_df["label"] == label]
         ax.scatter(
             g["mean_abs_best_lag_sec"],
             g["mean_peak_corr"],
+            color=COLOR_CYCLE[int(label)],
             alpha=0.55,
             s=35,
+            edgecolors="black",
+            linewidths=0.5,
             label=PANEL_TITLES[int(label)],
+            zorder=3,
         )
 
     ax.set_xlabel("Mean absolute best lag (seconds)")
     ax.set_ylabel("Mean peak correlation")
-    ax.set_title("Coordination Strength vs. Coordination Delay")
-    ax.grid(True, alpha=0.3)
-    ax.legend(loc="best")
+    ax.grid(True, alpha=0.25, zorder=0)
+    # No \suptitle: the figure is shown with a LaTeX \caption{} in the host
+    # paper, so an in-image title would be redundant.
 
-    plt.tight_layout()
+    handles, labels_ = ax.get_legend_handles_labels()
+    fig.legend(handles, labels_, loc="lower center", ncol=len(handles),
+               bbox_to_anchor=(0.5, -0.12), frameon=False, fontsize=9,
+               handletextpad=0.6, columnspacing=2.5)
+    fig.tight_layout()
 
-    os.makedirs(out_dir, exist_ok=True)
-    out_path = Path(out_dir) / "strength_vs_lag_by_label.png"
-    fig.savefig(out_path, dpi=300, bbox_inches="tight")
+    out_png = out_png or (COORDINATION_FIGURE_DIR / "strength_vs_lag_by_label.png")
+    out_png.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_png, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
+    print(f"wrote: {out_png}")
+    return out_png
 
-    print(f"wrote: {out_path}")
-    return out_path
 
-
-def plot_metric_boxplot(df, metric, out_dir=COORDINATION_FIGURE_DIR):
+def plot_metric_boxplot(
+    df,
+    metric: str,
+    out_png: Optional[Path] = None,
+    dpi: int = DEFAULT_DPI,
+    figsize: tuple = DEFAULT_FIGSIZE_SINGLE,
+    ylabel: Optional[str] = None,
+) -> Path:
     """
-    Boxplot by label.
+    Boxplot of `metric` stratified by turn-taking class (HOLD / YIELD / BCHAN).
+    One box per class; outliers hidden.
 
-    Useful for seeing distribution shape and outliers.
+    Styled to match the τ-sweep figures (COLOR_CYCLE per box via
+    `patch_artist=True`, no in-image title, grid α=0.25 at zorder=0).
+
+    `ylabel` overrides the auto-derived axis label (default: the column name
+    with underscores replaced by spaces).
+
+    Default output: paper/figures/coordination/{metric}_boxplot_by_label.png
     """
     plot_df = df.dropna(subset=[metric]).copy()
     labels = sorted(plot_df["label"].unique())
-
     data = [
         plot_df.loc[plot_df["label"] == label, metric].dropna().values
         for label in labels
     ]
 
-    fig, ax = plt.subplots(figsize=(7, 5))
+    fig, ax = plt.subplots(figsize=figsize)
 
-    ax.boxplot(
+    bp = ax.boxplot(
         data,
         tick_labels=[PANEL_TITLES[int(l)] for l in labels],
         showfliers=False,
+        patch_artist=True,
     )
+    for patch, label in zip(bp["boxes"], labels):
+        patch.set_facecolor(COLOR_CYCLE[int(label)])
+        patch.set_edgecolor("black")
+        patch.set_linewidth(0.8)
+        patch.set_alpha(0.7)
+    for median in bp["medians"]:
+        median.set_color("black")
+        median.set_linewidth(1.2)
+    for whisker in bp["whiskers"]:
+        whisker.set_color("black")
+        whisker.set_linewidth(0.8)
+    for cap in bp["caps"]:
+        cap.set_color("black")
+        cap.set_linewidth(0.8)
 
-    ax.set_ylabel(metric.replace("_", " "))
-    ax.set_title(f"Distribution of {metric.replace('_', ' ').title()} by Label")
-    ax.grid(True, axis="y", alpha=0.3)
+    ax.set_ylabel(ylabel if ylabel is not None else metric.replace("_", " "))
+    ax.grid(True, axis="y", alpha=0.25, zorder=0)
+    # No \suptitle: the figure is shown with a LaTeX \caption{} in the host
+    # paper, so an in-image title would be redundant.
 
-    plt.tight_layout()
+    fig.tight_layout()
 
-    os.makedirs(out_dir, exist_ok=True)
-    out_path = Path(out_dir) / f"{metric}_boxplot_by_label.png"
-    fig.savefig(out_path, dpi=300, bbox_inches="tight")
+    out_png = out_png or (COORDINATION_FIGURE_DIR / f"{metric}_boxplot_by_label.png")
+    out_png.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_png, dpi=dpi, bbox_inches="tight")
     plt.close(fig)
-
-    print(f"wrote: {out_path}")
-    return out_path
+    print(f"wrote: {out_png}")
+    return out_png
 
 # ---------------------------------------------------------------------------
 # CLI: regenerate every default figure / table
@@ -907,8 +947,8 @@ def regenerate_all() -> list[Path]:
             labels=LABELS,
             min_windows=MIN_WINDOWS_PER_VIDEO_LABEL,
         )
-        paths.append(plot_metric_boxplot(df, METRICS_TO_PLOT[0], out_dir=COORDINATION_FIGURE_DIR))
-        paths.append(plot_strength_vs_lag(df, out_dir=COORDINATION_FIGURE_DIR))
+        paths.append(plot_metric_boxplot(df, METRICS_TO_PLOT[0], ylabel="Mean peak correlation"))
+        paths.append(plot_strength_vs_lag(df))
     else:
         print(f"skipping coordination figures: {VIDEO_LABEL_CSV} not found")
     return paths
