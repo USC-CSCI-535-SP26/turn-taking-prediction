@@ -49,7 +49,7 @@ TABLES_TAU400_OVERALL_DIR = TABLES_DIR / "tau_400" / "overall"
 TABLES_TAU400_PER_AB_DIR  = TABLES_DIR / "tau_400" / "per_ablation_block"
 
 VIDEO_LABEL_CSV = PROJECT_ROOT / "coordination_stats" / "all_videos_video_label_coordination_summary.csv"
-COORDINATION_FIGURE_DIR    = PROJECT_ROOT / "figures" / "coordination"
+COORDINATION_FIGURE_DIR    = PAPER_DIR / "figures" / "coordination"
 MIN_WINDOWS_PER_VIDEO_LABEL = 3
 METRICS_TO_PLOT = ["mean_peak_corr"]
 LABELS = [0, 1, 2]
@@ -826,7 +826,7 @@ def plot_strength_vs_lag(df, out_dir=COORDINATION_FIGURE_DIR):
             g["mean_peak_corr"],
             alpha=0.55,
             s=35,
-            label=f"Label {label}",
+            label=PANEL_TITLES[int(label)],
         )
 
     ax.set_xlabel("Mean absolute best lag (seconds)")
@@ -838,11 +838,13 @@ def plot_strength_vs_lag(df, out_dir=COORDINATION_FIGURE_DIR):
     plt.tight_layout()
 
     os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, "strength_vs_lag_by_label.png")
+    out_path = Path(out_dir) / "strength_vs_lag_by_label.png"
     fig.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
-    print(f"Saved: {out_path}")
+    print(f"wrote: {out_path}")
+    return out_path
+
 
 def plot_metric_boxplot(df, metric, out_dir=COORDINATION_FIGURE_DIR):
     """
@@ -862,7 +864,7 @@ def plot_metric_boxplot(df, metric, out_dir=COORDINATION_FIGURE_DIR):
 
     ax.boxplot(
         data,
-        labels=[f"Label {l}" for l in labels],
+        tick_labels=[PANEL_TITLES[int(l)] for l in labels],
         showfliers=False,
     )
 
@@ -873,11 +875,12 @@ def plot_metric_boxplot(df, metric, out_dir=COORDINATION_FIGURE_DIR):
     plt.tight_layout()
 
     os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, f"{metric}_boxplot_by_label.png")
+    out_path = Path(out_dir) / f"{metric}_boxplot_by_label.png"
     fig.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
-    print(f"Saved: {out_path}")
+    print(f"wrote: {out_path}")
+    return out_path
 
 # ---------------------------------------------------------------------------
 # CLI: regenerate every default figure / table
@@ -885,7 +888,7 @@ def plot_metric_boxplot(df, metric, out_dir=COORDINATION_FIGURE_DIR):
 
 def regenerate_all() -> list[Path]:
     """Regenerate every default figure and table with default args."""
-    return [
+    paths = [
         figure_per_class_f1_vs_tau(),
         figure_per_class_recall_vs_tau(),
         figure_macro_f1_vs_tau(),
@@ -895,17 +898,22 @@ def regenerate_all() -> list[Path]:
         *tables_per_ablation_f1_per_class(),
         *tables_per_ablation_recall_per_class(),
     ]
+    # Coordination figures driven by the video-label summary CSV (decoupled
+    # from the τ-grid run dir). Skipped if the source CSV isn't present so
+    # the rest of regenerate_all() doesn't fail on a clean checkout.
+    if VIDEO_LABEL_CSV.exists():
+        df = load_video_label_summary(
+            csv_path=VIDEO_LABEL_CSV,
+            labels=LABELS,
+            min_windows=MIN_WINDOWS_PER_VIDEO_LABEL,
+        )
+        paths.append(plot_metric_boxplot(df, METRICS_TO_PLOT[0], out_dir=COORDINATION_FIGURE_DIR))
+        paths.append(plot_strength_vs_lag(df, out_dir=COORDINATION_FIGURE_DIR))
+    else:
+        print(f"skipping coordination figures: {VIDEO_LABEL_CSV} not found")
+    return paths
 
 
 if __name__ == "__main__":
     regenerate_all()
-
-    #generate coordinaation 
-    df = load_video_label_summary(
-        csv_path=VIDEO_LABEL_CSV,
-        labels=LABELS,
-        min_windows=MIN_WINDOWS_PER_VIDEO_LABEL,
-    )
-    plot_metric_boxplot(df, METRICS_TO_PLOT[0], out_dir=COORDINATION_FIGURE_DIR)
-    plot_strength_vs_lag(df, out_dir=COORDINATION_FIGURE_DIR)
 
