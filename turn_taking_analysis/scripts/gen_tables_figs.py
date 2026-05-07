@@ -46,6 +46,7 @@ FIGURES_DIR  = PAPER_DIR / "figures"
 TABLES_DIR                = PAPER_DIR / "tables"
 TABLES_TAU400_OVERALL_DIR = TABLES_DIR / "tau_400" / "overall"
 TABLES_TAU400_PER_AB_DIR  = TABLES_DIR / "tau_400" / "per_ablation_block"
+COORDINATION_FIGURE_DIR    = PROJECT_ROOT / "figures" / "coordination"
 
 DEFAULT_DPI       = 300
 DEFAULT_FIGSIZE   = (13, 4.2)
@@ -649,6 +650,175 @@ def table_overall_macro_leaderboard(out_tex: Optional[Path] = None) -> Path:
     print(f"wrote: {out_tex}")
     return out_tex
 
+# ---------------------------------------------------------------------------
+# Coordination
+#---------------------------------------------------------------------------
+def plot_strength_vs_lag(df, out_dir=OUT_DIR):
+    """
+    Scatter:
+        x = mean absolute best lag sec
+        y = mean peak correlation
+        color = label
+
+    Useful for asking:
+        Are stronger coordination periods more synchronous?
+    """
+    required = ["mean_abs_best_lag_sec", "mean_peak_corr", "label"]
+    missing = [c for c in required if c not in df.columns]
+
+    if missing:
+        print(f"Missing columns for strength-vs-lag plot: {missing}; skipping.")
+        return
+
+    plot_df = df.dropna(subset=required).copy()
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+
+    for label in sorted(plot_df["label"].unique()):
+        g = plot_df[plot_df["label"] == label]
+        ax.scatter(
+            g["mean_abs_best_lag_sec"],
+            g["mean_peak_corr"],
+            alpha=0.55,
+            s=35,
+            label=f"Label {label}",
+        )
+
+    ax.set_xlabel("Mean absolute best lag (seconds)")
+    ax.set_ylabel("Mean peak correlation")
+    ax.set_title("Coordination Strength vs. Coordination Delay")
+    ax.grid(True, alpha=0.3)
+    ax.legend(loc="best")
+
+    plt.tight_layout()
+
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, "strength_vs_lag_by_label.png")
+    fig.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    print(f"Saved: {out_path}")
+def plot_metric_boxplot(df, metric, out_dir=OUT_DIR):
+    """
+    Boxplot by label.
+
+    Useful for seeing distribution shape and outliers.
+    """
+    plot_df = df.dropna(subset=[metric]).copy()
+    labels = sorted(plot_df["label"].unique())
+
+    data = [
+        plot_df.loc[plot_df["label"] == label, metric].dropna().values
+        for label in labels
+    ]
+
+    fig, ax = plt.subplots(figsize=(7, 5))
+
+    ax.boxplot(
+        data,
+        labels=[f"Label {l}" for l in labels],
+        showfliers=False,
+    )
+
+    ax.set_ylabel(metric.replace("_", " "))
+    ax.set_title(f"Distribution of {metric.replace('_', ' ').title()} by Label")
+    ax.grid(True, axis="y", alpha=0.3)
+
+    plt.tight_layout()
+
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, f"{metric}_boxplot_by_label.png")
+    fig.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    print(f"Saved: {out_path}")
+
+
+def plot_metric_heatmap(df, metric, out_dir=OUT_DIR):
+    """
+    Heatmap:
+        rows = videos
+        columns = labels
+        values = metric
+    """
+    plot_df = df.dropna(subset=[metric]).copy()
+
+    wide = plot_df.pivot_table(
+        index="file_id",
+        columns="label",
+        values=metric,
+        aggfunc="mean",
+    )
+
+    available_labels = [l for l in LABELS if l in wide.columns]
+    wide = wide[available_labels]
+
+    if len(wide) == 0:
+        print(f"No values for heatmap for {metric}; skipping.")
+        return
+
+    # Sort by Label 2 - Label 0 if possible.
+    # Otherwise sort by row mean.
+    if 0 in wide.columns and 2 in wide.columns:
+        sort_key = wide[2] - wide[0]
+        wide = wide.loc[sort_key.sort_values().index]
+    else:
+        wide = wide.loc[wide.mean(axis=1).sort_values().index]
+
+    fig_height = max(5, min(18, 0.22 * len(wide)))
+    fig, ax = plt.subplots(figsize=(6, fig_height))
+
+    im = ax.imshow(wide.values, aspect="auto")
+
+    ax.set_xticks(np.arange(len(available_labels)))
+    ax.set_xticklabels([f"Label {l}" for l in available_labels])
+
+    ax.set_yticks(np.arange(len(wide)))
+    ax.set_yticklabels(wide.index, fontsize=7)
+
+    ax.set_title(f"Video × Label Heatmap: {metric.replace('_', ' ').title()}")
+    ax.set_xlabel("Label")
+    ax.set_ylabel("Video / source file id")
+
+    cbar = plt.colorbar(im, ax=ax)
+    cbar.set_label(metric.replace("_", " "))
+
+    plt.tight_layout()
+
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, f"{metric}_video_label_heatmap.png")
+    fig.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+
+    print(f"Saved: {out_path}")
+
+def load_video_label_summary(
+    csv_path=VIDEO_LABEL_CSV,
+    labels=LABELS,
+    min_windows=MIN_WINDOWS_PER_VIDEO_LABEL,
+):
+    df = pd.read_csv(csv_path)
+
+    required = ["file_id", "label", "n_windows"]
+    missing = [c for c in required if c not in df.columns]
+    if missing:
+        raise ValueError(f"Missing required columns in video-label CSV: {missing}")
+
+    df = df[df["label"].isin(labels)].copy()
+    df = df[df["n_windows"] >= min_windows].copy()
+
+    df["label"] = df["label"].astype(int)
+    df["label_str"] = "Label " + df["label"].astype(str)
+
+    print("\nLoaded video-label summary")
+    print(f"CSV: {csv_path}")
+    print(f"Rows after filtering: {len(df)}")
+    print(f"Videos: {df['file_id'].nunique()}")
+    print(f"Minimum windows per video-label row: {min_windows}")
+    print("\nRows per label:")
+    print(df["label"].value_counts().sort_index().to_string())
+
+    return df
 
 # ---------------------------------------------------------------------------
 # CLI: regenerate every default figure / table
@@ -669,3 +839,13 @@ def regenerate_all() -> list[Path]:
 
 if __name__ == "__main__":
     regenerate_all()
+
+    #generate coordinaation 
+    df = load_video_label_summary(
+        csv_path=VIDEO_LABEL_CSV,
+        labels=LABELS,
+        min_windows=MIN_WINDOWS_PER_VIDEO_LABEL,
+    )
+    plot_metric_boxplot(df, metric, out_dir=COORDINATION_FIGURE_DIR)
+    plot_strength_vs_lag(df, out_dir=COORDINATION_FIGURE_DIR)
+
