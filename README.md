@@ -1,4 +1,4 @@
-# CSCI 535 Project — Seamless Interaction Dataset Analysis
+# End-of-turn detection on the Seamless Interaction dataset
 
 ## Directory Structure of `both_annotated_interactions`
 
