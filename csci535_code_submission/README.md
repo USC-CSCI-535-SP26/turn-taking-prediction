@@ -1,4 +1,4 @@
-# CSCI-535 Project — Code Submission
+# Turn Taking Prediction
 
 End-of-turn detection on the Seamless Interaction dataset using dyadic multimodal fusion (audio + visual + coordination features). This bundle contains the source code that produced the experiments in our paper, the manifest CSV indexing which interactions were used, and the two results CSVs that the figure/table generator reads.
 
