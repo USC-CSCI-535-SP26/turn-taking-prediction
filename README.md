@@ -17,9 +17,7 @@ the window boundary, τ milliseconds ahead of *t*:
 | `BACKCHANNEL` | the listener vocalizes ("mm-hm", "right") without taking the floor |
 
 Labels are derived from per-participant Silero VAD plus WhisperX word-aligned
-transcripts. Three further outcomes — `INTERRUPT`, `FAILED`, `LAPSE` — are detected
-and retained for corpus statistics but excluded from training, because each is a
-genuinely different phenomenon rather than a noisy version of the three above.
+transcripts. 
 
 ## Data
 
