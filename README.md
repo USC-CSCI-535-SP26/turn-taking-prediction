@@ -5,16 +5,10 @@ conversation — from audio, facial behavior, and cross-participant *coordinatio
 on the [Seamless Interaction](https://ai.meta.com/datasets/seamless-interaction/)
 dyadic corpus.
 
-The question this repo asks: **does modeling the dyad help?** Most end-of-turn
-detection treats the current speaker as the only signal. Here, every model is
-evaluated against ablations that add the listener's audio, the listener's face, and
-explicit speaker↔listener coordination features, so the contribution of each is
-measurable rather than assumed.
-
 ## The task
 
 Given a 2-second window of conversation ending at time *t*, classify what happens at
-the window boundary, τ milliseconds ahead of the decision point:
+the window boundary, τ milliseconds ahead of *t*:
 
 | Class | Meaning |
 | --- | --- |
@@ -66,7 +60,7 @@ the training horizon.
 
 ## Results
 
-Top configurations at τ = 400 ms (test set, macro F1):
+Configurations ranked at τ = 400 ms (test set, macro F1):
 
 | # | Block | Streams | Architecture | Macro F1 | Macro recall |
 | --- | --- | --- | --- | --- | --- |
@@ -76,26 +70,13 @@ Top configurations at τ = 400 ms (test set, macro F1):
 | 4 | Standard | Audio Dyad | Neural-Concat | 0.697 | 0.739 |
 | 5 | Standard + Self-Attn | Full Dyad | Self-Attention | 0.688 | 0.719 |
 
-![Macro F1, top 3 by AUC](paper/figures/macro_f1_top3_by_auc_macro_f1.png)
-
-**The honest read.** The best model — 5 streams, 558 K parameters, audio + face for
-both participants plus continuous coordination — beats dyadic audio alone by
-**0.002 macro F1**. Adding the listener's face and explicit coordination features
-buys almost nothing over simply giving the model both participants' audio. The
-top four configurations sit inside a single point of each other.
-
-Where the difficulty actually lives is class imbalance, not modality:
+Results by class:
 
 | Class | Best F1 | Mean F1 across all 24 |
 | --- | --- | --- |
 | `HOLD` | 0.967 | 0.924 |
 | `YIELD` | 0.606 | 0.442 |
 | `BACKCHANNEL` | 0.572 | 0.373 |
-
-Overall accuracy of 0.927 is almost entirely `HOLD` — the two classes that matter for
-a responsive dialogue agent are the two the models are worst at.
-
-![Per-class F1](paper/figures/per_class_f1_top3_by_auc_macro_f1.png)
 
 ## Repository layout
 
