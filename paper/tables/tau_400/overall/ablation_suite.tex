@@ -1,0 +1,38 @@
+\begin{table*}[h]
+\caption{Ablation suite: 24 experiments across five ablation blocks.}
+\label{tab:ablations}
+\begin{tabular}{l l l}
+\toprule
+Block & Streams & Architecture \\
+\midrule
+Standard & Audio Dyad & Early Fusion \\
+ & Audio Dyad & Neural-Concat \\
+ & Speaker Audio + Listener Face & Neural-Concat \\
+ & Speaker Audio + Face Dyad & Neural-Concat \\
+ & Full Dyad & Neural-Concat \\
+\midrule
+Standard + Self-Attention & Audio Dyad & Self-Attention \\
+ & Face Dyad & Self-Attention \\
+ & Speaker Audio + Listener Face & Self-Attention \\
+ & Speaker Audio + Face Dyad & Self-Attention \\
+ & Full Dyad & Self-Attention \\
+\midrule
+Standard + Cross-Attention & Speaker Audio + Listener Face & Cross-Attention \\
+ & Speaker Audio + Listener Face & Self+Cross-Attention \\
+\midrule
+Coordination & Speaker Audio + WCC-Summary & Neural-Concat \\
+ & Speaker Face + WCC-Summary & Neural-Concat \\
+ & Face Dyad + WCC-Summary & Neural-Concat \\
+ & Speaker Audio + Listener Face + WCC-Summary & Neural-Concat \\
+ & Speaker Audio + Face Dyad + WCC-Summary & Neural-Concat \\
+ & Full Dyad + WCC-Summary & Neural-Concat \\
+\midrule
+Coordination + Self-Attention & Speaker Audio + WCC-Continuous & Self-Attention \\
+ & Audio Dyad + WCC-Continuous & Self-Attention \\
+ & Speaker Audio + Speaker Face + WCC-Continuous & Self-Attention \\
+ & Face Dyad + WCC-Continuous & Self-Attention \\
+ & Speaker Audio + Listener Face + WCC-Continuous & Self-Attention \\
+ & Full Dyad + WCC-Continuous & Self-Attention \\
+\bottomrule
+\end{tabular}
+\end{table*}
