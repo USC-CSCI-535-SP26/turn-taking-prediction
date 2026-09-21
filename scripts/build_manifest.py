@@ -31,8 +31,7 @@ DEFAULT_POC_MANIFEST = str(
 DEFAULT_OUTPUT_PATH = str(
     PROJECT_ROOT / "manifests" / "manifest.csv"
 )
-DEFAULT_BOTH_ANNOTATED_DIR = str(PROJECT_ROOT / "both_annotated_interactions")
-DEFAULT_SINGLE_ANNOTATED_DIR = str(PROJECT_ROOT / "single_annotated_interactions")
+DEFAULT_INTERACTIONS_DIR = str(PROJECT_ROOT / "interactions")
 
 DEFAULT_TRAIN_FRAC = 0.70
 DEFAULT_VAL_FRAC = 0.15
@@ -48,6 +47,7 @@ EXCLUDED_INTERACTION_IDS = frozenset({
     "V03_S0329_I00000068",   # both pids: VAD + transcript both 0 bytes
     "V03_S0702_I00000209",   # both pids: VAD + transcript both 0 bytes
     "V03_S0712_I00000421",   # both pids: VAD 0 bytes
+    "V03_S0258_I00000137",   # dropped in the 2026-05-04 manifest revision
 })
 
 MANIFEST_COLUMNS = [
@@ -59,6 +59,7 @@ MANIFEST_COLUMNS = [
     "prompt_hash",
     "interaction_type",
     "label",
+    "annotation_coverage",
     "relationship",
     "relationship_detail",
     "file_id_a",
@@ -95,6 +96,14 @@ def load_local_interaction(interaction_dir: Path) -> dict:
     meta = json.loads((idir / "interaction_metadata.json").read_text())
     rel = json.loads((idir / "session_relationship.json").read_text())
 
+    # How many participants carry third-party (3P) annotations. Not used by the
+    # turn-taking pipeline; recorded so the manifest documents annotation depth.
+    n_annotated = sum(
+        1 for pdir in sorted(interaction_dir.glob("participant_*"))
+        if pdir.is_dir() and any(pdir.glob("3P-*.json"))
+    )
+    annotation_coverage = {2: "both", 1: "single"}.get(n_annotated, "none")
+
     if len(filelist) != 2:
         raise ValueError(
             f"{interaction_dir.name}: expected 2 filelist entries, got {len(filelist)}"
@@ -129,6 +138,7 @@ def load_local_interaction(interaction_dir: Path) -> dict:
         "prompt_hash":          extract_prompt_hash(interaction_id),
         "interaction_type":     meta["interaction_type"],
         "label":                label,
+        "annotation_coverage":  annotation_coverage,
         "relationship":         rel["relationship"],
         "relationship_detail":  rel["relationship_detail"],
         "file_id_a":            fid_a,
@@ -143,17 +153,21 @@ def load_local_interaction(interaction_dir: Path) -> dict:
         "vad_url_b":            urls_b["vad"],
     }
 
-def load_new_entries(both_annotated_dir: Path, single_annotated_dir: Path) -> list[dict]:
+def load_new_entries(interactions_dir: Path) -> list[dict]:
     """Collect pool entries from every interaction directory on disk."""
     entries: list[dict] = []
-    for base in (both_annotated_dir, single_annotated_dir):
-        if not base.exists():
-            print(f"WARNING: {base} does not exist — skipping.", file=sys.stderr)
+    if not interactions_dir.exists():
+        print(f"WARNING: {interactions_dir} does not exist — skipping.", file=sys.stderr)
+        return entries
+    for interaction_dir in sorted(interactions_dir.iterdir()):
+        if not interaction_dir.is_dir():
             continue
-        for interaction_dir in sorted(base.iterdir()):
-            if not interaction_dir.is_dir():
-                continue
-            entries.append(load_local_interaction(interaction_dir))
+        entries.append(load_local_interaction(interaction_dir))
+    # Split assignment is order-sensitive (bin-packing walks the pool in order).
+    # interactions/ merges what used to be two directories scanned in sequence —
+    # both-annotated first, then single-annotated — so restore that grouping to
+    # keep splits identical to the committed manifest.
+    entries.sort(key=lambda e: (e["annotation_coverage"] != "both", e["interaction_id"]))
     return entries
 
 def load_poc_entries(poc_manifest_path: Path) -> list[dict]:
@@ -161,6 +175,8 @@ def load_poc_entries(poc_manifest_path: Path) -> list[dict]:
         rows = list(csv.DictReader(f))
     for r in rows:
         r.pop("split", None)
+        # POC interactions have no interaction directory — manifest rows only.
+        r["annotation_coverage"] = "none"
     return rows
 
 # =============================================================================
@@ -300,8 +316,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
             "Build the full-project turn-taking manifest. Pools POC rows with "
-            "every interaction under both_annotated_interactions/ and "
-            "single_annotated_interactions/, then assigns splits via "
+            "every interaction under interactions/, then assigns splits via "
             "participant-component bin-packing."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -309,11 +324,8 @@ def main() -> None:
     )
     parser.add_argument("--poc-manifest", default=DEFAULT_POC_MANIFEST,
                         help="Path to poc_manifest.csv. Default: %(default)s")
-    parser.add_argument("--both-annotated-dir", default=DEFAULT_BOTH_ANNOTATED_DIR,
-                        help="Directory of interactions with both-participant annotations. "
-                             "Default: %(default)s")
-    parser.add_argument("--single-annotated-dir", default=DEFAULT_SINGLE_ANNOTATED_DIR,
-                        help="Directory of single-annotated interactions. "
+    parser.add_argument("--interactions-dir", default=DEFAULT_INTERACTIONS_DIR,
+                        help="Directory of per-interaction metadata. "
                              "Default: %(default)s")
     parser.add_argument("--output-path", default=DEFAULT_OUTPUT_PATH,
                         help="Where to write manifest.csv. Default: %(default)s")
@@ -338,10 +350,7 @@ def main() -> None:
         )
 
     poc_entries = load_poc_entries(Path(args.poc_manifest))
-    new_entries = load_new_entries(
-        Path(args.both_annotated_dir),
-        Path(args.single_annotated_dir),
-    )
+    new_entries = load_new_entries(Path(args.interactions_dir))
 
     # Dedupe: if any on-disk interaction_id is already in the POC manifest,
     # prefer the POC row (its URLs are already enriched and known-good).

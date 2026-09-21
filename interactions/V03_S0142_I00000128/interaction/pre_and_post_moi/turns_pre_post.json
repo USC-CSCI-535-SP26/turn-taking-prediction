@@ -1,0 +1,50 @@
+[
+  {
+    "event_speaker": "P1309",
+    "annotated_participant": "P1309",
+    "non_annotated_participant": "P1308",
+    "start_pre_moi": 15.666000000000054,
+    "end_pre_moi": 16.269999999999982,
+    "pre_overlap": false,
+    "start_moi": 29,
+    "end_moi": 35,
+    "start_post_moi": 71.88999999999999,
+    "end_post_moi": 85.26199999999994,
+    "post_overlap": false,
+    "annotation": "Participant is feeling embarrassed",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1309",
+    "annotated_participant": "P1309",
+    "non_annotated_participant": "P1308",
+    "start_pre_moi": 183.346,
+    "end_pre_moi": 215.47000000000003,
+    "pre_overlap": false,
+    "start_moi": 220,
+    "end_moi": 222,
+    "start_post_moi": 222.00199999999995,
+    "end_post_moi": 232.942,
+    "post_overlap": false,
+    "annotation": "Participant is assertive ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1309",
+    "annotated_participant": "P1309",
+    "non_annotated_participant": "P1308",
+    "start_pre_moi": 242.89800000000002,
+    "end_pre_moi": 248.97400000000005,
+    "pre_overlap": false,
+    "start_moi": 252,
+    "end_moi": 258,
+    "start_post_moi": 289.746,
+    "end_post_moi": 298.38199999999995,
+    "post_overlap": false,
+    "annotation": "Participant is engaged",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

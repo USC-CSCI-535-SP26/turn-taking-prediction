@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P5178",
+    "annotated_participant": "P5178",
+    "start_pre_moi": -15.0,
+    "end_pre_moi": 0,
+    "start_moi": 0,
+    "end_moi": 12,
+    "start_post_moi": 12,
+    "end_post_moi": 27.0,
+    "annotation": "The participant was tired",
+    "relationship": "familiar",
+    "relationship_detail": "coworkers"
+  }
+]

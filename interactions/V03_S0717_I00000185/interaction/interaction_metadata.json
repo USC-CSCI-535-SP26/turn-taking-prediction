@@ -1,0 +1,11 @@
+{
+  "": "173",
+  "prompt_hash": "00000185",
+  "prompt_id_unique": "P0032_v3.2.fam_AMCM_XXXX",
+  "participant_a_prompt_text": "Discuss a recent news event or current issue that affects a large group of people, but doesn't directly impact you or your partner. Share your thoughts on the topic and ask for your partner's perspective.",
+  "participant_b_prompt_text": "Your partner will bring up a news event or issue that doesn't directly affect either of you. Listen to their thoughts and engage in a discussion, exploring the broader implications of the topic.",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 560.026133
+}

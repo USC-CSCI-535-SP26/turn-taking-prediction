@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P2518",
+    "annotated_participant": "P2518",
+    "non_annotated_participant": "P2519",
+    "start_pre_moi": 113.02600000000001,
+    "end_pre_moi": 120.54199999999997,
+    "pre_overlap": false,
+    "start_moi": 156,
+    "end_moi": 162,
+    "start_post_moi": 161.57,
+    "end_post_moi": 162.014,
+    "post_overlap": true,
+    "annotation": "Participant was feeling self-conscious but calm",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2921",
+    "annotated_participant": "P2920",
+    "start_pre_moi": 50.0,
+    "end_pre_moi": 65,
+    "start_moi": 65,
+    "end_moi": 71,
+    "start_post_moi": 71,
+    "end_post_moi": 86.0,
+    "annotation": "The speaker is excited",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": null,
+    "annotated_participant": "P1636",
+    "non_annotated_participant": "P2157",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 36,
+    "end_moi": 47,
+    "start_post_moi": 129.122,
+    "end_post_moi": 164.28599999999994,
+    "post_overlap": false,
+    "annotation": "The participant felt thoughtful or introspective.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

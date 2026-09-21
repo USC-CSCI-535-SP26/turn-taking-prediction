@@ -1,0 +1,188 @@
+[
+  {
+    "participant_id": "P1359",
+    "start": 1.47400000000016,
+    "end": 19.422000000000025,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1984",
+    "start": 19.617999999999938,
+    "end": 19.934000000000196,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1359",
+    "start": 20.161999999999807,
+    "end": 78.654,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 73.50599999999986,
+    "end": 74.01400000000012,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 77.76200000000017,
+    "end": 78.90999999999985,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1359",
+    "start": 79.32999999999993,
+    "end": 98.11000000000013,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 79.39399999999978,
+    "end": 79.77399999999989,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 98.88200000000006,
+    "end": 99.55000000000018,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1359",
+    "start": 100.96199999999999,
+    "end": 114.11000000000013,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1984",
+    "start": 115.80999999999995,
+    "end": 121.21399999999994,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1359",
+    "start": 121.47400000000016,
+    "end": 138.75,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 121.50599999999986,
+    "end": 121.94999999999982,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 123.07400000000007,
+    "end": 123.48599999999988,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 123.8420000000001,
+    "end": 124.28600000000006,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 139.90599999999995,
+    "end": 141.0540000000001,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1359",
+    "start": 140.38599999999997,
+    "end": 141.94999999999982,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 142.6579999999999,
+    "end": 145.02199999999993,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1359",
+    "start": 144.0659999999998,
+    "end": 145.98199999999997,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 146.8499999999999,
+    "end": 161.1500000000001,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1359",
+    "start": 161.60199999999986,
+    "end": 163.42200000000003,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1984",
+    "start": 165.346,
+    "end": 171.26200000000017,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1359",
+    "start": 172.00199999999995,
+    "end": 175.80600000000004,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 175.7460000000001,
+    "end": 182.62199999999984,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1359",
+    "start": 182.91400000000021,
+    "end": 184.3180000000002,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1984",
+    "start": 186.2420000000002,
+    "end": 188.2539999999999,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1359",
+    "start": 188.28999999999996,
+    "end": 190.17399999999998,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1984",
+    "start": 191.9699999999998,
+    "end": 195.45400000000018,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1359",
+    "start": 195.9699999999998,
+    "end": 199.42200000000003,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1984",
+    "start": 200.1300000000001,
+    "end": 203.58199999999988,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1359",
+    "start": 203.26600000000008,
+    "end": 217.7260000000001,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1984",
+    "start": 220.83399999999983,
+    "end": 225.08599999999979,
+    "overlapping": false
+  }
+]

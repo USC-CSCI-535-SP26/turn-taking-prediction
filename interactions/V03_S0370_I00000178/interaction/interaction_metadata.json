@@ -1,0 +1,11 @@
+{
+  "": "166",
+  "prompt_hash": "00000178",
+  "prompt_id_unique": "P0135_v3.8.str_AMCM_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they witnessed a situation where someone else was being mistreated. Ask them to reflect on what they think is the responsibility of a bystander in such situations.",
+  "participant_b_prompt_text": "Tell your partner about a time when you observed a situation where someone else was being mistreated or taken advantage of, but you didn't intervene. What was going through your mind, and do you regret not speaking up?",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 237.9707
+}

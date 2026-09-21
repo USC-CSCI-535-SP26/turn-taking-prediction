@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P1765",
+    "annotated_participant": "P1765",
+    "non_annotated_participant": "P1626",
+    "start_pre_moi": 51.985999999999876,
+    "end_pre_moi": 52.52599999999984,
+    "pre_overlap": false,
+    "start_moi": 58,
+    "end_moi": 60,
+    "start_post_moi": 63.66600000000017,
+    "end_post_moi": 64.04599999999982,
+    "post_overlap": false,
+    "annotation": "The participant does not feel comfortable and shows it",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1626",
+    "annotated_participant": "P1765",
+    "non_annotated_participant": "P1626",
+    "start_pre_moi": 126.80200000000013,
+    "end_pre_moi": 146.98999999999978,
+    "pre_overlap": true,
+    "start_moi": 129,
+    "end_moi": 131,
+    "start_post_moi": 126.80200000000013,
+    "end_post_moi": 146.98999999999978,
+    "post_overlap": true,
+    "annotation": "Participant feels itchy",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

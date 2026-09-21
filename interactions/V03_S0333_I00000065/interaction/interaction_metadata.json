@@ -1,0 +1,11 @@
+{
+  "": "60",
+  "prompt_hash": "00000065",
+  "prompt_id_unique": "P0013_v3.0.str_APCM_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a clever or resourceful thing they've done. Ask them to elaborate on their thought process and discuss whether you've ever used a similar approach in your own life.",
+  "participant_b_prompt_text": "Share an example of a clever or resourceful thing you've done to save time, money, or effort. What inspired your idea, and has it become a habit or a one-time trick?",
+  "ipc_a": "APCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 414.013233
+}

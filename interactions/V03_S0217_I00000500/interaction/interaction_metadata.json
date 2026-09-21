@@ -1,0 +1,11 @@
+{
+  "": "500",
+  "prompt_hash": "00000500",
+  "prompt_id_unique": "P0019_CC_APCP_XXXX",
+  "participant_a_prompt_text": "Your partner will make a suggestion for an activity you two can do together. Discuss it with them.",
+  "participant_b_prompt_text": "Suggest the idea of taking on a challenge together with your partner. Ask your partner what they think the top 3 best challenges could be; state what you think the 3 top best challenges could be. Find a consensus with your partner by weighing each idea and make sure you don't settle for something that isn't really meaningful to you.\n\nA challenge can be anything that's hard and meaningful. For example, the challenge could be cutting alcohol for a year or going on a run at least once a week.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 134.000533
+}

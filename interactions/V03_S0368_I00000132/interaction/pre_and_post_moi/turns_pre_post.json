@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1331",
+    "annotated_participant": "P1963",
+    "non_annotated_participant": "P1331",
+    "start_pre_moi": 0.9459999999999127,
+    "end_pre_moi": 162.0619999999999,
+    "pre_overlap": true,
+    "start_moi": 77,
+    "end_moi": 85,
+    "start_post_moi": 0.9459999999999127,
+    "end_post_moi": 162.0619999999999,
+    "post_overlap": true,
+    "annotation": "The participant is feeling activated.",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

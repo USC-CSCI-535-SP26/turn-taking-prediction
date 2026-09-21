@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2085",
+    "annotated_participant": "P2085",
+    "start_pre_moi": 52.0,
+    "end_pre_moi": 67,
+    "start_moi": 67,
+    "end_moi": 77,
+    "start_post_moi": 77,
+    "end_post_moi": 92.0,
+    "annotation": "The participant is deep in thought ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

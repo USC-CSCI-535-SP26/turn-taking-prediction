@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P1567",
+    "annotated_participant": "P2610",
+    "non_annotated_participant": "P1567",
+    "start_pre_moi": 22.226000000000113,
+    "end_pre_moi": 25.26200000000017,
+    "pre_overlap": false,
+    "start_moi": 31,
+    "end_moi": 33,
+    "start_post_moi": 31.697999999999865,
+    "end_post_moi": 46.98999999999978,
+    "post_overlap": true,
+    "annotation": "The participant is frustrated and exasperated",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2610",
+    "annotated_participant": "P2610",
+    "non_annotated_participant": "P1567",
+    "start_pre_moi": 96.84999999999991,
+    "end_pre_moi": 99.18199999999979,
+    "pre_overlap": false,
+    "start_moi": 102,
+    "end_moi": 104,
+    "start_post_moi": 106.38599999999997,
+    "end_post_moi": 107.3739999999998,
+    "post_overlap": false,
+    "annotation": "The participant is precise and descriptive",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

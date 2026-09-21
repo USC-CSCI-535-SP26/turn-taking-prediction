@@ -9,6 +9,7 @@ single_annotated_interactions/
 # only from the source) — recreated by scripts/download_{audio,video}_from_manifest.py
 *.wav
 *.mp4
+emotion_features.npz
 
 # Generated LaTeX table previews
 paper/tables/tau_400/overall/preview/

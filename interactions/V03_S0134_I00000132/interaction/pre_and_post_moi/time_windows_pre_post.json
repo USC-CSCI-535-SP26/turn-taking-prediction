@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1293",
+    "annotated_participant": "P1288",
+    "start_pre_moi": 83.0,
+    "end_pre_moi": 98,
+    "start_moi": 98,
+    "end_moi": 105,
+    "start_post_moi": 105,
+    "end_post_moi": 120.0,
+    "annotation": "The participant is feeling conflicted.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1293",
+    "annotated_participant": "P1288",
+    "start_pre_moi": 109.0,
+    "end_pre_moi": 124,
+    "start_moi": 124,
+    "end_moi": 130,
+    "start_post_moi": 130,
+    "end_post_moi": 145.0,
+    "annotation": "The participant is feeling overwhelmed.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

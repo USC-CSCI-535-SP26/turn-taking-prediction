@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2253",
+    "annotated_participant": "P2253",
+    "start_pre_moi": 189.0,
+    "end_pre_moi": 204,
+    "start_moi": 204,
+    "end_moi": 208,
+    "start_post_moi": 208,
+    "end_post_moi": 223.0,
+    "annotation": "Speaker felt assertive.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

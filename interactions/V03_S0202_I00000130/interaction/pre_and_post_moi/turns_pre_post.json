@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1429",
+    "annotated_participant": "P1288",
+    "non_annotated_participant": "P1429",
+    "start_pre_moi": 58.22600000000011,
+    "end_pre_moi": 195.37400000000002,
+    "pre_overlap": true,
+    "start_moi": 139,
+    "end_moi": 146,
+    "start_post_moi": 58.22600000000011,
+    "end_post_moi": 195.37400000000002,
+    "post_overlap": true,
+    "annotation": "The participant feels analytical and observant about modern technology.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

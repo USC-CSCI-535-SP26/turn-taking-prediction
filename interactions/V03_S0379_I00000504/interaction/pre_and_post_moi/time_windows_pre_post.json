@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1600",
+    "annotated_participant": "P1600",
+    "start_pre_moi": 59.0,
+    "end_pre_moi": 74,
+    "start_moi": 74,
+    "end_moi": 77,
+    "start_post_moi": 77,
+    "end_post_moi": 92.0,
+    "annotation": "She is being modest ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1600",
+    "annotated_participant": "P1600",
+    "start_pre_moi": 65.0,
+    "end_pre_moi": 80,
+    "start_moi": 80,
+    "end_moi": 89,
+    "start_post_moi": 89,
+    "end_post_moi": 104.0,
+    "annotation": "She is proud of self",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

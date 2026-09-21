@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2173",
+    "annotated_participant": "P2173",
+    "start_pre_moi": 214.0,
+    "end_pre_moi": 229,
+    "start_moi": 229,
+    "end_moi": 242,
+    "start_post_moi": 242,
+    "end_post_moi": 257.0,
+    "annotation": "The speaker is smiling and serene.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "": "73",
+  "prompt_hash": "00000078",
+  "prompt_id_unique": "P0103_v3.6.str_APCN_XXXX",
+  "participant_a_prompt_text": "Tell your partner about a project or task that you're currently working on that requires a lot of time and effort. What are your goals for the project, and how do you plan to stay motivated to see it through?",
+  "participant_b_prompt_text": "Your partner will tell you about a project they're working on. Ask them questions about their workflow and offer suggestions for how they might stay organized and focused.",
+  "ipc_a": "APCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 336.002333
+}

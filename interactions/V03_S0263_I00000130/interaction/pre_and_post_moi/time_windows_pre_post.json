@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1288",
+    "annotated_participant": "P1288",
+    "start_pre_moi": 52.0,
+    "end_pre_moi": 67,
+    "start_moi": 67,
+    "end_moi": 69,
+    "start_post_moi": 69,
+    "end_post_moi": 84.0,
+    "annotation": "Participant appears thoughtful and focused while trying to recall a specific memory.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1429",
+    "annotated_participant": "P1288",
+    "non_annotated_participant": "P1429",
+    "start_pre_moi": 37.954,
+    "end_pre_moi": 127.03800000000001,
+    "pre_overlap": true,
+    "start_moi": 56,
+    "end_moi": 59,
+    "start_post_moi": 37.954,
+    "end_post_moi": 127.03800000000001,
+    "post_overlap": true,
+    "annotation": "The participant feels reflective about the interconnectedness of actions.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1315",
+    "annotated_participant": "P1315",
+    "non_annotated_participant": "P1208",
+    "start_pre_moi": 17.682000000000016,
+    "end_pre_moi": 110.73400000000004,
+    "pre_overlap": false,
+    "start_moi": 131,
+    "end_moi": 135,
+    "start_post_moi": 150.06600000000003,
+    "end_post_moi": 150.38199999999995,
+    "post_overlap": false,
+    "annotation": "The participant was contemplative and focused",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

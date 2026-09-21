@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1378",
+    "annotated_participant": "P1259",
+    "start_pre_moi": 21.0,
+    "end_pre_moi": 36,
+    "start_moi": 36,
+    "end_moi": 37,
+    "start_post_moi": 37,
+    "end_post_moi": 52.0,
+    "annotation": "The speaker is trying to stay focused on the other speaker.",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

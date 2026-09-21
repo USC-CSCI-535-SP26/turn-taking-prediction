@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P3485",
+    "annotated_participant": "P3485",
+    "start_pre_moi": 233.0,
+    "end_pre_moi": 248,
+    "start_moi": 248,
+    "end_moi": 254,
+    "start_post_moi": 254,
+    "end_post_moi": 269.0,
+    "annotation": "Participant expresses relaxed engagement.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

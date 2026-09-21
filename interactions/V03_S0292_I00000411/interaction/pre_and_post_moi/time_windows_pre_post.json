@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1291",
+    "annotated_participant": "P1291",
+    "start_pre_moi": 37.0,
+    "end_pre_moi": 52,
+    "start_moi": 52,
+    "end_moi": 56,
+    "start_post_moi": 56,
+    "end_post_moi": 71.0,
+    "annotation": "Participant is deeply engaged with what is saying",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

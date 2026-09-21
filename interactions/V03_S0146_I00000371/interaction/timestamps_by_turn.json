@@ -1,0 +1,86 @@
+[
+  {
+    "participant_id": "P1208",
+    "start": 0.8019999999999996,
+    "end": 23.774,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1315",
+    "start": 24.834,
+    "end": 56.35,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1208",
+    "start": 51.842,
+    "end": 52.414,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1208",
+    "start": 57.026,
+    "end": 59.998,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1315",
+    "start": 58.946,
+    "end": 60.702,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1208",
+    "start": 60.226,
+    "end": 72.99,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1315",
+    "start": 71.458,
+    "end": 71.902,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1315",
+    "start": 72.994,
+    "end": 75.326,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1208",
+    "start": 73.218,
+    "end": 73.566,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1208",
+    "start": 74.114,
+    "end": 75.166,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1208",
+    "start": 75.65,
+    "end": 112.734,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1315",
+    "start": 116.898,
+    "end": 123.87,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1208",
+    "start": 133.89,
+    "end": 171.71,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1315",
+    "start": 174.018,
+    "end": 200.67,
+    "overlapping": false
+  }
+]

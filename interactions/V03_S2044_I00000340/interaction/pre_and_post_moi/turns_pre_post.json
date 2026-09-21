@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P4070",
+    "annotated_participant": "P4070",
+    "non_annotated_participant": "P5336",
+    "start_pre_moi": 130.2579999999998,
+    "end_pre_moi": 132.6220000000003,
+    "pre_overlap": true,
+    "start_moi": 131,
+    "end_moi": 136,
+    "start_post_moi": 151.02599999999984,
+    "end_post_moi": 155.1819999999998,
+    "post_overlap": false,
+    "annotation": "Participant was interested, thoughtful and firm",
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  },
+  {
+    "event_speaker": "P4070",
+    "annotated_participant": "P4070",
+    "non_annotated_participant": "P5336",
+    "start_pre_moi": 280.6899999999996,
+    "end_pre_moi": 281.03799999999956,
+    "pre_overlap": true,
+    "start_moi": 281,
+    "end_moi": 289,
+    "start_post_moi": 288.6260000000002,
+    "end_post_moi": 289.7420000000002,
+    "post_overlap": true,
+    "annotation": "Participant was dominant and instructional",
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  }
+]

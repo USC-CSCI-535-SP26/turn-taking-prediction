@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P3782",
+    "annotated_participant": "P3750",
+    "start_pre_moi": 74.0,
+    "end_pre_moi": 89,
+    "start_moi": 89,
+    "end_moi": 93,
+    "start_post_moi": 93,
+    "end_post_moi": 108.0,
+    "annotation": "The Participant is attentive.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3782",
+    "annotated_participant": "P3750",
+    "start_pre_moi": 91.0,
+    "end_pre_moi": 106,
+    "start_moi": 106,
+    "end_moi": 110,
+    "start_post_moi": 110,
+    "end_post_moi": 125.0,
+    "annotation": "The Participant is in agreement.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

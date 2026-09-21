@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1259",
+    "annotated_participant": "P1259",
+    "non_annotated_participant": "P1378",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 40,
+    "end_moi": 44,
+    "start_post_moi": 56.64200000000005,
+    "end_post_moi": 71.87,
+    "post_overlap": false,
+    "annotation": "The speaker is surprised how hearing a certain song affected him.",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

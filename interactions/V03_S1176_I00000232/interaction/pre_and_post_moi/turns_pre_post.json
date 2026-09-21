@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P3746",
+    "annotated_participant": "P3746",
+    "non_annotated_participant": "P1208",
+    "start_pre_moi": 32.402000000000044,
+    "end_pre_moi": 32.909999999999854,
+    "pre_overlap": false,
+    "start_moi": 35,
+    "end_moi": 39,
+    "start_post_moi": 40.5619999999999,
+    "end_post_moi": 45.83800000000019,
+    "post_overlap": false,
+    "annotation": "The participant is energetic.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P3746",
+    "annotated_participant": "P3746",
+    "non_annotated_participant": "P1208",
+    "start_pre_moi": 40.5619999999999,
+    "end_pre_moi": 45.83800000000019,
+    "pre_overlap": false,
+    "start_moi": 59,
+    "end_moi": 64,
+    "start_post_moi": 68.21000000000004,
+    "end_post_moi": 68.78200000000015,
+    "post_overlap": false,
+    "annotation": "The participant enjoys the conversation.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

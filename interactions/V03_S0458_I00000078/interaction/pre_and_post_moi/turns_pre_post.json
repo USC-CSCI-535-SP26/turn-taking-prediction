@@ -1,0 +1,50 @@
+[
+  {
+    "event_speaker": "P1209",
+    "annotated_participant": "P2199",
+    "non_annotated_participant": "P1209",
+    "start_pre_moi": 186.2420000000002,
+    "end_pre_moi": 237.82200000000012,
+    "pre_overlap": true,
+    "start_moi": 202,
+    "end_moi": 207,
+    "start_post_moi": 186.2420000000002,
+    "end_post_moi": 237.82200000000012,
+    "post_overlap": true,
+    "annotation": "Participant was pleased and content",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1209",
+    "annotated_participant": "P2199",
+    "non_annotated_participant": "P1209",
+    "start_pre_moi": 186.2420000000002,
+    "end_pre_moi": 237.82200000000012,
+    "pre_overlap": true,
+    "start_moi": 202,
+    "end_moi": 207,
+    "start_post_moi": 186.2420000000002,
+    "end_post_moi": 237.82200000000012,
+    "post_overlap": true,
+    "annotation": "the speaker is confident ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1209",
+    "annotated_participant": "P2199",
+    "non_annotated_participant": "P1209",
+    "start_pre_moi": 186.2420000000002,
+    "end_pre_moi": 237.82200000000012,
+    "pre_overlap": true,
+    "start_moi": 222,
+    "end_moi": 224,
+    "start_post_moi": 186.2420000000002,
+    "end_post_moi": 237.82200000000012,
+    "post_overlap": true,
+    "annotation": "the speaker is confident ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

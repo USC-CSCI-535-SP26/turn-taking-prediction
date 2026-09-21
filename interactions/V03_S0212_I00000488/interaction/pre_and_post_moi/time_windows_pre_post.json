@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1388",
+    "annotated_participant": "P1388",
+    "start_pre_moi": 73.0,
+    "end_pre_moi": 88,
+    "start_moi": 88,
+    "end_moi": 90,
+    "start_post_moi": 90,
+    "end_post_moi": 105.0,
+    "annotation": "The participant felt elated",
+    "relationship": "familiar",
+    "relationship_detail": "parent_child"
+  }
+]

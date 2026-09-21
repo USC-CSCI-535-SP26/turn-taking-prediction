@@ -1,0 +1,11 @@
+{
+  "": "105",
+  "prompt_hash": "00000110",
+  "prompt_id_unique": "P0055_v3.3.str_APCP_XXXX",
+  "participant_a_prompt_text": "Describe a hobby or activity that you find invigorating and enjoyable. What is it about this activity that gets you pumped up and energized? How do you think it could be adapted to make it even more lively?",
+  "participant_b_prompt_text": "Your partner will tell you about a hobby or activity they enjoy. Discuss the similarities and differences between their hobby and something you're passionate about.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 390.022967
+}

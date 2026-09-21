@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2791",
+    "annotated_participant": "P2791",
+    "start_pre_moi": 160.0,
+    "end_pre_moi": 175,
+    "start_moi": 175,
+    "end_moi": 178,
+    "start_post_moi": 178,
+    "end_post_moi": 193.0,
+    "annotation": "The participant is disconnected.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

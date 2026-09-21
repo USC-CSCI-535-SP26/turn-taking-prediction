@@ -1,0 +1,11 @@
+{
+  "": "382",
+  "prompt_hash": "00000388",
+  "prompt_id_unique": "P0147_v3.9.str_APCP_XXXX",
+  "participant_a_prompt_text": "Describe a time when you were in a crowded place, like a concert or festival, and felt completely energized by the atmosphere. What was it about the experience that got you so pumped up?",
+  "participant_b_prompt_text": "Your partner will tell you about a time they felt energized in a crowded place. Ask them follow-up questions to get more details and share a similar experience of your own.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 200.033167
+}

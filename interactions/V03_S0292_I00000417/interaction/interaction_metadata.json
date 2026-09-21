@@ -1,0 +1,11 @@
+{
+  "": "408",
+  "prompt_hash": "00000417",
+  "prompt_id_unique": "P0046_v3.2.str_AMCN_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they felt like they should have spoken up but didn't. Ask them to elaborate on what they think would have happened if they had.",
+  "participant_b_prompt_text": "Describe a situation where you felt like you should have spoken up, but didn't. What held you back, and how did the situation turn out?",
+  "ipc_a": "AMCN",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 290.023067
+}

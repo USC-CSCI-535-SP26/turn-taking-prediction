@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3611",
+    "annotated_participant": "P3611",
+    "non_annotated_participant": "P3498",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 11,
+    "end_moi": 15,
+    "start_post_moi": 61.329999999999984,
+    "end_post_moi": 118.82999999999998,
+    "post_overlap": false,
+    "annotation": "The participant is feeling unassuming",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

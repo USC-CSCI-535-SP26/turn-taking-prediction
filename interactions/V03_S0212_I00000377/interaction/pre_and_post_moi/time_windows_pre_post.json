@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1388",
+    "annotated_participant": "P1388",
+    "start_pre_moi": 141.0,
+    "end_pre_moi": 156,
+    "start_moi": 156,
+    "end_moi": 163,
+    "start_post_moi": 163,
+    "end_post_moi": 178.0,
+    "annotation": "The participant felt pestered",
+    "relationship": "familiar",
+    "relationship_detail": "parent_child"
+  }
+]

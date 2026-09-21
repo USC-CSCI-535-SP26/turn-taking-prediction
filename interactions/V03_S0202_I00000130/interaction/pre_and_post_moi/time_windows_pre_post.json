@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1429",
+    "annotated_participant": "P1288",
+    "start_pre_moi": 124.0,
+    "end_pre_moi": 139,
+    "start_moi": 139,
+    "end_moi": 146,
+    "start_post_moi": 146,
+    "end_post_moi": 161.0,
+    "annotation": "The participant feels analytical and observant about modern technology.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]
