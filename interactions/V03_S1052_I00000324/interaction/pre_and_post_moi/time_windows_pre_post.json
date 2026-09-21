@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1567",
+    "annotated_participant": "P2610",
+    "start_pre_moi": 53.0,
+    "end_pre_moi": 68,
+    "start_moi": 68,
+    "end_moi": 73,
+    "start_post_moi": 73,
+    "end_post_moi": 88.0,
+    "annotation": "The participant is matter-of-fact and disappointed",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

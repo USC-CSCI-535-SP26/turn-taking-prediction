@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1437",
+    "annotated_participant": "P1437",
+    "start_pre_moi": 15.0,
+    "end_pre_moi": 30,
+    "start_moi": 30,
+    "end_moi": 31,
+    "start_post_moi": 31,
+    "end_post_moi": 46.0,
+    "annotation": "He is feeling loving",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

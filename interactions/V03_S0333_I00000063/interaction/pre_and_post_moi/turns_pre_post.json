@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1892",
+    "annotated_participant": "P1892",
+    "non_annotated_participant": "P1893",
+    "start_pre_moi": 0.4339999999999691,
+    "end_pre_moi": 25.773999999999887,
+    "pre_overlap": false,
+    "start_moi": 45,
+    "end_moi": 62,
+    "start_post_moi": 79.60200000000009,
+    "end_post_moi": 106,
+    "post_overlap": false,
+    "annotation": "He is commending partner",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

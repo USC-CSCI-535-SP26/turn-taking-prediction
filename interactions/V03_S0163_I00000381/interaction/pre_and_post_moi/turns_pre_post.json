@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1352",
+    "annotated_participant": "P1353",
+    "non_annotated_participant": "P1352",
+    "start_pre_moi": 43.858000000000175,
+    "end_pre_moi": 73.9659999999999,
+    "pre_overlap": true,
+    "start_moi": 45,
+    "end_moi": 50,
+    "start_post_moi": 43.858000000000175,
+    "end_post_moi": 73.9659999999999,
+    "post_overlap": true,
+    "annotation": "feeling concerned about the other speakers point",
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  }
+]

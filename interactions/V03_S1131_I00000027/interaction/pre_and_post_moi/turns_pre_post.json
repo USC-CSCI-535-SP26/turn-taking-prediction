@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3506",
+    "annotated_participant": "P3498",
+    "non_annotated_participant": "P3506",
+    "start_pre_moi": 302.706,
+    "end_pre_moi": 327.278,
+    "pre_overlap": true,
+    "start_moi": 321,
+    "end_moi": 327,
+    "start_post_moi": 302.706,
+    "end_post_moi": 327.278,
+    "post_overlap": true,
+    "annotation": "Participant expresses reflective processing of information.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

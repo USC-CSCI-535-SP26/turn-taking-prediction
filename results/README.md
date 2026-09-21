@@ -10,7 +10,8 @@ Each section below documents one CSV, column by column.
 One row per experiment, with all metrics pinned to **τ=400 ms** (the
 training horizon). Sourced from the canonical full-corpus run at
 `fusion_runs/manifest/20260504_021136/` on the
-457-interaction `manifest.csv`. 24 rows spanning 5 ablation blocks.
+then-457-interaction `manifest.csv` (the committed manifest has since had one
+interaction removed, leaving 456). 24 rows spanning 5 ablation blocks.
 Used to populate τ=400 ms tables and figures.
 
 ### Columns

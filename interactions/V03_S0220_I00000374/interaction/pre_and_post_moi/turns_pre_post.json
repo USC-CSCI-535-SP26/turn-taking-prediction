@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1489",
+    "annotated_participant": "P1489",
+    "non_annotated_participant": "P1488",
+    "start_pre_moi": 30.738000000000056,
+    "end_pre_moi": 40.30200000000002,
+    "pre_overlap": false,
+    "start_moi": 41,
+    "end_moi": 64,
+    "start_post_moi": 66.418,
+    "end_post_moi": 69.32600000000002,
+    "post_overlap": false,
+    "annotation": "The participant  is very engaged and in thought",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P2069",
+    "annotated_participant": "P2069",
+    "start_pre_moi": 27.0,
+    "end_pre_moi": 42,
+    "start_moi": 42,
+    "end_moi": 47,
+    "start_post_moi": 47,
+    "end_post_moi": 62.0,
+    "annotation": "He Is empathizing with her ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2069",
+    "annotated_participant": "P2069",
+    "start_pre_moi": 51.0,
+    "end_pre_moi": 66,
+    "start_moi": 66,
+    "end_moi": 73,
+    "start_post_moi": 73,
+    "end_post_moi": 88.0,
+    "annotation": "He is interested in her ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

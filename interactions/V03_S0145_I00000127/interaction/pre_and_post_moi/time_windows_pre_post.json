@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1291",
+    "annotated_participant": "P1313",
+    "start_pre_moi": -14.0,
+    "end_pre_moi": 1,
+    "start_moi": 1,
+    "end_moi": 3,
+    "start_post_moi": 3,
+    "end_post_moi": 18.0,
+    "annotation": "The speaker is confident and self-assured",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

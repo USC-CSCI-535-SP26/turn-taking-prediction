@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1411",
+    "annotated_participant": "P1411",
+    "non_annotated_participant": "P1306",
+    "start_pre_moi": 14.593999999999994,
+    "end_pre_moi": 15.038000000000011,
+    "pre_overlap": false,
+    "start_moi": 41,
+    "end_moi": 46,
+    "start_post_moi": 86.52999999999997,
+    "end_post_moi": 86.94200000000001,
+    "post_overlap": false,
+    "annotation": "he hesitates thinking about his business on the web with t-shirts",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

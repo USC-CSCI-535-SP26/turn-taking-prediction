@@ -1,0 +1,11 @@
+{
+  "": "405",
+  "prompt_hash": "00000414",
+  "prompt_id_unique": "P0043_v3.2.str_ANCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they experienced kindness from someone. Ask them to elaborate on how it affected them and share a similar experience if you have one.",
+  "participant_b_prompt_text": "Describe a time when someone showed you kindness or generosity that had a significant impact on your life. What did they do, and how did it make you feel?",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 118.017533
+}

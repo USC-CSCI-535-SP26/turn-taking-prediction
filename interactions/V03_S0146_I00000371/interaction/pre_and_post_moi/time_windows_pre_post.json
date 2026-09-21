@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1315",
+    "annotated_participant": "P1315",
+    "start_pre_moi": 174.0,
+    "end_pre_moi": 189,
+    "start_moi": 189,
+    "end_moi": 193,
+    "start_post_moi": 193,
+    "end_post_moi": 208.0,
+    "annotation": "They felt intrigued and questioning",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

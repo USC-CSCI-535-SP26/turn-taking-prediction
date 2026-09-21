@@ -1,0 +1,11 @@
+{
+  "": "358",
+  "prompt_hash": "00000321",
+  "prompt_id_unique": "P0126_v3.7.str_APCM_XXXX",
+  "participant_a_prompt_text": "Your partner will express a strong opinion on a topic. Engage with their argument, but also try to find flaws or areas where you disagree.",
+  "participant_b_prompt_text": "Discuss a topic that you feel strongly about and believe you have a unique insight into. Explain to your partner why your perspective is the most informed and why others are misinformed.",
+  "ipc_a": "APCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 186.019167
+}

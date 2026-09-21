@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P3971",
+    "annotated_participant": "P3971",
+    "start_pre_moi": 2.0,
+    "end_pre_moi": 17,
+    "start_moi": 17,
+    "end_moi": 22,
+    "start_post_moi": 22,
+    "end_post_moi": 37.0,
+    "annotation": "The participant is feeling relaxed, in good moods, calm and also collected",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

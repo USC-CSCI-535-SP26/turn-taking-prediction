@@ -244,7 +244,7 @@ def download_all_interactions(
     filelist_by_id = {row["file_id"]: row for row in filelist_rows}
 
     # Create root output directory
-    root_dir = os.path.join(output_dir, "annotated_interactions")
+    root_dir = os.path.join(output_dir, "interactions")
     os.makedirs(root_dir, exist_ok=True)
 
     # Process each interaction
@@ -337,7 +337,7 @@ def download_all_interactions(
 # Interaction duration
 # =============================================================================
 
-def get_interaction_duration(interaction_id, interactions_dir="./annotated_interactions"):
+def get_interaction_duration(interaction_id, interactions_dir="./interactions"):
     import subprocess
 
     entries_path = os.path.join(
@@ -603,7 +603,7 @@ def enrich_with_wav(
 # Video viewer generation
 # =============================================================================
 
-def generate_video_viewer(interaction_id, interactions_dir="./annotated_interactions"):
+def generate_video_viewer(interaction_id, interactions_dir="./interactions"):
     interaction_dir = os.path.join(interactions_dir, interaction_id, "interaction")
 
     entries_path = os.path.join(interaction_dir, "filelist_entries.json")

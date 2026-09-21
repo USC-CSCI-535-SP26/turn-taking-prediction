@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P4277",
+    "annotated_participant": "P4277",
+    "start_pre_moi": 5.0,
+    "end_pre_moi": 20,
+    "start_moi": 20,
+    "end_moi": 23,
+    "start_post_moi": 23,
+    "end_post_moi": 38.0,
+    "annotation": "the participant is lamenting",
+    "relationship": "familiar",
+    "relationship_detail": "friends"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P2195",
+    "annotated_participant": "P2194",
+    "non_annotated_participant": "P2195",
+    "start_pre_moi": 26.929999999999836,
+    "end_pre_moi": 77.51800000000003,
+    "pre_overlap": true,
+    "start_moi": 56,
+    "end_moi": 60,
+    "start_post_moi": 26.929999999999836,
+    "end_post_moi": 77.51800000000003,
+    "post_overlap": true,
+    "annotation": "Participant was calm but worried",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

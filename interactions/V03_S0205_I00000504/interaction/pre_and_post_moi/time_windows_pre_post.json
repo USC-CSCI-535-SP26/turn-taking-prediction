@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1449",
+    "annotated_participant": "P1211",
+    "start_pre_moi": 137.0,
+    "end_pre_moi": 152,
+    "start_moi": 152,
+    "end_moi": 154,
+    "start_post_moi": 154,
+    "end_post_moi": 169.0,
+    "annotation": "The participant appeared uncertain and hesitant while explaining his point.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

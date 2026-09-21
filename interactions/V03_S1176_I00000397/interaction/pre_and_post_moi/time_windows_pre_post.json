@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P3746",
+    "annotated_participant": "P3746",
+    "start_pre_moi": 14.0,
+    "end_pre_moi": 29,
+    "start_moi": 29,
+    "end_moi": 40,
+    "start_post_moi": 40,
+    "end_post_moi": 55.0,
+    "annotation": "The participant is concerned.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

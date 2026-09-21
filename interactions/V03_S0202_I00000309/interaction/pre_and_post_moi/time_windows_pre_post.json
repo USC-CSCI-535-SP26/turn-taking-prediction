@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1429",
+    "annotated_participant": "P1288",
+    "start_pre_moi": 132.0,
+    "end_pre_moi": 147,
+    "start_moi": 147,
+    "end_moi": 149,
+    "start_post_moi": 149,
+    "end_post_moi": 164.0,
+    "annotation": "The participant feels empathetic and supportive.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

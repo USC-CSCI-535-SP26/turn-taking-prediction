@@ -1,0 +1,98 @@
+[
+  {
+    "participant_id": "P1449",
+    "start": 1.2820000000001528,
+    "end": 41.5659999999998,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1211",
+    "start": 41.73000000000002,
+    "end": 42.429999999999836,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1449",
+    "start": 42.24200000000019,
+    "end": 80.19000000000005,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1211",
+    "start": 80.13000000000011,
+    "end": 80.44599999999991,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1449",
+    "start": 80.28999999999996,
+    "end": 80.60600000000022,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1211",
+    "start": 81.12199999999984,
+    "end": 83.9340000000002,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1449",
+    "start": 84.0659999999998,
+    "end": 84.86200000000008,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1211",
+    "start": 86.6579999999999,
+    "end": 98.20600000000013,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1449",
+    "start": 96.16199999999981,
+    "end": 96.47800000000007,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1449",
+    "start": 98.4340000000002,
+    "end": 141.59799999999996,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1211",
+    "start": 132.09799999999996,
+    "end": 132.60600000000022,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1211",
+    "start": 141.73000000000002,
+    "end": 142.36599999999999,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1449",
+    "start": 141.98599999999988,
+    "end": 144.57400000000007,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1211",
+    "start": 144.67399999999998,
+    "end": 145.5340000000001,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1449",
+    "start": 145.02599999999984,
+    "end": 163.19799999999987,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1211",
+    "start": 163.90599999999995,
+    "end": 167.99800000000005,
+    "overlapping": false
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "": "29",
+  "prompt_hash": "00000031",
+  "prompt_id_unique": "P0029_v3.1.str_ANCM_XXXX",
+  "participant_a_prompt_text": "Discuss a situation where you felt like someone was\nbeing unhelpful or unresponsive to your needs. How did you try to resolve the issue and what did you learn from the experience?",
+  "participant_b_prompt_text": "Your partner will describe a frustrating interaction with someone who\nwasn't being cooperative. Offer suggestions on how they could have handled the situation differently and share a similar experience where you found a resolution.",
+  "ipc_a": "ANCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 456.022233
+}

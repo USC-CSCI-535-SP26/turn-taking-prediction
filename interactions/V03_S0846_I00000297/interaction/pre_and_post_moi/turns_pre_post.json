@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1789",
+    "annotated_participant": "P1502",
+    "non_annotated_participant": "P1789",
+    "start_pre_moi": 90.33799999999997,
+    "end_pre_moi": 109.82199999999989,
+    "pre_overlap": true,
+    "start_moi": 96,
+    "end_moi": 98,
+    "start_post_moi": 90.33799999999997,
+    "end_post_moi": 109.82199999999989,
+    "post_overlap": true,
+    "annotation": "He is agreeable",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

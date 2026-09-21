@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2085",
+    "annotated_participant": "P2085",
+    "start_pre_moi": 96.0,
+    "end_pre_moi": 111,
+    "start_moi": 111,
+    "end_moi": 116,
+    "start_post_moi": 116,
+    "end_post_moi": 131.0,
+    "annotation": "The participant is tired but not bored ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2085",
+    "annotated_participant": "P2085",
+    "start_pre_moi": 28.0,
+    "end_pre_moi": 43,
+    "start_moi": 43,
+    "end_moi": 52,
+    "start_post_moi": 52,
+    "end_post_moi": 67.0,
+    "annotation": "the participant is thoughtful and not in accordance ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

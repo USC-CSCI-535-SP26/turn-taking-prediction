@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2747",
+    "annotated_participant": "P3749",
+    "start_pre_moi": 22.0,
+    "end_pre_moi": 37,
+    "start_moi": 37,
+    "end_moi": 41,
+    "start_post_moi": 41,
+    "end_post_moi": 56.0,
+    "annotation": "The speaker is inquisitive",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

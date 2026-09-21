@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1332",
+    "annotated_participant": "P1332",
+    "start_pre_moi": 158.0,
+    "end_pre_moi": 173,
+    "start_moi": 173,
+    "end_moi": 176,
+    "start_post_moi": 176,
+    "end_post_moi": 191.0,
+    "annotation": "The participant felt amused and fully engaged in the humorous interaction.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

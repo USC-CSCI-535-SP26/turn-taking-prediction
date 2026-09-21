@@ -1,0 +1,20 @@
+[
+  {
+    "participant_id": "P1446",
+    "start": 2.2899999999999636,
+    "end": 58.253999999999905,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1447",
+    "start": 59.506000000000085,
+    "end": 105.35799999999995,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1446",
+    "start": 106.5139999999999,
+    "end": 148.07799999999997,
+    "overlapping": false
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "": "107",
+  "prompt_hash": "00000112",
+  "prompt_id_unique": "P0063_v3.3.str_APCP_XXXX",
+  "participant_a_prompt_text": "Describe a challenging situation you faced in the past, but one that ultimately led to a positive outcome. What did you learn from the experience, and how did it shape your perspective on adversity?",
+  "participant_b_prompt_text": "Your partner will share a story about overcoming a difficult situation. Ask them to elaborate on what they learned and how it has influenced their approach to challenges since then.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 192.0248
+}

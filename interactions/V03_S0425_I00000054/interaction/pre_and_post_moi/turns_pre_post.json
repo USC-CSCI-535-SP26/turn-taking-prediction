@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P2350",
+    "annotated_participant": "P2353",
+    "non_annotated_participant": "P2350",
+    "start_pre_moi": 0,
+    "end_pre_moi": 68.83,
+    "pre_overlap": true,
+    "start_moi": 5,
+    "end_moi": 12,
+    "start_post_moi": 0,
+    "end_post_moi": 68.83,
+    "post_overlap": true,
+    "annotation": "Participant is listening with interest",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

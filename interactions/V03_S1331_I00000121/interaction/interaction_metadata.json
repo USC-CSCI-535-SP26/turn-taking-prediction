@@ -1,0 +1,11 @@
+{
+  "": "116",
+  "prompt_hash": "00000121",
+  "prompt_id_unique": "P0003_v3.3.aac_ANCP_XXXX",
+  "participant_a_prompt_text": "You're going to play a game with your partner. Together you will take turns weaving a fictional tale. It can be about whatever you like. \n\nThe rule is that you have to build the story together, alternating every sentence or two.\n\nFor example, a story might look like the following:\n\nYou: Last week, I went camping...\nPartner: ...around midnight, I heard a loud ban and it jolted me awake...\nYou: ...I grabbed my flashlight and cautiously unzipped the tent...\n\nThe story can be about whatever you want! The point is to try to make it as interesting and fun as you can, creating it collaboratively. Be as expressive as you can with your voice and in your gestures.\n\nWhenever you're ready, begin with the four words, \"Last week...",
+  "participant_b_prompt_text": "You're going to play a game with your partner. Together you will take turns weaving a fictional tale. It can be about whatever you like. \n\nThe rule is that you have to build the story together, alternating every sentence or two.\n\nFor example, a story might look like the following:\n\nYou: Last week, I went camping...\nPartner: ...around midnight, I heard a loud ban and it jolted me awake...\nYou: ...I grabbed my flashlight and cautiously unzipped the tent...\n\nThe story can be about whatever you want! The point is to try to make it as interesting and fun as you can, creating it collaboratively. Be as expressive as you can with your voice and in your gestures.\n\nYour partner will begin with the words \"Last week...",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "collaborative_storytelling",
+  "duration": 94.0269
+}

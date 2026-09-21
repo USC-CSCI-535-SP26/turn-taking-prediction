@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1891",
+    "annotated_participant": "P1891",
+    "start_pre_moi": -12.0,
+    "end_pre_moi": 3,
+    "start_moi": 3,
+    "end_moi": 10,
+    "start_post_moi": 10,
+    "end_post_moi": 25.0,
+    "annotation": "Participant is self-conscious but cheerful while trying to explain the situation",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1891",
+    "annotated_participant": "P1891",
+    "start_pre_moi": 103.0,
+    "end_pre_moi": 118,
+    "start_moi": 118,
+    "end_moi": 120,
+    "start_post_moi": 120,
+    "end_post_moi": 135.0,
+    "annotation": "Participant is boastful",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P2024",
+    "annotated_participant": "P1359",
+    "non_annotated_participant": "P2024",
+    "start_pre_moi": 1.4099999999998545,
+    "end_pre_moi": 36.28600000000006,
+    "pre_overlap": true,
+    "start_moi": 18,
+    "end_moi": 24,
+    "start_post_moi": 1.4099999999998545,
+    "end_post_moi": 36.28600000000006,
+    "post_overlap": true,
+    "annotation": "Participant was acknowledging, being responsive",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1359",
+    "annotated_participant": "P1359",
+    "non_annotated_participant": "P2024",
+    "start_pre_moi": 82.5300000000002,
+    "end_pre_moi": 115.90200000000004,
+    "pre_overlap": true,
+    "start_moi": 115,
+    "end_moi": 123,
+    "start_post_moi": 122.84999999999991,
+    "end_post_moi": 123.45400000000018,
+    "post_overlap": true,
+    "annotation": "The participant was enthusiastic",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

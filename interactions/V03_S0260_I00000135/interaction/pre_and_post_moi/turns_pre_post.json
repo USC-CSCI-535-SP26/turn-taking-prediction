@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1629",
+    "annotated_participant": "P1629",
+    "non_annotated_participant": "P1628",
+    "start_pre_moi": 27.90599999999995,
+    "end_pre_moi": 45.15000000000009,
+    "pre_overlap": false,
+    "start_moi": 55,
+    "end_moi": 70,
+    "start_post_moi": 77.76199999999994,
+    "end_post_moi": 111.00600000000009,
+    "post_overlap": false,
+    "annotation": "He is amused by story ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

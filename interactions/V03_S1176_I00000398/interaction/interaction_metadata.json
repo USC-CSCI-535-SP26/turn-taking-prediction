@@ -1,0 +1,11 @@
+{
+  "": "455",
+  "prompt_hash": "00000398",
+  "prompt_id_unique": "P0151_v3.9.str_AMCM_XXXX",
+  "participant_a_prompt_text": "Describe a situation where you felt uncomfortable or out of place in a social setting. What triggered this feeling and how did you handle it?",
+  "participant_b_prompt_text": "Your partner will share a story about a time they felt uncomfortable in a social setting. Ask follow-up questions to understand their perspective and share a similar experience if you have one.",
+  "ipc_a": "AMCM",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 126.0259
+}

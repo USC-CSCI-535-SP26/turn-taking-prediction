@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3067",
+    "annotated_participant": "P3067",
+    "non_annotated_participant": "P3065",
+    "start_pre_moi": 1.2179999999998472,
+    "end_pre_moi": 9.246000000000095,
+    "pre_overlap": false,
+    "start_moi": 14,
+    "end_moi": 18,
+    "start_post_moi": null,
+    "end_post_moi": null,
+    "post_overlap": false,
+    "annotation": "The speaker is in agreement",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

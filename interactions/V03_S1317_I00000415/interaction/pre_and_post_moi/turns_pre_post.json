@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P2244",
+    "annotated_participant": "P2244",
+    "non_annotated_participant": "P3856",
+    "start_pre_moi": 36.08200000000011,
+    "end_pre_moi": 38.38200000000006,
+    "pre_overlap": true,
+    "start_moi": 38,
+    "end_moi": 44,
+    "start_post_moi": 44.11400000000003,
+    "end_post_moi": 44.430000000000064,
+    "post_overlap": false,
+    "annotation": "The participant is agreeable and attentive.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

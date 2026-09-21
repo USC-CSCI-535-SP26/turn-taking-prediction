@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P3641",
+    "annotated_participant": "P3622",
+    "start_pre_moi": 372.0,
+    "end_pre_moi": 387,
+    "start_moi": 387,
+    "end_moi": 391,
+    "start_post_moi": 391,
+    "end_post_moi": 406.0,
+    "annotation": "The participant is relaxed and joyful",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

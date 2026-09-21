@@ -1,0 +1,11 @@
+{
+  "": "114",
+  "prompt_hash": "00000119",
+  "prompt_id_unique": "P0059_v3.3.str_ANCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you about a time they dealt with a difficult person. Listen actively and offer words of encouragement or support, acknowledging the challenges they faced.",
+  "participant_b_prompt_text": "Describe a situation where you had to interact with someone who was difficult or challenging. How did you handle the situation, and what did you learn from it?",
+  "ipc_a": "ANCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 272.0047
+}

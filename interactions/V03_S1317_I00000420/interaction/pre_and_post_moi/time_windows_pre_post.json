@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2244",
+    "annotated_participant": "P2244",
+    "start_pre_moi": 44.0,
+    "end_pre_moi": 59,
+    "start_moi": 59,
+    "end_moi": 63,
+    "start_post_moi": 63,
+    "end_post_moi": 78.0,
+    "annotation": "The participant is consenting and focused.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

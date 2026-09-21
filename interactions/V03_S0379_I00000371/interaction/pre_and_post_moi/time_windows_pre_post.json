@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1600",
+    "annotated_participant": "P1600",
+    "start_pre_moi": 5.0,
+    "end_pre_moi": 20,
+    "start_moi": 20,
+    "end_moi": 22,
+    "start_post_moi": 22,
+    "end_post_moi": 37.0,
+    "annotation": "She is confident about her answer",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

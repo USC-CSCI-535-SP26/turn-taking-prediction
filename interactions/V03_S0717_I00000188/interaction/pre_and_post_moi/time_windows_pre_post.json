@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1496",
+    "annotated_participant": "P1496",
+    "start_pre_moi": 186.0,
+    "end_pre_moi": 201,
+    "start_moi": 201,
+    "end_moi": 207,
+    "start_post_moi": 207,
+    "end_post_moi": 222.0,
+    "annotation": "Speaker is hysterical",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

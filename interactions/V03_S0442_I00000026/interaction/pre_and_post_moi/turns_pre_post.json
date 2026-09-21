@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P2061",
+    "annotated_participant": "P2072",
+    "non_annotated_participant": "P2061",
+    "start_pre_moi": 10.210000000000008,
+    "end_pre_moi": 115.29399999999998,
+    "pre_overlap": true,
+    "start_moi": 62,
+    "end_moi": 66,
+    "start_post_moi": 10.210000000000008,
+    "end_post_moi": 115.29399999999998,
+    "post_overlap": true,
+    "annotation": "Participant seemed unfocused and unenthusiastic.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2061",
+    "annotated_participant": "P2072",
+    "non_annotated_participant": "P2061",
+    "start_pre_moi": 129.538,
+    "end_pre_moi": 167.166,
+    "pre_overlap": true,
+    "start_moi": 138,
+    "end_moi": 142,
+    "start_post_moi": 129.538,
+    "end_post_moi": 167.166,
+    "post_overlap": true,
+    "annotation": "Participant was slightly more curious and engaged.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

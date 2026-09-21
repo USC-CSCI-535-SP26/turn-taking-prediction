@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P1626",
+    "annotated_participant": "P1626",
+    "non_annotated_participant": "P1765",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 33,
+    "end_moi": 36,
+    "start_post_moi": 172.6899999999996,
+    "end_post_moi": 174.15800000000036,
+    "post_overlap": false,
+    "annotation": " The participant does it because they personify what they\u0080\u0099re talking about",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

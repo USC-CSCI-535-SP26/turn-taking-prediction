@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P3111",
+    "annotated_participant": "P3111",
+    "start_pre_moi": 235.0,
+    "end_pre_moi": 250,
+    "start_moi": 250,
+    "end_moi": 257,
+    "start_post_moi": 257,
+    "end_post_moi": 272.0,
+    "annotation": "Participant demonstrates reflective processing of information.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

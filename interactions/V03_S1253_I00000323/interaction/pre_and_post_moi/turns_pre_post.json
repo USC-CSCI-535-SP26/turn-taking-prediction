@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3750",
+    "annotated_participant": "P3750",
+    "non_annotated_participant": "P3782",
+    "start_pre_moi": 132.48199999999997,
+    "end_pre_moi": 133.02199999999993,
+    "pre_overlap": true,
+    "start_moi": 133,
+    "end_moi": 137,
+    "start_post_moi": 137.154,
+    "end_post_moi": 158.33399999999983,
+    "post_overlap": false,
+    "annotation": "The Participant is feeling insightful.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

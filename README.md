@@ -17,9 +17,7 @@ the window boundary, τ milliseconds ahead of *t*:
 | `BACKCHANNEL` | the listener vocalizes ("mm-hm", "right") without taking the floor |
 
 Labels are derived from per-participant Silero VAD plus WhisperX word-aligned
-transcripts. Three further outcomes — `INTERRUPT`, `FAILED`, `LAPSE` — are detected
-and retained for corpus statistics but excluded from training, because each is a
-genuinely different phenomenon rather than a noisy version of the three above.
+transcripts. 
 
 ## Data
 
@@ -28,9 +26,15 @@ genuinely different phenomenon rather than a noisy version of the three above.
   interactions are excluded — the prompt itself confounds turn-taking behavior.
 - **320 / 69 / 67** train / val / test interactions, split by participant-component
   bin-packing so no participant appears in two splits.
-- [`both_annotated_interactions/`](both_annotated_interactions/) ships the 100
-  interactions where *both* participants carry third-party annotations — VAD,
-  per-turn timestamps, emotion features, and interaction metadata.
+- [`interactions/`](interactions/) holds per-interaction metadata and annotations for
+  433 of the 456 — VAD, per-turn timestamps, third-party (3P) annotations, and
+  interaction metadata. The manifest's `annotation_coverage` column records 3P depth:
+  `both` (100), `single` (333), `none` (23). The 23 are the proof-of-concept
+  interactions, which have no directory — `poc_manifest.csv` carries their URLs.
+- `manifest.csv` is frozen: it is the split assignment the reported results were
+  trained on. Re-running `build_manifest.py` reproduces its membership and every
+  metadata column exactly, but reassigns train/val/test from scratch, because one
+  test-split row was removed by hand after the file was generated.
 
 ## Approach
 
@@ -81,10 +85,9 @@ Results by class:
 ## Repository layout
 
 ```
+interactions/        per-interaction metadata + 3P annotations (433 of 456)
 manifests/           manifest.csv (456 interactions, with splits) + poc_manifest.csv
 model_input/         per-τ ground-truth labels (labels_tau_*.json)
-both_annotated_interactions/
-                     100 interactions with both participants annotated
 results/             per-experiment metrics — see results/README.md for the data dictionary
 paper/               generated figures and LaTeX tables
 scripts/             the pipeline (see below)

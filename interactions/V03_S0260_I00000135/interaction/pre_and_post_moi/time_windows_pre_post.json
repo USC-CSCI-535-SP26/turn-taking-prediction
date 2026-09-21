@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P1629",
+    "annotated_participant": "P1629",
+    "start_pre_moi": 40.0,
+    "end_pre_moi": 55,
+    "start_moi": 55,
+    "end_moi": 70,
+    "start_post_moi": 70,
+    "end_post_moi": 85.0,
+    "annotation": "He is amused by story ",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

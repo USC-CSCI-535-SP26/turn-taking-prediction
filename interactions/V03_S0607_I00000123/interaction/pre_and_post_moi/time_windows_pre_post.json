@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2194",
+    "annotated_participant": "P2194",
+    "start_pre_moi": 119.0,
+    "end_pre_moi": 134,
+    "start_moi": 134,
+    "end_moi": 140,
+    "start_post_moi": 140,
+    "end_post_moi": 155.0,
+    "annotation": "Participant was skeptical",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

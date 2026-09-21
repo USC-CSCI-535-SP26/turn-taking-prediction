@@ -1,0 +1,98 @@
+[
+  {
+    "participant_id": "P1556",
+    "start": 0.72199999999998,
+    "end": 11.086000000000013,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1557",
+    "start": 11.8900000000001,
+    "end": 21.582000000000107,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1556",
+    "start": 12.018000000000029,
+    "end": 12.685999999999922,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1556",
+    "start": 12.882000000000062,
+    "end": 13.422000000000025,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1556",
+    "start": 20.72199999999998,
+    "end": 22.445999999999913,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1557",
+    "start": 24.082000000000107,
+    "end": 25.902000000000044,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1556",
+    "start": 25.521999999999935,
+    "end": 26.22199999999998,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1557",
+    "start": 26.001999999999953,
+    "end": 30.317999999999984,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1556",
+    "start": 30.385999999999967,
+    "end": 36.04600000000005,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1557",
+    "start": 37.105999999999995,
+    "end": 38.02999999999997,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1556",
+    "start": 39.31400000000008,
+    "end": 41.80600000000004,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1557",
+    "start": 41.65000000000009,
+    "end": 42.34999999999991,
+    "overlapping": true
+  },
+  {
+    "participant_id": "P1556",
+    "start": 44.978000000000065,
+    "end": 48.365999999999985,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1557",
+    "start": 48.5619999999999,
+    "end": 49.32600000000002,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1556",
+    "start": 54.41799999999989,
+    "end": 87.50199999999995,
+    "overlapping": false
+  },
+  {
+    "participant_id": "P1557",
+    "start": 135.50600000000009,
+    "end": 136,
+    "overlapping": false
+  }
+]

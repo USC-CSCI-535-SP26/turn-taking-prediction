@@ -1,0 +1,11 @@
+{
+  "": "375",
+  "prompt_hash": "00000381",
+  "prompt_id_unique": "P0030_MP_APCP_XXXX",
+  "participant_a_prompt_text": "Your partner will tell you a personal story. Listen to them and engage with the story.",
+  "participant_b_prompt_text": "Think of a story that involves your partner that captures a positive aspect about who they are.",
+  "ipc_a": "APCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 232.0318
+}

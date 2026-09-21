@@ -1,0 +1,34 @@
+[
+  {
+    "event_speaker": "P2253",
+    "annotated_participant": "P2253",
+    "non_annotated_participant": "P1965",
+    "start_pre_moi": null,
+    "end_pre_moi": null,
+    "pre_overlap": false,
+    "start_moi": 44,
+    "end_moi": 46,
+    "start_post_moi": 50.14599999999996,
+    "end_post_moi": 59.35799999999995,
+    "post_overlap": false,
+    "annotation": "Speaker felt slightly amused but also terrified.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P2253",
+    "annotated_participant": "P2253",
+    "non_annotated_participant": "P1965",
+    "start_pre_moi": 120.5139999999999,
+    "end_pre_moi": 136.95800000000008,
+    "pre_overlap": false,
+    "start_moi": 151,
+    "end_moi": 159,
+    "start_post_moi": 160.3219999999999,
+    "end_post_moi": 179.80600000000004,
+    "post_overlap": false,
+    "annotation": "Speaker felt passionate and intense.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

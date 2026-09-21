@@ -1,0 +1,11 @@
+{
+  "": "304",
+  "prompt_hash": "00000316",
+  "prompt_id_unique": "P0120_v3.7.str_AMCP_XXXX",
+  "participant_a_prompt_text": "Describe a time when you had to deliver difficult news to someone, but wanted to do so in a way that was kind and considerate. How did you approach the situation and what did you say?",
+  "participant_b_prompt_text": "Your partner will tell you about a time they had to deliver difficult news. Listen to their approach and discuss how they balanced being honest with being gentle.",
+  "ipc_a": "AMCP",
+  "ipc_b": "",
+  "interaction_type": "ipc_conversation",
+  "duration": 206.005433
+}

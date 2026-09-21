@@ -1,0 +1,18 @@
+[
+  {
+    "event_speaker": "P3641",
+    "annotated_participant": "P3622",
+    "non_annotated_participant": "P3641",
+    "start_pre_moi": 132.85000000000002,
+    "end_pre_moi": 159.34199999999998,
+    "pre_overlap": true,
+    "start_moi": 137,
+    "end_moi": 139,
+    "start_post_moi": 132.85000000000002,
+    "end_post_moi": 159.34199999999998,
+    "post_overlap": true,
+    "annotation": "The participant is respected",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P2342",
+    "annotated_participant": "P1496",
+    "start_pre_moi": 212.0,
+    "end_pre_moi": 227,
+    "start_moi": 227,
+    "end_moi": 231,
+    "start_post_moi": 231,
+    "end_post_moi": 246.0,
+    "annotation": "Participant agrees with the speaker",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  },
+  {
+    "event_speaker": "P2342",
+    "annotated_participant": "P1496",
+    "start_pre_moi": 319.0,
+    "end_pre_moi": 334,
+    "start_moi": 334,
+    "end_moi": 343,
+    "start_post_moi": 343,
+    "end_post_moi": 358.0,
+    "annotation": "Participant agrees with the speaker and is amused",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]

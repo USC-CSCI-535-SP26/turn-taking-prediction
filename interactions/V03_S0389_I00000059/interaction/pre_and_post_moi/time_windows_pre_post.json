@@ -1,0 +1,41 @@
+[
+  {
+    "event_speaker": "P1359",
+    "annotated_participant": "P1984",
+    "start_pre_moi": 130.0,
+    "end_pre_moi": 145,
+    "start_moi": 145,
+    "end_moi": 150,
+    "start_post_moi": 150,
+    "end_post_moi": 165.0,
+    "annotation": "Participant was engaged with what was shared by the other speaker",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1359",
+    "annotated_participant": "P1984",
+    "start_pre_moi": 181.0,
+    "end_pre_moi": 196,
+    "start_moi": 196,
+    "end_moi": 201,
+    "start_post_moi": 201,
+    "end_post_moi": 216.0,
+    "annotation": "Participant was confused and bored",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1359",
+    "annotated_participant": "P1984",
+    "start_pre_moi": 196.0,
+    "end_pre_moi": 211,
+    "start_moi": 211,
+    "end_moi": 216,
+    "start_post_moi": 216,
+    "end_post_moi": 231.0,
+    "annotation": "Participant was confused",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

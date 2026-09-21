@@ -1,0 +1,28 @@
+[
+  {
+    "event_speaker": "P1209",
+    "annotated_participant": "P1209",
+    "start_pre_moi": 174.0,
+    "end_pre_moi": 189,
+    "start_moi": 189,
+    "end_moi": 198,
+    "start_post_moi": 198,
+    "end_post_moi": 213.0,
+    "annotation": "The participant is feeling sympathetic towards the other participant.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  },
+  {
+    "event_speaker": "P1209",
+    "annotated_participant": "P1209",
+    "start_pre_moi": 256.0,
+    "end_pre_moi": 271,
+    "start_moi": 271,
+    "end_moi": 275,
+    "start_post_moi": 275,
+    "end_post_moi": 290.0,
+    "annotation": "The participant is feeling disgusted.",
+    "relationship": "stranger",
+    "relationship_detail": "stranger"
+  }
+]

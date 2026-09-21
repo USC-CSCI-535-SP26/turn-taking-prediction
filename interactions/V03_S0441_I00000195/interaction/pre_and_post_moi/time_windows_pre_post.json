@@ -1,0 +1,15 @@
+[
+  {
+    "event_speaker": "P2067",
+    "annotated_participant": "P2066",
+    "start_pre_moi": 55.0,
+    "end_pre_moi": 70,
+    "start_moi": 70,
+    "end_moi": 74,
+    "start_post_moi": 74,
+    "end_post_moi": 89.0,
+    "annotation": "The participant was empathetic and agreeable.",
+    "relationship": "familiar",
+    "relationship_detail": "familiar-generic"
+  }
+]
